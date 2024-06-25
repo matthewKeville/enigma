@@ -60,7 +60,7 @@ class Grid {
     layout.SplitRows(new Layout("Top"),new Layout("Bottom"));
 
     layout["Top"].Update(table);
-    layout["Top"].Size(8);
+    layout["Top"].Size(60);
 
 
   }
@@ -113,9 +113,9 @@ class Grid {
 
     for ( int j = 0; j < crossword.colCount; j++ ) {
       for ( int i = 0; i < crossword.rowCount; i++ ) {
-        String charDisplay = ""+charMatrix[i,j];
+        String charDisplay = "[bold]"+charMatrix[i,j]+"[/]";
         if ( entry.X == j && entry.Y == i ) {
-          charDisplay = "[blue]"+charDisplay+"[/]";
+          charDisplay = "[yellow]"+charDisplay+"[/]";
         }
         table.UpdateCell(i,j,charDisplay);
       }

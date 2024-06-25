@@ -2,7 +2,7 @@ using Model;
 
 namespace PuzzleProvider {
 
-  public class DebugPuzzleProvider {
+  public class DebugPuzzle {
 
     /**
       cats#f

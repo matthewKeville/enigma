@@ -9,6 +9,7 @@ class Clues {
   public Crossword crossword { get; set; }
   private Layout layout = new Layout("Clues");
   private Table table = new Table();
+  private int clueCutoff = 40;
 
   public Clues(Crossword crossword) {
     this.crossword = crossword;
@@ -38,14 +39,21 @@ class Clues {
       String aclue = "";
       String dclue = "";
       if (across.Any()) {
-        aclue = across[0].answer;
+        aclue = string.Format("{0}  {1}",
+            across[0].i.ToString().PadRight(2),
+            across[0].prompt);
         across.RemoveAt(0);
       }
       if (down.Any()) {
-        dclue = down[0].answer;
+        dclue = string.Format("{0}  {1}",
+            down[0].i.ToString().PadRight(2),
+            down[0].prompt);
         down.RemoveAt(0);
       }
-      table.AddRow(aclue,dclue);
+      table.AddRow(
+          aclue.Substring(0,Math.Min(aclue.Count(),clueCutoff)),
+          dclue.Substring(0,Math.Min(dclue.Count(),clueCutoff))
+      );
     }
 
     layout.Update(table);

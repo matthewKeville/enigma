@@ -4,10 +4,17 @@ using Spectre.Console;
 using System.Diagnostics;
 using PuzzleProvider;
 
+//TEST
+//
+//NYYDebugPuzzle.GetPuzzle();
+//Environment.Exit(0);
+//TEST
+
 Trace.Listeners.Add(new TextWriterTraceListener("/logs/enigma.log"));
 Trace.AutoFlush = true;
 
-Crossword crossword = DebugPuzzleProvider.GetPuzzle();
+//Crossword crossword = DebugPuzzle.GetPuzzle();
+Crossword crossword = NYYDebugPuzzle.GetPuzzle();
 
 UI.Grid grid = new UI.Grid(crossword);
 UI.Clues clues = new UI.Clues(crossword);
