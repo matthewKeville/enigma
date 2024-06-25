@@ -7,7 +7,6 @@ namespace UI {
 class Clues {
 
   public Crossword crossword { get; set; }
-  //UI
   private Layout layout = new Layout("Clues");
   private Table table = new Table();
 

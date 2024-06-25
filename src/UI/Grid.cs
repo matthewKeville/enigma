@@ -40,10 +40,10 @@ class Grid {
       }
     }
 
-    initLayout();
+    init();
   }
 
-  private void initLayout() {
+  private void init() {
     for ( int j = 0; j < crossword.colCount; j++ ) {
       table.AddColumn(""+j);
     }
@@ -164,8 +164,6 @@ class Grid {
     if ( IsInWord(nextEntry.X,nextEntry.Y) ) {
       entry = nextEntry;
     }
-
-
 
   }
 

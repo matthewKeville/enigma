@@ -2,7 +2,7 @@ using System.Text;
 
 namespace Model {
 
-class Crossword {
+public class Crossword {
 
   public String name { get; set; } = "debug"; 
   public List<Word> words { get; set; } = new List<Word>();

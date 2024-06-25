@@ -1,11 +1,11 @@
 namespace Model {
 
-enum Direction {
+public enum Direction {
   Across,
   Down
 }
 
-class Word {
+public class Word {
   public int x { get; set; }
   public int y { get; set; }
   public int i { get; set; }
