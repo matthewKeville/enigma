@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Model;
 
 namespace Services
@@ -14,7 +15,7 @@ namespace Services
                 int rows = 15;
                 int cols = 15;
 
-                char[][] answerMatrix = [
+                char[][] answerMatrixTranspose = [
                   @"ACED#PLIE#EASES".ToCharArray(),
                   @"RULE#RIND#SAINT".ToCharArray(),
                   @"CRIBNOTES#QANDA".ToCharArray(),
@@ -31,6 +32,14 @@ namespace Services
                   @"TIARA#STEM#IDLE".ToCharArray(),
                   @"ARMED#THEE#NEED".ToCharArray(),
                 ];
+
+                char[,] answerMatrix = new char[cols,rows];
+                for ( int i = 0; i < cols; i++ ) {
+                  for ( int j = 0; j < rows; j++ ) {
+                    answerMatrix[i,j] = answerMatrixTranspose[j][i];
+                  }
+                }
+
 
                 List<String> acrossClues = new List<String> {
                   @"Hit a serve past",
@@ -116,16 +125,20 @@ namespace Services
                   @"Put quarters in, as a meter"
               };
 
+
+                Trace.WriteLine($" ACLUES {acrossClues.Count()} DCLUES {downClues.Count()}");
+
                 Crossword crossword = new Crossword(rows, cols);
                 crossword.name = "NY TIMES";
 
                 int ordinal = 1;
+
                 for (int j = 0; j < rows; j++)
                 {
                     for (int i = 0; i < cols; i++)
                     {
 
-                        if (answerMatrix[j][i] == '#')
+                        if (answerMatrix[i,j] == '#')
                         {
                             continue;
                         }
@@ -133,53 +146,65 @@ namespace Services
                         bool wordHit = false;
 
                         //is word across clue?
-                        if ((i != cols) && i == 0 || answerMatrix[j][i - 1] == '#')
+                        if ( (i != cols) && ( i == 0 || answerMatrix[i-1,j] == '#') )
                         {
 
                             //match clue to ordinal and position
+                            if ( acrossClues.Count() == 0 ) {
+                              Trace.WriteLine("Critical error, no clues left");
+                              Trace.WriteLine($" i,j {i},{j} : is {answerMatrix[i,j]}, prev is {answerMatrix[i-1,j]}");
+                              Environment.Exit(0);
+                            }
+                            
                             String clue = acrossClues[0];
                             acrossClues.RemoveAt(0);
-                            Console.WriteLine(
-                                string.Format("{0} across is {1} at r,c {2},{3}", ordinal, clue, j, i)
+                            Trace.WriteLine(
+                                string.Format("{0} across is {1} at r,c {2},{3}", ordinal, clue, i, j)
                             );
 
                             //mine answer
                             int wend = i;
                             String answer = "";
-                            while (wend != cols && answerMatrix[j][wend] != '#')
+                            while (wend != cols && answerMatrix[wend,j] != '#')
                             {
-                                answer += answerMatrix[j][wend];
+                                answer += answerMatrix[wend,j];
                                 wend++;
                             }
-                            Console.WriteLine("\tand the answer is " + answer);
+                            Trace.WriteLine("\tand the answer is " + answer);
                             crossword.words.Add(new Word(i, j, ordinal, Direction.Across, answer, clue));
                             wordHit = true;
                         }
 
                         //is word down clue?
-                        if ((j != rows) && j == 0 || answerMatrix[j - 1][i] == '#')
+                        if (( j != rows) && ( j == 0 || answerMatrix[i,j-1] == '#') )
                         {
+                            if ( downClues.Count() == 0 ) {
+                              Trace.WriteLine("Critical error, no clues left");
+                              Trace.WriteLine($" i,j {i},{j} : is {answerMatrix[i,j]}, prev is {answerMatrix[i-1,j]}");
+                              Environment.Exit(0);
+                            }
 
                             //match clue to ordinal and position
                             String clue = downClues[0];
                             downClues.RemoveAt(0);
-                            Console.WriteLine(
-                                string.Format("{0} down is {1} at r,c {2},{3}", ordinal, clue, j, i)
+                            Trace.WriteLine(
+                                string.Format("{0} down is {1} at r,c {2},{3}", ordinal, clue, i, j)
                             );
 
                             //mine answer
-                            int wend = i;
+                            int wend = j;
                             String answer = "";
-                            while (wend != rows && answerMatrix[wend][j] != '#')
+                            while (wend != rows && answerMatrix[i,wend] != '#')
                             {
-                                answer += answerMatrix[wend][j];
+                                answer += answerMatrix[i,wend];
                                 wend++;
                             }
-                            Console.WriteLine("\tand the answer is " + answer);
+                            Trace.WriteLine("\tand the answer is " + answer);
                             crossword.words.Add(new Word(i, j, ordinal, Direction.Down, answer, clue));
 
                             wordHit = true;
                         }
+
 
                         if (wordHit)
                         {
