@@ -22,6 +22,7 @@ public class GridViewModel {
 
   private ICrosswordProvider crosswordProvider;
   private Crossword crossword;
+  private Game game;
 
   public int ColumnCount { 
     get {
@@ -37,19 +38,21 @@ public class GridViewModel {
   // x,y = {row,col}
   public Point entry { get; private set; } 
   public char[,] charMatrix { get; set; }
+  public Direction orientation = Direction.Across;
 
   public GridViewModel(ICrosswordProvider crosswordProvider) {
     this.crosswordProvider = crosswordProvider;
     this.crosswordProvider.PropertyChanged += (object? sender, PropertyChangedEventArgs e) => {
       lock(this) {
+        Trace.WriteLine("crossword changed in gridviewmodel");
         this.crossword = this.crosswordProvider.crossword;
         createCharMatrix();
       }
     };
-
     this.crossword = crosswordProvider.crossword;
     this.entry = new Point(0,0);
     createCharMatrix();
+    createNewGame();
   }
 
   private void createCharMatrix() {
@@ -75,9 +78,22 @@ public class GridViewModel {
     }
   }
 
+  private void createNewGame() {
+    List<AnswerBlank> answerBlanks = new List<AnswerBlank>();
+    foreach ( Word word in crossword.words ) {
+      AnswerBlank blank = new AnswerBlank();
+      blank.direction = word.direction;
+      blank.size = word.answer.Count();
+      blank.ordinal = word.i;
+      answerBlanks.Add(blank);
+    }
+    game = new Game(answerBlanks);
+  }
+
   //return the word the cursor is in
-  private Word? CurrentWord(int x,int y) {
-    Word? word = crossword.words.FirstOrDefault( w => {
+  private List<Word> CurrentWords(int x,int y) {
+    List<Word> words = crossword.words.FindAll( w => {
+    //Word? word = crossword.words.FirstOrDefault( w => {
         int wxs = w.x;
         int wxf = w.direction == Direction.Across ? 
           w.x + w.answer.Count() -1:
@@ -86,23 +102,35 @@ public class GridViewModel {
         int wyf = w.direction == Direction.Down ? 
           w.y + w.answer.Count() -1:
           w.y;
-        Trace.WriteLine(
-            string.Format("{0} {1} {2} : {3} {4} {5}",wxs,x,wxf,wys,y,wyf));
+        // Trace.WriteLine(
+        //     string.Format("{0} {1} {2} : {3} {4} {5}",wxs,x,wxf,wys,y,wyf));
         return 
           // didn't realize Range(start,count) : caused a headache
           Enumerable.Range(wxs,wxf-wxs+1).Contains(x) && 
           Enumerable.Range(wys,wyf-wys+1).Contains(y);
-    },null);
-    Trace.WriteLine(string.Format(" {0},{1} : in word? {2} : word : {3} ",
-          x,y,word is not null,word?.answer ?? ""));
-    return word;
+    });
+    return words;
   }
 
   private bool IsInWord(int x,int y) {
-    return CurrentWord(x,y) is not null;
+    return CurrentWords(x,y).Any();
   }
 
-  private void MoveEntry(Move move) {
+  public bool InActiveWord(int x, int y) {
+    Word? expectWord = CurrentWords(entry.X,entry.Y).FirstOrDefault( w => w.direction == orientation, null);
+    if ( expectWord == null ) {
+      Trace.WriteLine("ERROR : no active word");
+      Environment.Exit(2);
+    }
+    Word word = (Word) expectWord;
+    if (word.direction == Direction.Across) {
+      return (word.x <= x && x <= word.x + word.answer.Count()) && ( y == word.y );
+    } else {
+      return ( word.x == x ) && ( word.y <= y && y <= word.y + word.answer.Count());
+    }
+  }
+
+  public void MoveEntry(Move move) {
 
     int offx = 0;
     int offy = 0;
@@ -137,6 +165,23 @@ public class GridViewModel {
       entry = nextEntry;
     }
 
+  }
+
+  public void SwapOrientation() {
+    orientation = ( orientation == Direction.Across ) ? Direction.Down : Direction.Across;
+  }
+
+  public void InsertKey(ConsoleKey key) {
+    Trace.WriteLine("GridView recieved insert key invocation");
+    charMatrix[entry.Y,entry.X] = (char) key;
+    //todo keep current writing orientation
+    MoveEntry(orientation == Direction.Across ? Move.RIGHT : Move.DOWN);
+  }
+
+  public void DeleteKey() {
+    Trace.WriteLine("GridView recieved insert key invocation");
+    charMatrix[entry.Y,entry.X] = ' ';
+    MoveEntry(orientation == Direction.Across ? Move.LEFT : Move.UP);
   }
 
 }

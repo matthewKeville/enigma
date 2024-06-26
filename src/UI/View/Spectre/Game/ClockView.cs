@@ -1,7 +1,7 @@
 using Spectre.Console;
 using UI.View.ViewModel;
 
-namespace UI.View.Spectre {
+namespace UI.View.Spectre.Game {
 
 public class ClockView {
 

@@ -3,9 +3,9 @@ namespace UI.View.Spectre;
 
 public class SpectreRenderer {
 
-  private MainView mainView;
-  public SpectreRenderer(MainView mainView) {
-    this.mainView = mainView;
+  private RootView rootView;
+  public SpectreRenderer(RootView rootView) {
+    this.rootView = rootView;
   }
 
   public void init() {
@@ -16,7 +16,7 @@ public class SpectreRenderer {
       .Start(ctx =>
       {
         while (true) {
-        root.Update(mainView.Render());
+          root.Update(rootView.Render());
           ctx.Refresh();
         }
       });
