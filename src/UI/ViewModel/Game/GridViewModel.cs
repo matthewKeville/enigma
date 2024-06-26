@@ -13,11 +13,7 @@ public enum Move {
   DOWN
 }
 
-//Data model x,y is col,row
-//Entry is col, row
-//CharMatrix is row col
-// ^ this is fucked
-
+// x,y = {col,row}
 public class GridViewModel {
 
   private ICrosswordProvider crosswordProvider;
@@ -35,9 +31,9 @@ public class GridViewModel {
     }
   }
 
-  // x,y = {row,col}
   public Point entry { get; private set; } 
   public char[,] charMatrix { get; set; }
+
   public Direction orientation = Direction.Across;
 
   public GridViewModel(ICrosswordProvider crosswordProvider) {
@@ -52,32 +48,33 @@ public class GridViewModel {
     this.crossword = crosswordProvider.crossword;
     this.entry = new Point(0,0);
     createCharMatrix();
-    createNewGame();
+    //createNewGame();
   }
 
+  // i = col , j = row
   private void createCharMatrix() {
 
     //Create skeleton
-    this.charMatrix = new char[crossword.rowCount,crossword.colCount];
-    for ( int i = 0; i < crossword.rowCount; i++ ) {
-      for ( int j = 0; j < crossword.colCount; j++ ) {
+    this.charMatrix = new char[crossword.colCount,crossword.rowCount];
+    for ( int i = 0; i < crossword.colCount; i++ ) {
+      for ( int j = 0; j < crossword.rowCount; j++ ) {
         this.charMatrix[i,j] = '\0';
       }
     }
 
     //convert words in character matrix
-
     foreach ( Word word in crossword.words ) {
         for ( int i = 0; i < word.answer.Count(); i++ ) {
           if ( word.direction == Direction.Across ) {
-            charMatrix[word.y,word.x+i] = word.answer[i];
+            charMatrix[word.x+i,word.y] = word.answer[i];
           } else {
-            charMatrix[word.y+i,word.x] = word.answer[i];
+            charMatrix[word.x,word.y+i] = word.answer[i];
           }
         }
     }
   }
 
+  /**
   private void createNewGame() {
     List<AnswerBlank> answerBlanks = new List<AnswerBlank>();
     foreach ( Word word in crossword.words ) {
@@ -89,6 +86,7 @@ public class GridViewModel {
     }
     game = new Game(answerBlanks);
   }
+  */
 
   //return the word the cursor is in
   private List<Word> CurrentWords(int x,int y) {
@@ -105,7 +103,6 @@ public class GridViewModel {
         // Trace.WriteLine(
         //     string.Format("{0} {1} {2} : {3} {4} {5}",wxs,x,wxf,wys,y,wyf));
         return 
-          // didn't realize Range(start,count) : caused a headache
           Enumerable.Range(wxs,wxf-wxs+1).Contains(x) && 
           Enumerable.Range(wys,wyf-wys+1).Contains(y);
     });
@@ -173,14 +170,14 @@ public class GridViewModel {
 
   public void InsertKey(ConsoleKey key) {
     Trace.WriteLine("GridView recieved insert key invocation");
-    charMatrix[entry.Y,entry.X] = (char) key;
+    charMatrix[entry.X,entry.Y] = (char) key;
     //todo keep current writing orientation
     MoveEntry(orientation == Direction.Across ? Move.RIGHT : Move.DOWN);
   }
 
   public void DeleteKey() {
     Trace.WriteLine("GridView recieved insert key invocation");
-    charMatrix[entry.Y,entry.X] = ' ';
+    charMatrix[entry.X,entry.Y] = ' ';
     MoveEntry(orientation == Direction.Across ? Move.LEFT : Move.UP);
   }
 
