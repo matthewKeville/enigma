@@ -1,11 +1,12 @@
 using System.Drawing;
 using System.Diagnostics;
 using Model;
-using Spectre.Console;
+using Services;
+using System.ComponentModel;
 
-namespace UI {
+namespace UI.View.ViewModel {
 
-enum Move {
+public enum Move {
   RIGHT,
   UP,
   LEFT,
@@ -17,57 +18,52 @@ enum Move {
 //CharMatrix is row col
 // ^ this is fucked
 
-class Grid {
+public class GridViewModel {
 
-  private const char block = '⊞';
-  public Point entry { get; set; } // x,y = {row,col}
-  private char[,] charMatrix { get; set; }
-  public Crossword crossword { get; set; }
-  //UI
-  private Table table = new Table();
-  private Layout layout = new Layout("Grid");
-  private Panel testPanel = new Panel(string.Format("x,y : {0},{1}",0,0));
+  private ICrosswordProvider crosswordProvider;
+  private Crossword crossword;
 
-  public Grid(Crossword crossword) {
+  public int ColumnCount { 
+    get {
+      return crossword.colCount;
+    }
+  }
+  public int RowCount { 
+    get {
+      return crossword.rowCount;
+    }
+  }
 
-    this.crossword = crossword;
+  // x,y = {row,col}
+  public Point entry { get; private set; } 
+  public char[,] charMatrix { get; set; }
+
+  public GridViewModel(ICrosswordProvider crosswordProvider) {
+    this.crosswordProvider = crosswordProvider;
+    this.crosswordProvider.PropertyChanged += (object? sender, PropertyChangedEventArgs e) => {
+      lock(this) {
+        this.crossword = this.crosswordProvider.crossword;
+        createCharMatrix();
+      }
+    };
+
+    this.crossword = crosswordProvider.crossword;
     this.entry = new Point(0,0);
+    createCharMatrix();
+  }
 
+  private void createCharMatrix() {
+
+    //Create skeleton
     this.charMatrix = new char[crossword.rowCount,crossword.colCount];
     for ( int i = 0; i < crossword.rowCount; i++ ) {
       for ( int j = 0; j < crossword.colCount; j++ ) {
-        this.charMatrix[i,j] = block;
+        this.charMatrix[i,j] = '\0';
       }
     }
 
-    init();
-  }
+    //convert words in character matrix
 
-  private void init() {
-    for ( int j = 0; j < crossword.colCount; j++ ) {
-      table.AddColumn(""+j);
-    }
-    for ( int i = 0; i < crossword.rowCount; i++ ) {
-      string[] rowChars = new string[crossword.colCount];
-      for ( int x = 0; x < crossword.colCount; x++ ) {
-        rowChars[x] =  charMatrix[i,x].ToString();
-      }
-      table.AddRow(rowChars);
-    }
-    table.ShowRowSeparators();
-    table.HideHeaders();
-
-    layout.SplitRows(new Layout("Top"),new Layout("Bottom"));
-
-    layout["Top"].Update(table);
-    layout["Top"].Size(60);
-
-
-  }
-
-  //convert words in character matrix
-  private void UpdateCharMatrix() {
-    
     foreach ( Word word in crossword.words ) {
         for ( int i = 0; i < word.answer.Count(); i++ ) {
           if ( word.direction == Direction.Across ) {
@@ -106,31 +102,7 @@ class Grid {
     return CurrentWord(x,y) is not null;
   }
 
-  //render character matrix to Table
-  public Layout Render() {
-
-    UpdateCharMatrix();
-
-    for ( int j = 0; j < crossword.colCount; j++ ) {
-      for ( int i = 0; i < crossword.rowCount; i++ ) {
-        String charDisplay = "[bold]"+charMatrix[i,j]+"[/]";
-        if ( entry.X == j && entry.Y == i ) {
-          charDisplay = "[yellow]"+charDisplay+"[/]";
-        }
-        table.UpdateCell(i,j,charDisplay);
-      }
-    }
-
-    Panel testPanel = new Panel(string.Format("x,y : {0},{1}",entry.X,entry.Y));
-    testPanel.Padding = new Padding(0,0,0,0);
-    layout["Bottom"].Update(testPanel);
-    layout["Bottom"].Size(3);
-
-    return layout;
-
-  }
-
-  public void MoveEntry(Move move) {
+  private void MoveEntry(Move move) {
 
     int offx = 0;
     int offy = 0;

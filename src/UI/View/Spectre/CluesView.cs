@@ -1,22 +1,22 @@
-using Model;
 using Spectre.Console;
+using UI.View.ViewModel;
 
-namespace UI {
+namespace UI.View.Spectre {
 
+public class CluesView {
 
-class Clues {
-
-  public Crossword crossword { get; set; }
-  private Layout layout = new Layout("Clues");
-  private Table table = new Table();
   private int clueCutoff = 40;
+  private CluesViewModel cluesViewModel;
 
-  public Clues(Crossword crossword) {
-    this.crossword = crossword;
-    initLayout();
+  public CluesView(CluesViewModel cluesViewModel) {
+    this.cluesViewModel = cluesViewModel;
   }
 
-  private void initLayout() {
+  public Layout Render() {
+
+    Layout layout = new Layout("Clues");
+    Table table = new Table();
+
     table.AddColumn("Across");
     table.AddColumn("Down");
     table.Width = 200;
@@ -25,29 +25,22 @@ class Clues {
     table.Columns[1].Alignment(Justify.Left);
     table.Columns[1].Width = 90;
 
-    List<Word>  across = crossword.words
-      .Where( w => w.direction == Direction.Across )
-      .OrderBy( w => w.i )
-      .ToList();
-
-    List<Word>  down = crossword.words
-      .Where( w => w.direction == Direction.Down )
-      .OrderBy( w => w.i )
-      .ToList();
+    List<ClueViewModel> across = new List<ClueViewModel>(cluesViewModel.across);
+    List<ClueViewModel> down = new List<ClueViewModel>(cluesViewModel.down);
 
     while ( across.Count() != 0 || down.Count() != 0 ) {
       String aclue = "";
       String dclue = "";
       if (across.Any()) {
         aclue = string.Format("{0}  {1}",
-            across[0].i.ToString().PadRight(2),
-            across[0].prompt);
+            across[0].ordinal.ToString().PadRight(2),
+            across[0].value);
         across.RemoveAt(0);
       }
       if (down.Any()) {
         dclue = string.Format("{0}  {1}",
-            down[0].i.ToString().PadRight(2),
-            down[0].prompt);
+            down[0].ordinal.ToString().PadRight(2),
+            down[0].value);
         down.RemoveAt(0);
       }
       table.AddRow(
@@ -57,9 +50,7 @@ class Clues {
     }
 
     layout.Update(table);
-  }
 
-  public Layout Render() {
     return layout;
   }
 

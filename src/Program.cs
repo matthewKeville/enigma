@@ -1,68 +1,36 @@
-﻿using Model;
-using UI;
+﻿using System.Diagnostics;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using UI.View.Spectre;
+using UI.ViewModel;
+using UI.View.ViewModel;
 using Spectre.Console;
-using System.Diagnostics;
-using PuzzleProvider;
+using Services;
 
-//TEST
-//
-//NYYDebugPuzzle.GetPuzzle();
-//Environment.Exit(0);
-//TEST
-
-Trace.Listeners.Add(new TextWriterTraceListener("/logs/enigma.log"));
+Trace.Listeners.Add(new TextWriterTraceListener("./logs/enigma.log"));
 Trace.AutoFlush = true;
+Trace.WriteLine("starting");
 
-//Crossword crossword = DebugPuzzle.GetPuzzle();
-Crossword crossword = NYYDebugPuzzle.GetPuzzle();
+HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
 
-UI.Grid grid = new UI.Grid(crossword);
-UI.Clues clues = new UI.Clues(crossword);
-UI.Status status = new UI.Status(crossword);
+builder.Services.AddSingleton<MainView, MainView>();
+builder.Services.AddSingleton<ClockView, ClockView>();
+builder.Services.AddSingleton<GridView, GridView>();
+builder.Services.AddSingleton<StatusView, StatusView>();
+builder.Services.AddSingleton<CluesView, CluesView>();
 
-void processIO() {
+builder.Services.AddSingleton<CluesViewModel, CluesViewModel>();
+builder.Services.AddSingleton<StatusViewModel, StatusViewModel>();
+builder.Services.AddSingleton<ClockViewModel, ClockViewModel>();
+builder.Services.AddSingleton<GridViewModel, GridViewModel>();
 
-  while ( true ) {
+//builder.Services.AddSingleton<ICrosswordProvider,NYDebugCrosswordProvider>();
+//builder.Services.AddSingleton<ICrosswordProvider,DebugCrosswordProvider>();
+builder.Services.AddSingleton<ICrosswordProvider,RotatingCrosswordProvider>();
 
-    if ( Console.KeyAvailable ) {
-      ConsoleKeyInfo keyInfo = Console.ReadKey(true);
-      switch ( keyInfo.Key ) {
-        case ConsoleKey.L:
-          grid.MoveEntry(Move.RIGHT);
-          break;
-        case ConsoleKey.K:
-          grid.MoveEntry(Move.UP);
-          break;
-        case ConsoleKey.H:
-          grid.MoveEntry(Move.LEFT);
-          break;
-        case ConsoleKey.J:
-          grid.MoveEntry(Move.DOWN);
-          break;
-      }
-    }
-  }
-}
+builder.Services.AddSingleton<SpectreRenderer,SpectreRenderer>();
+using IHost host = builder.Build();
 
-Thread ioThread = new Thread(new ThreadStart(processIO));
-ioThread.Start();
-
-
-Layout root = new Layout();
-
-root.SplitRows(new Layout("Status"),new Layout("main"));
-root["Status"].Size = 4;
-
-Layout main = new Layout();
-root["main"].SplitColumns(new Layout("Grid"),new Layout("Clues"));
-
-AnsiConsole.Live(root)
-  .Start(ctx =>
-  {
-    while (true) {
-      root["Status"].Update(status.Render());
-      root["main"]["Grid"].Update(grid.Render());
-      root["main"]["Clues"].Update(clues.Render());
-      ctx.Refresh();
-    }
-  });
+SpectreRenderer renderer = host.Services.GetRequiredService<SpectreRenderer>();
+renderer.init();
+Trace.WriteLine("asdfasdff");
