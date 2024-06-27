@@ -16,13 +16,60 @@ namespace UI.Command {
       INSERT
     }
 
-    private Mode mode = Mode.NORMAL;
     public event EventHandler<UI.Command.CommandEventArgs> raiseCommandEvent;
+    private Dictionary<ConsoleKey,Command> commandMap;
+    private Mode mode = Mode.NORMAL;
 
     public CommandInterpreter() {
+      buildCommandMap();
       Thread thread = new Thread(processIO);
       thread.Start();
       Console.WriteLine("started");
+    }
+
+    private void triggerCommand(Command command) {
+      raiseCommandEvent(this, new CommandEventArgs(command));
+    }
+
+    private void buildCommandMap() {
+      commandMap = new Dictionary<ConsoleKey,Command>();
+      commandMap.Add(ConsoleKey.Escape,Command.NORMAL_MODE);
+      commandMap.Add(ConsoleKey.I,Command.INSERT_MODE);
+      commandMap.Add(ConsoleKey.Tab,Command.SWITCH_VIEW);
+      commandMap.Add(ConsoleKey.H,Command.MOVE_LEFT);
+      commandMap.Add(ConsoleKey.L,Command.MOVE_RIGHT);
+      commandMap.Add(ConsoleKey.K,Command.MOVE_UP);
+      commandMap.Add(ConsoleKey.J,Command.MOVE_DOWN);
+      commandMap.Add(ConsoleKey.D6,Command.MOVE_WORD_START);
+      commandMap.Add(ConsoleKey.D4,Command.MOVE_WORD_END);
+      commandMap.Add(ConsoleKey.Spacebar,Command.SWAP_ORIENTATION);
+      commandMap.Add(ConsoleKey.Backspace,Command.DEL_WORD);
+      commandMap.Add(ConsoleKey.D,Command.DEL_CHAR);
+    }
+
+    void processKey(ConsoleKey key) {
+
+      if (!commandMap.ContainsKey(key)) {
+        return;
+      }
+
+      Command command = commandMap[key];
+
+      if ( Commands.Meta.Contains(command) ) {
+        triggerCommand(command);
+        return;
+      }
+
+      if ( Commands.Normal.Contains(command) ) {
+        triggerCommand(command);
+        return;
+      }
+      
+      if ( Commands.Insert.Contains(command) ) {
+        triggerCommand(command);
+        return;
+      }
+
     }
 
     protected virtual void OnRaiseCustomEvent(CommandEventArgs e)
@@ -43,73 +90,12 @@ namespace UI.Command {
     void processIO() {
       while ( true ) {
         if ( Console.KeyAvailable ) {
-
           ConsoleKeyInfo keyInfo = Console.ReadKey(false);
-
-          switch ( keyInfo.Key ) {
-            case ConsoleKey.Escape:
-              mode = Mode.NORMAL;
-              Trace.WriteLine("Normal mode activated");
-              continue;
-            case ConsoleKey.I:
-              mode = Mode.INSERT;
-              Trace.WriteLine("Insert mode activated");
-              continue;
-          }
-
-          if ( mode == Mode.NORMAL ) {
-
-            switch ( keyInfo.Key ) {
-              case ConsoleKey.Tab:
-                raiseCommandEvent(this, new CommandEventArgs(Command.SWITCH_VIEW));
-                break;
-              case ConsoleKey.H:
-                raiseCommandEvent(this, new CommandEventArgs(Command.MOVE_LEFT));
-                break;
-              case ConsoleKey.L:
-                raiseCommandEvent(this, new CommandEventArgs(Command.MOVE_RIGHT));
-                break;
-              case ConsoleKey.K:
-                raiseCommandEvent(this, new CommandEventArgs(Command.MOVE_UP));
-                break;
-              case ConsoleKey.J:
-                raiseCommandEvent(this, new CommandEventArgs(Command.MOVE_DOWN));
-                break;
-
-              case ConsoleKey.D6:
-                raiseCommandEvent(this, new CommandEventArgs(Command.MOVE_WORD_START));
-                break;
-
-              case ConsoleKey.D4:
-                raiseCommandEvent(this, new CommandEventArgs(Command.MOVE_WORD_END));
-                break;
-
-              case ConsoleKey.Spacebar:
-                raiseCommandEvent(this, new CommandEventArgs(Command.SWAP_ORIENTATION));
-                break;
-              case ConsoleKey.D:
-                raiseCommandEvent(this, new CommandEventArgs(Command.DEL_WORD));
-                break;
-            }
-
-          } else if ( mode == Mode.INSERT ) {
-
-            char c = ((char)keyInfo.Key);
-
-            if ( c > 31 && c < 127 ) {
-              raiseCommandEvent(this, new CommandEventArgs(Command.INSERT_CHAR,keyInfo.Key));
-            }
-
-            if ( keyInfo.Key == ConsoleKey.Backspace ) {
-              raiseCommandEvent(this, new CommandEventArgs(Command.DEL_CHAR));
-            }
-
-          }
-
+          processKey(keyInfo.Key);
         }
-
       }
     }
+
 
   }
 
