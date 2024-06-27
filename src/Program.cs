@@ -14,7 +14,8 @@ using UI.Command;
 Trace.Listeners.Add(new TextWriterTraceListener("./logs/enigma.log"));
 Trace.AutoFlush = true;
 
-HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
+//HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
+HostApplicationBuilder builder = Host.CreateEmptyApplicationBuilder(new HostApplicationBuilderSettings());
 
 builder.Services.AddSingleton<CluesViewModel, CluesViewModel>();
 builder.Services.AddSingleton<StatusViewModel, StatusViewModel>();
@@ -35,17 +36,14 @@ builder.Services.AddSingleton<RootController, RootController>();
 builder.Services.AddSingleton<GameController, GameController>();
 builder.Services.AddSingleton<GridController, GridController>();
 
-//builder.Services.AddSingleton<ICrosswordProvider,RotatingCrosswordProvider>();
 builder.Services.AddSingleton<ICrosswordProvider,NYDebugCrosswordProvider>();
 
-builder.Services.AddSingleton<CommandInterpreter, CommandInterpreter>();
+builder.Services.AddSingleton<SpectreRenderer>();
+builder.Services.AddSingleton<CommandInterpreter>();
+IHost host = builder.Build();
 
-builder.Services.AddSingleton<SpectreRenderer,SpectreRenderer>();
-using IHost host = builder.Build();
+CommandInterpreter interpreter = host.Services.GetRequiredService<CommandInterpreter>();
+RootController controller = host.Services.GetRequiredService<RootController>();
+SpectreRenderer render = host.Services.GetRequiredService<SpectreRenderer>();
 
-CommandInterpreter commandInterpreter = host.Services.GetRequiredService<CommandInterpreter>();
-RootController rootController = host.Services.GetRequiredService<RootController>();
-SpectreRenderer renderer = host.Services.GetRequiredService<SpectreRenderer>();
-renderer.init();
-
-Trace.WriteLine("asdfasdff");
+host.Run();

@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Microsoft.Extensions.Hosting;
 
 namespace UI.Command {
 
@@ -19,12 +20,15 @@ namespace UI.Command {
     public event EventHandler<UI.Command.CommandEventArgs> raiseCommandEvent;
     private Dictionary<ConsoleKey,Command> commandMap;
     private Mode mode = Mode.NORMAL;
+    private Thread interpreterThread ;
+    private bool running = true;
 
-    public CommandInterpreter() {
+    public CommandInterpreter(IApplicationLifetime applicationLifetime) {
+      applicationLifetime.ApplicationStopping.Register(stop);
+      Trace.WriteLine("CommandInterpreter starting ...");
       buildCommandMap();
-      Thread thread = new Thread(processIO);
-      thread.Start();
-      Console.WriteLine("started");
+      interpreterThread = new Thread(processIO);
+      interpreterThread.Start();
     }
 
     private void triggerCommand(Command command) {
@@ -47,26 +51,54 @@ namespace UI.Command {
       commandMap.Add(ConsoleKey.D,Command.DEL_CHAR);
     }
 
+    private Command? tryGetNormalCommand(ConsoleKey key) {
+      if ( !commandMap.ContainsKey(key) ) {
+        return null;
+      }
+      Command command = commandMap[key];
+      return Commands.Normal.Contains(command) ? command : null;
+    }
+
+    private Command? tryGetMetaCommand(ConsoleKey key) {
+      if ( !commandMap.ContainsKey(key) ) {
+        return null;
+      }
+      Command command = commandMap[key];
+      return Commands.Meta.Contains(command) ? command : null;
+    }
+
     void processKey(ConsoleKey key) {
 
-      if (!commandMap.ContainsKey(key)) {
-        return;
+      Command? meta = tryGetMetaCommand(key);
+
+      if ( meta.HasValue ) {
+        if ( meta == Command.NORMAL_MODE && mode == Mode.INSERT ) {
+          mode = Mode.NORMAL;
+          return;
+        } else if ( meta == Command.INSERT_MODE && mode == Mode.NORMAL ) {
+          mode = Mode.INSERT;
+          return;
+        }
       }
 
-      Command command = commandMap[key];
+      Command? normal = tryGetNormalCommand(key);
 
-      if ( Commands.Meta.Contains(command) ) {
-        triggerCommand(command);
-        return;
-      }
+      if ( mode == Mode.NORMAL ) {
+        if ( normal.HasValue ) {
+          triggerCommand(normal.Value);
+          return;
+        }
+      }      
 
-      if ( Commands.Normal.Contains(command) ) {
-        triggerCommand(command);
-        return;
-      }
-      
-      if ( Commands.Insert.Contains(command) ) {
-        triggerCommand(command);
+      if ( mode == Mode.INSERT ) {
+        int keyNum = ((int)key);
+        if ( 65 <= keyNum && keyNum <= 90 ) {
+          raiseCommandEvent(this, new CommandEventArgs(Command.INSERT_CHAR,key));
+        } else if ( 97 <= keyNum && keyNum <= 122 ) {
+          raiseCommandEvent(this, new CommandEventArgs(Command.INSERT_CHAR,key));
+        } else if ( key == ConsoleKey.Backspace ) {
+          raiseCommandEvent(this, new CommandEventArgs(Command.DEL_CHAR,key));
+        }
         return;
       }
 
@@ -74,26 +106,24 @@ namespace UI.Command {
 
     protected virtual void OnRaiseCustomEvent(CommandEventArgs e)
     {
-        // Make a temporary copy of the event to avoid possibility of
-        // a race condition if the last subscriber unsubscribes
-        // immediately after the null check and before the event is raised.
         EventHandler<CommandEventArgs>? raiseEvent = raiseCommandEvent;
-
-        // Event will be null if there are no subscribers
-        if (raiseEvent != null)
-        {
-            // Call to raise the event.
-            raiseEvent(this, e);
+        if (raiseEvent != null) { 
+          raiseEvent(this, e);
         }
     }
 
     void processIO() {
-      while ( true ) {
+      while ( running ) {
         if ( Console.KeyAvailable ) {
           ConsoleKeyInfo keyInfo = Console.ReadKey(false);
           processKey(keyInfo.Key);
         }
       }
+    }
+
+    void stop() {
+      Trace.WriteLine("CommandInterpeter stopping ...");
+      running = false;
     }
 
 
