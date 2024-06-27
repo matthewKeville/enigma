@@ -32,6 +32,13 @@ public class GridController {
         gridViewModel.MoveEntry(Move.DOWN);
         break;
 
+      case Command.Command.MOVE_WORD_START:
+        gridViewModel.MoveToWordStart();
+        break;
+      case Command.Command.MOVE_WORD_END:
+        gridViewModel.MoveToWordEnd();
+        break;
+
       case Command.Command.INSERT_CHAR:
         Trace.WriteLine("inserting character");
         if (commandEventArgs.key is null) {
@@ -44,6 +51,11 @@ public class GridController {
       case Command.Command.DEL_CHAR:
         Trace.WriteLine("deleting character");
         gridViewModel.DeleteKey();
+        break;
+
+      case Command.Command.DEL_WORD:
+        Trace.WriteLine("deleting word");
+        gridViewModel.DeleteWord();
         break;
 
       case Command.Command.SWAP_ORIENTATION:

@@ -89,7 +89,7 @@ public class GridViewModel {
   */
 
   //return the word the cursor is in
-  private List<Word> CurrentWords(int x,int y) {
+  private List<Word> InWords(int x,int y) {
     List<Word> words = crossword.words.FindAll( w => {
     //Word? word = crossword.words.FirstOrDefault( w => {
         int wxs = w.x;
@@ -110,14 +110,18 @@ public class GridViewModel {
   }
 
   private bool IsInWord(int x,int y) {
-    return CurrentWords(x,y).Any();
+    return InWords(x,y).Any();
+  }
+
+  private Word? ActiveWord() {
+    return InWords(entry.X,entry.Y).FirstOrDefault( w => w.direction == orientation,null);
   }
 
   public bool InActiveWord(int x, int y) {
-    Word? expectWord = CurrentWords(entry.X,entry.Y).FirstOrDefault( w => w.direction == orientation, null);
+    Word? expectWord = InWords(entry.X,entry.Y).FirstOrDefault( w => w.direction == orientation, null);
     if ( expectWord == null ) {
       Trace.WriteLine("ERROR : no active word");
-      Environment.Exit(2);
+      return false;
     }
     Word word = (Word) expectWord;
     if (word.direction == Direction.Across) {
@@ -168,17 +172,56 @@ public class GridViewModel {
     orientation = ( orientation == Direction.Across ) ? Direction.Down : Direction.Across;
   }
 
+
+  public void MoveToWordStart() {
+    Word? expectWord = ActiveWord();
+    if (expectWord == null) {
+      Trace.WriteLine("Critical Error : ActiveWord not found");
+      Environment.Exit(0);
+    }
+    Word word = (Word) expectWord;
+    entry = new Point(word.x,word.y);
+  }
+
+  public void MoveToWordEnd() {
+    Word? expectWord = ActiveWord();
+    if (expectWord == null) {
+      Trace.WriteLine("Critical Error : ActiveWord not found");
+      Environment.Exit(0);
+    }
+    Word word = (Word) expectWord;
+    entry = word.direction == Direction.Across ? 
+      new Point(word.x + word.answer.Count()-1,word.y) :
+      new Point(word.x,word.y + word.answer.Count()-1);
+  }
+
   public void InsertKey(ConsoleKey key) {
-    Trace.WriteLine("GridView recieved insert key invocation");
     charMatrix[entry.X,entry.Y] = (char) key;
-    //todo keep current writing orientation
     MoveEntry(orientation == Direction.Across ? Move.RIGHT : Move.DOWN);
   }
 
   public void DeleteKey() {
-    Trace.WriteLine("GridView recieved insert key invocation");
     charMatrix[entry.X,entry.Y] = ' ';
     MoveEntry(orientation == Direction.Across ? Move.LEFT : Move.UP);
+  }
+
+  public void DeleteWord() {
+    Word? expectWord = ActiveWord();
+    if (expectWord == null) {
+      Trace.WriteLine("Critical Error : ActiveWord not found");
+      Environment.Exit(0);
+    }
+
+    Word word = (Word) expectWord;
+
+    for ( int n = 0; n < word.answer.Count(); n++ ) {
+      if ( word.direction == Direction.Across ) {
+        charMatrix[word.x + word.answer.Count()-1 - n , word.y] = ' ';
+      } else {
+        charMatrix[word.x,word.y + word.answer.Count()-1 - n ] = ' ';
+      }
+    }
+
   }
 
 }

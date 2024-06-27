@@ -2,6 +2,13 @@ using System.Diagnostics;
 
 namespace UI.Command {
 
+  // Sadly, I can't map '$' or '^' as this class
+  // src/libraries/System.Console/src/System/IO/KeyParser.cs
+  // states that it is a limitation of the Parser.
+  // If i'm really bugged by this down the line I could
+  // A. Implement my own Key Parser, or B. Use a different language
+  // for key processing and send the keys over to this process.
+
   public class CommandInterpreter {
 
     enum Mode {
@@ -37,7 +44,7 @@ namespace UI.Command {
       while ( true ) {
         if ( Console.KeyAvailable ) {
 
-          ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+          ConsoleKeyInfo keyInfo = Console.ReadKey(false);
 
           switch ( keyInfo.Key ) {
             case ConsoleKey.Escape:
@@ -68,8 +75,20 @@ namespace UI.Command {
               case ConsoleKey.J:
                 raiseCommandEvent(this, new CommandEventArgs(Command.MOVE_DOWN));
                 break;
+
+              case ConsoleKey.D6:
+                raiseCommandEvent(this, new CommandEventArgs(Command.MOVE_WORD_START));
+                break;
+
+              case ConsoleKey.D4:
+                raiseCommandEvent(this, new CommandEventArgs(Command.MOVE_WORD_END));
+                break;
+
               case ConsoleKey.Spacebar:
                 raiseCommandEvent(this, new CommandEventArgs(Command.SWAP_ORIENTATION));
+                break;
+              case ConsoleKey.D:
+                raiseCommandEvent(this, new CommandEventArgs(Command.DEL_WORD));
                 break;
             }
 
@@ -84,8 +103,6 @@ namespace UI.Command {
             if ( keyInfo.Key == ConsoleKey.Backspace ) {
               raiseCommandEvent(this, new CommandEventArgs(Command.DEL_CHAR));
             }
-
-
 
           }
 

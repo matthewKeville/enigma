@@ -56,7 +56,13 @@ public class GridView {
 
           // render active characer
           if ( gridViewModel.entry.X == i && gridViewModel.entry.Y == j ) {
-            charDisplay = "[yellow]"+gridViewModel.charMatrix[i,j]+"[/]";
+            // char
+            if ( gridViewModel.charMatrix[i,j] != ' ' ) {
+              charDisplay = "[yellow]"+gridViewModel.charMatrix[i,j]+"[/]";
+            } else {
+              charDisplay = "[yellow]*[/]";
+            }
+            // empty
           // render characters in the current word
           } else if (gridViewModel.InActiveWord(i,j)) {
             charDisplay = "[purple]"+gridViewModel.charMatrix[i,j]+"[/]";

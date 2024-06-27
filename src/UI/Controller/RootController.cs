@@ -21,16 +21,7 @@ public class RootController {
       case Command.Command.SWITCH_VIEW:
         rootViewModel.SwitchWindow();
         break;
-      //Fall through
-      case Command.Command.MOVE_LEFT:
-      case Command.Command.MOVE_RIGHT:
-      case Command.Command.MOVE_UP:
-      case Command.Command.MOVE_DOWN:
-
-      //Fall through
-      case Command.Command.INSERT_CHAR:
-      case Command.Command.DEL_CHAR:
-      case Command.Command.SWAP_ORIENTATION:
+      default:
         if (rootViewModel.activeWindow == Window.GAME) {
           gameController.ProcessCommandEvent(this,commandEventArgs);
         }
