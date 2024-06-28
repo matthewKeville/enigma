@@ -8,8 +8,8 @@ namespace Services {
 
     public event PropertyChangedEventHandler PropertyChanged;
 
-    private Crossword internalCrossword;
-    public Crossword crossword { 
+    private CrosswordModel internalCrossword;
+    public CrosswordModel crossword { 
       get  {
         return internalCrossword;
       }

@@ -2,14 +2,15 @@ using System.Text;
 
 namespace Model {
 
-public class Crossword {
+public class CrosswordModel {
 
   public String name { get; set; } = "debug"; 
-  public List<Word> words { get; set; } = new List<Word>();
+  public List<WordModel> words { get; set; } = new List<WordModel>();
+
   public int rowCount { get; set; }
   public int colCount { get; set; }
 
-  public Crossword(int rowCount, int colCount ) {
+  public CrosswordModel(int rowCount, int colCount ) {
     this.rowCount = rowCount;
     this.colCount = colCount;
   }
@@ -23,7 +24,7 @@ public class Crossword {
     sb.AppendLine();
     sb.AppendLine();
 
-    foreach ( Word word in words ) {
+    foreach ( WordModel word in words ) {
       sb.Append(word.ToString());
       sb.AppendLine();
       sb.AppendLine();

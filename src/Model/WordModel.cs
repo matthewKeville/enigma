@@ -1,11 +1,9 @@
+using Enums;
+
 namespace Model {
 
-public enum Direction {
-  Across,
-  Down
-}
 
-public class Word {
+public class WordModel {
   public int x { get; set; }
   public int y { get; set; }
   public int i { get; set; }
@@ -13,7 +11,7 @@ public class Word {
   public String answer { get; set; } 
   public String prompt { get; set; } 
 
-  public Word(int x, int y, int i, Direction direction,String answer, String prompt) {
+  public WordModel(int x, int y, int i, Direction direction,String answer, String prompt) {
     this.x = x;
     this.y = y;
     this.i = i;

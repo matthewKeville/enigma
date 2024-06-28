@@ -1,21 +1,22 @@
+using Context;
+using Model;
 using Spectre.Console;
-using UI.View.ViewModel;
 
 namespace UI.View.Spectre.Game {
 
 public class GridView {
 
   private const char block = ' ';
-  private GridViewModel gridViewModel;
+  private GridModel grid;
+  private ContextAccessor contextAccessor;
 
-  public GridView(GridViewModel gridViewModel) {
-    this.gridViewModel = gridViewModel;
+  public GridView(ContextAccessor contextAccessor) {
+    this.contextAccessor = contextAccessor;
+    this.grid = contextAccessor.getContext().gridModel;
   }
 
   //render character matrix to Table
   public Layout Render() {
-
-    lock(gridViewModel) {
 
     Table table = new Table();
     table.Border(TableBorder.Heavy);
@@ -23,12 +24,12 @@ public class GridView {
 
     //skeleton
     
-    for ( int i = 0; i < gridViewModel.ColumnCount; i++ ) {
+    for ( int i = 0; i < grid.ColumnCount; i++ ) {
       table.AddColumn(""+i);
     }
-    for ( int j = 0; j < gridViewModel.RowCount; j++ ) {
-      string[] rowChars = new string[gridViewModel.ColumnCount];
-      for ( int x = 0; x < gridViewModel.ColumnCount; x++ ) {
+    for ( int j = 0; j < grid.RowCount; j++ ) {
+      string[] rowChars = new string[grid.ColumnCount];
+      for ( int x = 0; x < grid.ColumnCount; x++ ) {
         rowChars[x] =  " ";
       }
       table.AddRow(rowChars);
@@ -41,33 +42,33 @@ public class GridView {
     layout["Top"].Size(40);
 
     //render view model
-   
-    for ( int i = 0; i < gridViewModel.ColumnCount; i++ ) {
-      for ( int j = 0; j < gridViewModel.RowCount; j++ ) {
+  
+    for ( int i = 0; i < grid.ColumnCount; i++ ) {
+      for ( int j = 0; j < grid.RowCount; j++ ) {
 
         String charDisplay;
         // render blocks
         
-        if ( gridViewModel.charMatrix[i,j] == '\0' ) {
+        if ( grid.charMatrix[i,j] == '\0' ) {
           charDisplay = "[bold][invert]"+block+"[/][/]";
         } else {
 
         // render characters
 
           // render active characer
-          if ( gridViewModel.entry.X == i && gridViewModel.entry.Y == j ) {
+          if ( grid.entry.X == i && grid.entry.Y == j ) {
             // char
-            if ( gridViewModel.charMatrix[i,j] != ' ' ) {
-              charDisplay = "[yellow]"+gridViewModel.charMatrix[i,j]+"[/]";
+            if ( grid.charMatrix[i,j] != ' ' ) {
+              charDisplay = "[yellow]"+grid.charMatrix[i,j]+"[/]";
             } else {
               charDisplay = "[yellow]*[/]";
             }
             // empty
           // render characters in the current word
-          } else if (gridViewModel.InActiveWord(i,j)) {
-            charDisplay = "[purple]"+gridViewModel.charMatrix[i,j]+"[/]";
+          } else if (grid.InActiveWord(i,j)) {
+            charDisplay = "[purple]"+grid.charMatrix[i,j]+"[/]";
           } else {
-            charDisplay = "[white]"+gridViewModel.charMatrix[i,j]+"[/]";
+            charDisplay = "[white]"+grid.charMatrix[i,j]+"[/]";
           }
 
         }
@@ -76,13 +77,11 @@ public class GridView {
       }
     }
 
-    Panel testPanel = new Panel(string.Format("x,y : {0},{1}",gridViewModel.entry.X,gridViewModel.entry.Y));
-    //testPanel.Padding = new Padding(0,0,0,0);
+    Panel testPanel = new Panel(string.Format("x,y : {0},{1}",grid.entry.X,grid.entry.Y));
     layout["Bottom"].Size(8);
     layout["Bottom"].Update(testPanel);
 
     return layout;
-  }
 
   }
 

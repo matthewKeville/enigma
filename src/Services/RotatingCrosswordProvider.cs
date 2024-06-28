@@ -8,8 +8,8 @@ namespace Services {
 
     public event PropertyChangedEventHandler PropertyChanged;
 
-    private Crossword internalCrossword;
-    public Crossword crossword { 
+    private CrosswordModel internalCrossword;
+    public CrosswordModel crossword { 
       get  {
         return internalCrossword;
       }
@@ -19,8 +19,8 @@ namespace Services {
       }
     }
 
-    private Crossword ny;
-    private Crossword db;
+    private CrosswordModel ny;
+    private CrosswordModel db;
 
     public RotatingCrosswordProvider() {
       ny = new NYDebugCrosswordGenerator().crossword;

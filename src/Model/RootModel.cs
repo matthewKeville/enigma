@@ -1,11 +1,8 @@
-namespace View.ViewModel {
+using Enums;
 
-  public enum Window {
-    GAME,
-    HELP
-  }
+namespace Model {
 
-public class RootViewModel {
+public class RootModel : IModel {
 
   public Window activeWindow = Window.GAME;
 

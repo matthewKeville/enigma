@@ -2,6 +2,6 @@ using Model;
 using System.ComponentModel;
 namespace Services {
   public interface ICrosswordProvider : INotifyPropertyChanged {
-    public Crossword crossword { get; set; }
+    public CrosswordModel crossword { get; set; }
   }
 }

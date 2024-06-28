@@ -1,15 +1,18 @@
+using Context;
+using Model;
 using Spectre.Console;
-using UI.View.ViewModel;
 
 namespace UI.View.Spectre.Game {
 
 public class CluesView {
 
   private int clueCutoff = 40;
-  private CluesViewModel cluesViewModel;
+  private CluesModel clues;
+  private ContextAccessor contextAccessor;
 
-  public CluesView(CluesViewModel cluesViewModel) {
-    this.cluesViewModel = cluesViewModel;
+  public CluesView(ContextAccessor contextAccessor) {
+    this.contextAccessor = contextAccessor;
+    this.clues = contextAccessor.getContext().cluesModel;
   }
 
   public Layout Render() {
@@ -25,8 +28,8 @@ public class CluesView {
     table.Columns[1].Alignment(Justify.Left);
     table.Columns[1].Width = 90;
 
-    List<ClueViewModel> across = new List<ClueViewModel>(cluesViewModel.across);
-    List<ClueViewModel> down = new List<ClueViewModel>(cluesViewModel.down);
+    List<ClueModel> across = new List<ClueModel>(clues.across);
+    List<ClueModel> down = new List<ClueModel>(clues.down);
 
     while ( across.Count() != 0 || down.Count() != 0 ) {
       String aclue = "";

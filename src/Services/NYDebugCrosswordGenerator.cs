@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Enums;
 using Model;
 
 namespace Services
@@ -7,7 +8,7 @@ namespace Services
     public class NYDebugCrosswordGenerator : ICrosswordGenerator
     {
 
-        public Crossword crossword
+        public CrosswordModel crossword
         {
             get
             {
@@ -128,7 +129,7 @@ namespace Services
 
                 Trace.WriteLine($" ACLUES {acrossClues.Count()} DCLUES {downClues.Count()}");
 
-                Crossword crossword = new Crossword(rows, cols);
+                CrosswordModel crossword = new CrosswordModel(rows, cols);
                 crossword.name = "NY TIMES";
 
                 int ordinal = 1;
@@ -171,7 +172,7 @@ namespace Services
                                 wend++;
                             }
                             Trace.WriteLine("\tand the answer is " + answer);
-                            crossword.words.Add(new Word(i, j, ordinal, Direction.Across, answer, clue));
+                            crossword.words.Add(new WordModel(i, j, ordinal, Direction.Across, answer, clue));
                             wordHit = true;
                         }
 
@@ -200,7 +201,7 @@ namespace Services
                                 wend++;
                             }
                             Trace.WriteLine("\tand the answer is " + answer);
-                            crossword.words.Add(new Word(i, j, ordinal, Direction.Down, answer, clue));
+                            crossword.words.Add(new WordModel(i, j, ordinal, Direction.Down, answer, clue));
 
                             wordHit = true;
                         }

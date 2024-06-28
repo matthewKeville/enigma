@@ -1,17 +1,21 @@
+using Context;
+using Model;
 using Spectre.Console;
-using UI.View.ViewModel;
 
-namespace UI.View.Spectre.Game {
+namespace UI.View.Spectre.Status {
 
 public class ClockView {
 
-  private ClockViewModel clockViewModel;
-  public ClockView() {
-    clockViewModel = new ClockViewModel();
+  private ClockModel clock;
+  private ContextAccessor contextAccessor;
+
+  public ClockView(ContextAccessor contextAccessor) {
+    this.contextAccessor = contextAccessor;
+    this.clock = contextAccessor.getContext().clockModel;
   }
 
   public Panel Render() {
-    TimeSpan elapsed = (DateTime.UtcNow - clockViewModel.start);
+    TimeSpan elapsed = (DateTime.UtcNow - clock.start);
     String minutes = elapsed.Minutes > 9 ? ""+elapsed.Minutes : "0"+elapsed.Minutes;
     String seconds = elapsed.Seconds > 9 ? ""+elapsed.Seconds : "0"+elapsed.Seconds;
     String timestring = string.Format("{0}:{1}",minutes,seconds);

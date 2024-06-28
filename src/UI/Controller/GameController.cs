@@ -1,16 +1,19 @@
+using Context;
+using Model;
 using UI.Command;
-using UI.View.ViewModel;
 
 namespace UI.Controller {
 
 public class GameController {
 
-  private GameViewModel gameViewModel;
+  private GameModel game;
   private GridController gridController;
+ 
+  private ContextAccessor contextAccessor;
 
-  public GameController(GameViewModel gameViewModel,
-      GridController gridController) {
-    this.gameViewModel = gameViewModel;
+  public GameController(ContextAccessor contextAccessor,GridController gridController) {
+    this.contextAccessor = contextAccessor;
+    this.game = contextAccessor.getContext().gameModel;
     this.gridController = gridController;
   }
 
