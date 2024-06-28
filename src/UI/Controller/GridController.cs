@@ -37,10 +37,10 @@ public class GridController {
         break;
 
       case Command.Command.MOVE_WORD_START:
-        //MoveToWordStart();
+        MoveToWordStart();
         break;
       case Command.Command.MOVE_WORD_END:
-        //MoveToWordEnd();
+        MoveToWordEnd();
         break;
 
       case Command.Command.INSERT_CHAR:

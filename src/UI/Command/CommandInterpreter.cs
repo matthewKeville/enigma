@@ -47,8 +47,8 @@ namespace UI.Command {
       commandMap.Add(ConsoleKey.D6,Command.MOVE_WORD_START);
       commandMap.Add(ConsoleKey.D4,Command.MOVE_WORD_END);
       commandMap.Add(ConsoleKey.Spacebar,Command.SWAP_ORIENTATION);
-      commandMap.Add(ConsoleKey.Backspace,Command.DEL_WORD);
-      commandMap.Add(ConsoleKey.D,Command.DEL_CHAR);
+      commandMap.Add(ConsoleKey.Backspace,Command.DEL_CHAR);
+      commandMap.Add(ConsoleKey.D,Command.DEL_WORD);
     }
 
     private Command? tryGetNormalCommand(ConsoleKey key) {
@@ -115,7 +115,7 @@ namespace UI.Command {
     void processIO() {
       while ( running ) {
         if ( Console.KeyAvailable ) {
-          ConsoleKeyInfo keyInfo = Console.ReadKey(false);
+          ConsoleKeyInfo keyInfo = Console.ReadKey(true);
           processKey(keyInfo.Key);
         }
       }

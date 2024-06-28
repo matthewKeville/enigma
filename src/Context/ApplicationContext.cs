@@ -36,7 +36,7 @@ namespace Context {
       this.gameModel = new GameModel();    
       this.gridModel = new GridModel(crossword.colCount,crossword.rowCount,crossword.words);
 
-      this.cluesModel = new CluesModel(crossword);
+      this.cluesModel = new CluesModel(crossword,gridModel);
       this.clockModel = new ClockModel();    
     }
 
