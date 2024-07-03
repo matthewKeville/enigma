@@ -11,14 +11,17 @@ public class RootController {
   private RootView rootView;
   private RootModel rootModel;
   private GameController gameController;
-  private ContextAccessor ctx;
+  private ContextAccessor contextAccessor;
 
   public RootController(RootView rootView,CommandInterpreter commandInterpreter,
-      ContextAccessor accessor,GameController gameController) {
+      ContextAccessor contextAccessor,GameController gameController) {
 
+    this.contextAccessor = contextAccessor;
     commandInterpreter.raiseCommandEvent += ProcessCommandEvent;
-    this.rootModel = accessor.getContext().rootModel;
+
+    this.rootModel = contextAccessor.getContext().rootModel;
     this.rootView = rootView;
+    this.rootView.setContext(contextAccessor.getContext());
     this.gameController = gameController;
   }
 

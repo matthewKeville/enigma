@@ -18,11 +18,11 @@ namespace Context {
     public ClockModel clockModel;
     public StatusModel statusModel;
 
-    public ApplicationContext(NYDebugCrosswordGenerator generator) {
+    public ApplicationContext(CrosswordModel crosswordModel) {
 
       //this is really the persistance model
 
-      CrosswordModel crossword = generator.crossword;
+      CrosswordModel crossword = crosswordModel;
 
       //these are all really view models i.e. a projection of the model
       //onto application state

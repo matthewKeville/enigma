@@ -8,26 +8,22 @@ namespace UI.View.Spectre;
 
 public class RootView {
 
-  private RootModel root;
+  private RootModel rootModel;
 
   private HelpView helpView;
   private GameView gameView;
-  private ContextAccessor contextAccessor;
 
-  //public RootView(RootModel root, GameView gameView, HelpView helpView) {
-  public RootView(ContextAccessor contextAccessor,HelpView helpView,GameView gameView) {
-    this.contextAccessor = contextAccessor;
-    this.root = contextAccessor.getContext().rootModel;
+  public RootView(HelpView helpView,GameView gameView) {
     this.gameView = gameView;
     this.helpView = helpView;
   }
 
-  public void update(IModel model) {
-    this.root = (RootModel) model;
+  public void setContext(ApplicationContext context) {
+    this.rootModel = context.rootModel;
   }
 
   public Layout Render() {
-    if ( root.activeWindow == Window.GAME ) {
+    if ( rootModel.activeWindow == Window.GAME ) {
       return gameView.Render();
     } else {
       return helpView.Render();

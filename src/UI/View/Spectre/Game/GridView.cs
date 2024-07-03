@@ -8,11 +8,9 @@ public class GridView {
 
   private const char block = ' ';
   private GridModel grid;
-  private ContextAccessor contextAccessor;
 
-  public GridView(ContextAccessor contextAccessor) {
-    this.contextAccessor = contextAccessor;
-    this.grid = contextAccessor.getContext().gridModel;
+  public void setContext(ApplicationContext context) {
+    this.grid = context.gridModel;
   }
 
   //render character matrix to Table

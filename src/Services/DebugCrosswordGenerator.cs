@@ -3,14 +3,14 @@ using Model;
 
 namespace Services {
 
-  public class DebugCrosswordGenerator : ICrosswordGenerator {
+  public class DebugCrosswordGenerator {
 
     /**
       cats#f
       on#two
       bday#g
     */
-    public CrosswordModel crossword { 
+    public CrosswordModel sample { 
       get {
 
         CrosswordModel crossword = new CrosswordModel(3,6);

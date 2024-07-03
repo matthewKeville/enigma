@@ -4,17 +4,21 @@ using Context;
 using Enums;
 using Model;
 using UI.Command;
+using UI.View.Spectre.Game;
 
 namespace UI.Controller {
 
 public class GridController {
 
+  private GridView gridView;
   private GridModel grid;
   private ContextAccessor contextAccessor;
 
-  public GridController(ContextAccessor contextAccessor) {
+  public GridController(ContextAccessor contextAccessor, GridView gridView) {
     this.contextAccessor = contextAccessor;
     this.grid = contextAccessor.getContext().gridModel;
+    this.gridView = gridView;
+    this.gridView.setContext(contextAccessor.getContext());
   }
 
   public void ProcessCommandEvent(object? sender, CommandEventArgs commandEventArgs) {

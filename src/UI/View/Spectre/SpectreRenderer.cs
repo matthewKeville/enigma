@@ -13,6 +13,8 @@ public class SpectreRenderer {
   public SpectreRenderer(IApplicationLifetime applicationLifetime,RootView rootView) {
     applicationLifetime.ApplicationStopping.Register(stop);
     this.rootView = rootView;
+    //Trace.WriteLine("Sleeping (temp fix) ...");
+    // Thread.Sleep(1000);
     Trace.WriteLine("SpectreRender starting...");
     renderThread = new Thread(renderLoop);
     renderThread.Start();

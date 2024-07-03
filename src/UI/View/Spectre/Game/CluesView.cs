@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Context;
 using Model;
 using Spectre.Console;
@@ -8,11 +9,10 @@ public class CluesView {
 
   private int clueCutoff = 40;
   private CluesModel cluesModel;
-  private ContextAccessor contextAccessor;
 
-  public CluesView(ContextAccessor contextAccessor) {
-    this.contextAccessor = contextAccessor;
-    this.cluesModel = contextAccessor.getContext().cluesModel;
+  public void setContext(ApplicationContext context) {
+    this.cluesModel = context.cluesModel;
+    Trace.WriteLine("clues context set");
   }
 
   public Layout Render() {

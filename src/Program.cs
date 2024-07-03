@@ -27,17 +27,22 @@ builder.Services.AddSingleton<CluesView, CluesView>();
 builder.Services.AddSingleton<RootController, RootController>();
 builder.Services.AddSingleton<GameController, GameController>();
 builder.Services.AddSingleton<GridController, GridController>();
-
-builder.Services.AddSingleton<ICrosswordProvider,NYDebugCrosswordProvider>();
+builder.Services.AddSingleton<CluesController, CluesController>();
 
 builder.Services.AddSingleton<ContextAccessor>();
 builder.Services.AddSingleton<SpectreRenderer>();
 builder.Services.AddSingleton<CommandInterpreter>();
 IHost host = builder.Build();
 
-ContextAccessor ctxAccessor= host.Services.GetRequiredService<ContextAccessor>();
+ContextAccessor ctxAccessor = host.Services.GetRequiredService<ContextAccessor>();
 NYDebugCrosswordGenerator generator= new NYDebugCrosswordGenerator();
-ctxAccessor.setContext(new ApplicationContext(generator));
+ctxAccessor.setContext(new ApplicationContext(generator.sample1()));
+
+new Thread( () => {
+    Thread.Sleep(3000);
+    ctxAccessor.setContext(new ApplicationContext(generator.sample2()));
+    Trace.WriteLine("setting new puzzle context");
+}).Start();
 
 CommandInterpreter interpreter = host.Services.GetRequiredService<CommandInterpreter>();
 RootController controller = host.Services.GetRequiredService<RootController>();
