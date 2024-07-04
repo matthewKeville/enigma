@@ -6,7 +6,6 @@ using Model;
 using Services;
 using UI.Command;
 using UI.View.Spectre;
-using UI.View.Spectre.Browser;
 using UI.View.Spectre.Help;
 
 namespace UI.Controller {
@@ -19,10 +18,11 @@ public class RootController {
   private HelpView  helpView;
   private BrowserController  browserController;
   private ContextAccessor contextAccessor;
+  private CrosswordService crosswordService;
 
   public RootController(RootView rootView,CommandDispatcher commandDispatcher,
       ContextAccessor contextAccessor,GameController gameController,HelpView helpView,
-      BrowserController browserController) {
+      BrowserController browserController, CrosswordService crosswordService ) {
 
     this.contextAccessor = contextAccessor;
     commandDispatcher.raiseCommandEvent += ProcessCommandEvent;
@@ -34,6 +34,7 @@ public class RootController {
     this.helpView.setContext(contextAccessor.getContext());
     this.browserController = browserController;
     this.gameController = gameController;
+    this.crosswordService = crosswordService;
   }
 
   public void ProcessCommandEvent(object? sender, CommandEventArgs commandEventArgs) {
@@ -54,11 +55,12 @@ public class RootController {
             gameController.ProcessCommandEvent(this,commandEventArgs);
             break;
           case Window.BROWSER:
+            //load selected puzzle
             if ( commandEventArgs.command == Command.Command.CONFIRM ) {
 
-              //set the context ... (spoof for now)
-              this.contextAccessor.newPuzzle(new Puzzle());
-              Trace.WriteLine("new puzzle set");
+              int crosswordId = contextAccessor.getContext().browserModel.getActiveHeader.puzzleId;
+              Crossword crossword = crosswordService.getCrossword(crosswordId);
+              this.contextAccessor.updateContext(crossword);
               this.rootView.setContext(contextAccessor.getContext());
               
               this.contextAccessor.getContext().rootModel.activeWindow = Window.GAME;

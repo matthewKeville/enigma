@@ -7,17 +7,15 @@ namespace Context {
 
   public class ContextAccessor {
 
-    public ContextAccessor() {
-      buildDefaultContext();
-    }
-
+    private CrosswordService crosswordService;
     private ApplicationContext context;
 
-    public void newPuzzle(Puzzle puzzle) {
+    public ContextAccessor(CrosswordService crosswordService) {
+      this.crosswordService = crosswordService;
+      this.context = buildDefaultContext();
+    }
 
-      //ignore passed puzzle for now
-      NYDebugCrosswordGenerator generator = new NYDebugCrosswordGenerator();
-      CrosswordModel crossword = generator.sample2();
+    public void updateContext(Crossword crossword) {
 
       ApplicationContext newContext = new ApplicationContext();
 
@@ -30,15 +28,13 @@ namespace Context {
       newContext.statusModel = new StatusModel();
       newContext.statusModel.title = "Ohhhhhhh";
       newContext.gameModel = new GameModel();    
-      newContext.gridModel = new GridModel(crossword.colCount,crossword.rowCount,crossword.words);
-      newContext.cluesModel = new CluesModel(crossword,newContext.gridModel); //this is bad, pls fixme
+
+      //todo : disentagle model from entity
+      newContext.gridModel = new GridModel(crossword.model.colCount,crossword.model.rowCount,crossword.model.words);
+      newContext.cluesModel = new CluesModel(crossword.model,newContext.gridModel); //this is bad, pls fixme
       newContext.clockModel = new ClockModel();    
 
       this.context = newContext;
-    }
-
-    public void loadPuzzle(Puzzle puzzle) {
-      //build context from puzzle
     }
 
     public ApplicationContext getContext() {
@@ -49,29 +45,15 @@ namespace Context {
       return this.context;
     }
 
-    public void buildDefaultContext() {
+    public ApplicationContext buildDefaultContext() {
       ApplicationContext context = new ApplicationContext();
       context.rootModel = new RootModel();
       context.browserModel = new BrowserModel();
-      context.browserModel.headers = new List<PuzzleHeader>() {
-        new PuzzleHeader(){
-          puzzleId = 0,
-          date = DateTime.UtcNow.AddMonths(1),
-        },
-        new PuzzleHeader(){
-          puzzleId=1,
-          date = DateTime.UtcNow.AddMonths(3),
-        },
-        new PuzzleHeader(){
-          puzzleId=2,
-          date = DateTime.UtcNow.AddMonths(5),
-        }
-      };
+      context.browserModel.headers = crosswordService.getCrosswordHeaders();
       context.statusModel = new StatusModel();
       context.statusModel.title = "Ohhhhhhh";
       context.helpModel = new HelpModel();    
-      this.context = context;
-
+      return context;
     }
 
   }

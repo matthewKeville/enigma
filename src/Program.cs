@@ -9,8 +9,8 @@ using UI.Command;
 using UI.View.Spectre.Game;
 using UI.View.Spectre.Status;
 using Context;
-using Entity;
 using UI.View.Spectre.Browser;
+using Repository;
 
 Trace.Listeners.Add(new TextWriterTraceListener("./logs/enigma.log"));
 Trace.AutoFlush = true;
@@ -32,6 +32,9 @@ builder.Services.AddSingleton<GameController, GameController>();
 builder.Services.AddSingleton<GridController, GridController>();
 builder.Services.AddSingleton<CluesController, CluesController>();
 
+builder.Services.AddSingleton<CrosswordRepository, CrosswordRepository>();
+builder.Services.AddSingleton<CrosswordService, CrosswordService>();
+
 builder.Services.AddSingleton<ContextAccessor>();
 builder.Services.AddSingleton<SpectreRenderer>();
 builder.Services.AddSingleton<KeyCommandInterpreter>();
@@ -39,14 +42,6 @@ builder.Services.AddSingleton<CommandDispatcher>();
 IHost host = builder.Build();
 
 CommandDispatcher commandDispatcher = host.Services.GetRequiredService<CommandDispatcher>();
-
-/**
-new Thread( () => {
-    Thread.Sleep(3000);
-    commandDispatcher.dispatchCommand(new CommandEventArgs(Command.DBG_PUZZLE_SWAP));
-}).Start();
-*/
-
 KeyCommandInterpreter interpreter = host.Services.GetRequiredService<KeyCommandInterpreter>();
 RootController controller = host.Services.GetRequiredService<RootController>();
 SpectreRenderer render = host.Services.GetRequiredService<SpectreRenderer>();
