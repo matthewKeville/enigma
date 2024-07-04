@@ -21,7 +21,7 @@ public class CluesController {
 
   public void ProcessCommandEvent(object? sender, CommandEventArgs commandEventArgs) {
     switch ( commandEventArgs.command ) {
-      case Command.Command.DBG_PUZZLE_SWAP:
+      case Command.Command.UPDATE_CONTEXT:
         Trace.WriteLine("puzzle swap triggered in game clues controller");
         this.clues = contextAccessor.getContext().cluesModel;
         cluesView.setContext(contextAccessor.getContext());

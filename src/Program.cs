@@ -9,6 +9,8 @@ using UI.Command;
 using UI.View.Spectre.Game;
 using UI.View.Spectre.Status;
 using Context;
+using Entity;
+using UI.View.Spectre.Browser;
 
 Trace.Listeners.Add(new TextWriterTraceListener("./logs/enigma.log"));
 Trace.AutoFlush = true;
@@ -17,7 +19,8 @@ HostApplicationBuilder builder = Host.CreateEmptyApplicationBuilder(new HostAppl
 
 builder.Services.AddSingleton<RootView, RootView>();
 builder.Services.AddSingleton<HelpView, HelpView>();
-
+builder.Services.AddSingleton<BrowserView, BrowserView>();
+builder.Services.AddSingleton<BrowserController, BrowserController>();
 builder.Services.AddSingleton<GameView, GameView>();
 builder.Services.AddSingleton<StatusView, StatusView>();
 builder.Services.AddSingleton<UI.View.Spectre.Status.ClockView, ClockView>();
@@ -35,17 +38,14 @@ builder.Services.AddSingleton<KeyCommandInterpreter>();
 builder.Services.AddSingleton<CommandDispatcher>();
 IHost host = builder.Build();
 
-ContextAccessor ctxAccessor = host.Services.GetRequiredService<ContextAccessor>();
 CommandDispatcher commandDispatcher = host.Services.GetRequiredService<CommandDispatcher>();
-NYDebugCrosswordGenerator generator= new NYDebugCrosswordGenerator();
-ctxAccessor.setContext(new ApplicationContext(generator.sample1()));
 
+/**
 new Thread( () => {
     Thread.Sleep(3000);
     commandDispatcher.dispatchCommand(new CommandEventArgs(Command.DBG_PUZZLE_SWAP));
-    //ctxAccessor.setContext(new ApplicationContext(generator.sample2()));
-    //Trace.WriteLine("setting new puzzle context");
 }).Start();
+*/
 
 KeyCommandInterpreter interpreter = host.Services.GetRequiredService<KeyCommandInterpreter>();
 RootController controller = host.Services.GetRequiredService<RootController>();

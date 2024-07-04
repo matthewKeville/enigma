@@ -24,7 +24,7 @@ public class GridController {
   public void ProcessCommandEvent(object? sender, CommandEventArgs commandEventArgs) {
     switch ( commandEventArgs.command ) {
 
-      case Command.Command.DBG_PUZZLE_SWAP:
+      case Command.Command.UPDATE_CONTEXT:
         Trace.WriteLine("puzzle swap triggered in game grid controller");
         this.grid = contextAccessor.getContext().gridModel;
         gridView.setContext(contextAccessor.getContext());

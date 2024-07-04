@@ -16,7 +16,8 @@ namespace UI.Command {
         Command.MOVE_WORD_START,
         Command.MOVE_WORD_END,
         Command.SWAP_ORIENTATION,
-        Command.DEL_WORD
+        Command.DEL_WORD,
+        Command.CONFIRM
     };
 
     public static List<Command> Insert { get; } = new List<Command>() {
@@ -40,7 +41,11 @@ namespace UI.Command {
     DEL_CHAR,
     SWAP_ORIENTATION,
     DEL_WORD,
-    DBG_PUZZLE_SWAP
+    CONFIRM,
+
+    UPDATE_CONTEXT, //this is really an event... FIXME
+
+    DBG_PUZZLE_SWAP,
 
   }
 

@@ -6,10 +6,6 @@ namespace Context {
 
   public class ApplicationContext {
     
-    //private CrosswordModel crosswordModel;
-    //rivate GridModel gridModely;
-    //private CluesModel cluesModel;
-    
     public RootModel rootModel;
     public HelpModel helpModel;
     public GameModel gameModel;
@@ -17,28 +13,7 @@ namespace Context {
     public GridModel gridModel;
     public ClockModel clockModel;
     public StatusModel statusModel;
-
-    public ApplicationContext(CrosswordModel crosswordModel) {
-
-      //this is really the persistance model
-
-      CrosswordModel crossword = crosswordModel;
-
-      //these are all really view models i.e. a projection of the model
-      //onto application state
-
-      this.rootModel = new RootModel();
-      this.statusModel = new StatusModel();
-      this.statusModel.title = "Ohhhhhhh";
-
-      this.helpModel = new HelpModel();    
-
-      this.gameModel = new GameModel();    
-      this.gridModel = new GridModel(crossword.colCount,crossword.rowCount,crossword.words);
-
-      this.cluesModel = new CluesModel(crossword,gridModel);
-      this.clockModel = new ClockModel();    
-    }
+    public BrowserModel browserModel;
 
   }
 

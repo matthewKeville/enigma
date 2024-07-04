@@ -22,7 +22,7 @@ public class GameController {
 
   public void ProcessCommandEvent(object? sender, CommandEventArgs commandEventArgs) {
     switch ( commandEventArgs.command ) {
-      case Command.Command.DBG_PUZZLE_SWAP:
+      case Command.Command.UPDATE_CONTEXT:
         Trace.WriteLine("puzzle swap triggered in game controller");
         this.game = contextAccessor.getContext().gameModel;
         gridController.ProcessCommandEvent(this,commandEventArgs);

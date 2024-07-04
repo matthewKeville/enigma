@@ -15,6 +15,11 @@ public class ClockView {
   }
 
   public Panel Render() {
+
+    if (this.clock is null) {
+      return new Panel("");
+    }
+
     TimeSpan elapsed = (DateTime.UtcNow - clock.start);
     String minutes = elapsed.Minutes > 9 ? ""+elapsed.Minutes : "0"+elapsed.Minutes;
     String seconds = elapsed.Seconds > 9 ? ""+elapsed.Seconds : "0"+elapsed.Seconds;

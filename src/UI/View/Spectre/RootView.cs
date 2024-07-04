@@ -1,7 +1,9 @@
+using System.Diagnostics;
 using Context;
 using Enums;
 using Model;
 using Spectre.Console;
+using UI.View.Spectre.Browser;
 using UI.View.Spectre.Game;
 using UI.View.Spectre.Help;
 namespace UI.View.Spectre;
@@ -12,10 +14,12 @@ public class RootView {
 
   private HelpView helpView;
   private GameView gameView;
+  private BrowserView browserView ;
 
-  public RootView(HelpView helpView,GameView gameView) {
+  public RootView(HelpView helpView,GameView gameView,BrowserView browserView) {
     this.gameView = gameView;
     this.helpView = helpView;
+    this.browserView = browserView;
   }
 
   public void setContext(ApplicationContext context) {
@@ -23,10 +27,16 @@ public class RootView {
   }
 
   public Layout Render() {
-    if ( rootModel.activeWindow == Window.GAME ) {
-      return gameView.Render();
-    } else {
-      return helpView.Render();
+    switch ( rootModel.activeWindow ) {
+      case Window.BROWSER:
+        return browserView.Render();
+      case Window.GAME:
+        return gameView.Render();
+      case Window.HELP:
+        return helpView.Render();
+      default:
+        Environment.Exit(5);
+        return null;
     }
   }
 

@@ -4,8 +4,9 @@ namespace Model {
 
 public class RootModel : IModel {
 
-  public Window activeWindow = Window.GAME;
+  public Window activeWindow = Window.BROWSER;
 
+  /**
   public void SwitchWindow() {
     if (activeWindow == Window.GAME) {
       activeWindow = Window.HELP;
@@ -13,6 +14,7 @@ public class RootModel : IModel {
       activeWindow = Window.GAME;
     }
   }
+  */
 
 }
 

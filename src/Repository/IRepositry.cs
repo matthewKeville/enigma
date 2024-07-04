@@ -1,8 +1,8 @@
 using Entity;
 
 namespace Repository {
-  public interface IRepository {
-    public IEntity getById(Guid id);
-    public IEntity save(IEntity entity);
+  public interface IRepository<T> where T : IEntity {
+    public T getById(Guid id);
+    public T save(T entity);
   }
 }

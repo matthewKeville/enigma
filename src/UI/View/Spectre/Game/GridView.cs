@@ -16,6 +16,10 @@ public class GridView {
   //render character matrix to Table
   public Layout Render() {
 
+    if ( this.grid is null ) {
+      return new Layout();
+    }
+
     Table table = new Table();
     table.Border(TableBorder.Heavy);
     Layout layout = new Layout("Grid");

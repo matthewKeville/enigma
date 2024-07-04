@@ -55,6 +55,7 @@ namespace UI.Command {
       commandMap.Add(ConsoleKey.Spacebar,Command.SWAP_ORIENTATION);
       commandMap.Add(ConsoleKey.Backspace,Command.DEL_CHAR);
       commandMap.Add(ConsoleKey.D,Command.DEL_WORD);
+      commandMap.Add(ConsoleKey.Enter,Command.CONFIRM);
     }
 
     private Command? tryGetNormalCommand(ConsoleKey key) {

@@ -6,15 +6,19 @@ namespace UI.View.Spectre.Help {
 
   public class HelpView {
 
-    public HelpModel help;
+    public HelpModel helpModel;
     private ContextAccessor contextAccesor;
 
-    public HelpView(ContextAccessor contextAccesor) {
-      this.contextAccesor = contextAccesor;
-      this.help = contextAccesor.getContext().helpModel;
+    public void setContext(ApplicationContext context) {
+      this.helpModel = context.helpModel;
     }
 
     public Layout Render() {
+
+      if (this.helpModel is null) {
+        return new Layout();
+      }
+
       Layout root = new Layout();
       root.Update(new Panel("helphelphelp"));
       return root;

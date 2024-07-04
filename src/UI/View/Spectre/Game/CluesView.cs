@@ -17,6 +17,10 @@ public class CluesView {
 
   public Layout Render() {
 
+    if ( this.cluesModel is null ) {
+      return new Layout();
+    }
+
     Layout layout = new Layout("Clues");
     Table table = new Table();
 
