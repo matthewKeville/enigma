@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 namespace UI.Command {
 
     public class CommandEventArgs : EventArgs {

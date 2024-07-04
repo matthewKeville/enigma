@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Context;
 using UI.Command;
 using UI.Model.Game;
@@ -10,12 +9,11 @@ public class GameController {
   private GameModel game;
   private GridController gridController;
   private CluesController cluesController;
- 
   private ContextAccessor contextAccessor;
 
   public GameController(ContextAccessor contextAccessor,GridController gridController,CluesController cluesController) {
     this.contextAccessor = contextAccessor;
-    this.game = contextAccessor.getContext().gameModel;
+    this.game = contextAccessor.GetContext().gameModel;
     this.gridController = gridController;
     this.cluesController = cluesController;
   }
@@ -24,7 +22,7 @@ public class GameController {
     switch ( commandEventArgs.command ) {
       case Command.Command.UPDATE_CONTEXT:
         Trace.WriteLine("puzzle swap triggered in game controller");
-        this.game = contextAccessor.getContext().gameModel;
+        this.game = contextAccessor.GetContext().gameModel;
         gridController.ProcessCommandEvent(this,commandEventArgs);
         cluesController.ProcessCommandEvent(this,commandEventArgs);
         break;

@@ -26,19 +26,19 @@ public class RootController {
       BrowserController browserController, CrosswordService crosswordService ) {
 
     this.contextAccessor = contextAccessor;
-    commandDispatcher.raiseCommandEvent += ProcessCommandEvent;
+    commandDispatcher.RaiseCommandEvent += ProcessCommandEvent;
 
-    this.rootModel = contextAccessor.getContext().rootModel;
+    this.rootModel = contextAccessor.GetContext().rootModel;
     this.rootView = rootView;
-    this.rootView.setContext(contextAccessor.getContext());
+    this.rootView.SetContext(contextAccessor.GetContext());
     this.helpView = helpView;
-    this.helpView.setContext(contextAccessor.getContext());
+    this.helpView.SetContext(contextAccessor.GetContext());
     this.browserController = browserController;
     this.gameController = gameController;
     this.crosswordService = crosswordService;
   }
 
-  public void ProcessCommandEvent(object? sender, CommandEventArgs commandEventArgs) {
+  private void ProcessCommandEvent(object? sender, CommandEventArgs commandEventArgs) {
 
     switch ( commandEventArgs.command ) {
 
@@ -54,13 +54,13 @@ public class RootController {
             //load selected puzzle
             if ( commandEventArgs.command == Command.Command.CONFIRM ) {
 
-              int crosswordId = contextAccessor.getContext().browserModel.getActiveHeader.puzzleId;
-              Crossword crossword = crosswordService.getCrossword(crosswordId);
-              this.contextAccessor.updateContext(crossword);
-              this.rootView.setContext(contextAccessor.getContext());
+              int crosswordId = contextAccessor.GetContext().browserModel.getActiveHeader.puzzleId;
+              Crossword crossword = crosswordService.GetCrossword(crosswordId);
+              this.contextAccessor.UpdateContext(crossword);
+              this.rootView.SetContext(contextAccessor.GetContext());
               
-              this.contextAccessor.getContext().rootModel.activeWindow = Window.GAME;
-              this.rootModel = contextAccessor.getContext().rootModel;
+              this.contextAccessor.GetContext().rootModel.activeWindow = Window.GAME;
+              this.rootModel = contextAccessor.GetContext().rootModel;
               gameController.ProcessCommandEvent(this,new CommandEventArgs(Command.Command.UPDATE_CONTEXT));
             }
             browserController.ProcessCommandEvent(this,commandEventArgs);

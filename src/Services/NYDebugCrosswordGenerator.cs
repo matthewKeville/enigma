@@ -8,7 +8,7 @@ namespace Services
     public class NYDebugCrosswordGenerator 
     {
 
-        public CrosswordModel sample1() {
+        public CrosswordModel Sample1() {
 
           int rows = 15;
           int cols = 15;
@@ -222,7 +222,7 @@ namespace Services
 
 
 
-        public CrosswordModel sample2() {
+        public CrosswordModel Sample2() {
 
           int rows = 15;
           int cols = 15;

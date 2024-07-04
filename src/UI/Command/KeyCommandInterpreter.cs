@@ -1,4 +1,4 @@
-using System.Diagnostics;
+using Enums;
 using Microsoft.Extensions.Hosting;
 
 namespace UI.Command {
@@ -12,16 +12,10 @@ namespace UI.Command {
 
   public class KeyCommandInterpreter {
 
-    enum Mode {
-      NORMAL,
-      INSERT
-    }
-
     private Dictionary<ConsoleKey,Command> commandMap;
     private Mode mode = Mode.NORMAL;
     private Thread interpreterThread ;
     private bool running = true;
-
     private CommandDispatcher commandDispatcher;
 
     public KeyCommandInterpreter(IApplicationLifetime applicationLifetime,CommandDispatcher commandDispatcher) {
@@ -34,11 +28,11 @@ namespace UI.Command {
     }
 
     private void triggerCommand(Command command) {
-      commandDispatcher.dispatchCommand(new CommandEventArgs(command));
+      commandDispatcher.DispatchCommand(new CommandEventArgs(command));
     }
 
     private void triggerCommand(Command command,ConsoleKey key) {
-      commandDispatcher.dispatchCommand(new CommandEventArgs(command,key));
+      commandDispatcher.DispatchCommand(new CommandEventArgs(command,key));
     }
 
     private void buildCommandMap() {

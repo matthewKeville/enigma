@@ -1,16 +1,15 @@
-using System.Diagnostics;
 using Context;
 using Spectre.Console;
 using UI.Model.Game;
 
 namespace UI.View.Spectre.Game {
 
-public class CluesView {
+public class CluesView : ISpectreView<Layout> {
 
   private int clueCutoff = 40;
   private CluesModel cluesModel;
 
-  public void setContext(ApplicationContext context) {
+  public void SetContext(ApplicationContext context) {
     this.cluesModel = context.cluesModel;
     Trace.WriteLine("clues context set");
   }

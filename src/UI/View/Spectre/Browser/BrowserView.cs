@@ -4,11 +4,11 @@ using UI.Model.Browser;
 
 namespace UI.View.Spectre.Browser {
 
-  public class BrowserView {
+  public class BrowserView : ISpectreView<Layout> {
 
-    public BrowserModel browserModel;
+    private BrowserModel browserModel;
 
-    public void setContext(ApplicationContext context) {
+    public void SetContext(ApplicationContext context) {
       this.browserModel = context.browserModel;
     }
 

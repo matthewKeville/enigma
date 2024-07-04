@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Entity;
 using Services;
 using UI.Model;
@@ -19,7 +18,7 @@ namespace Context {
       this.context = buildDefaultContext();
     }
 
-    public void updateContext(Crossword crossword) {
+    public void UpdateContext(Crossword crossword) {
 
       ApplicationContext newContext = new ApplicationContext();
 
@@ -41,7 +40,7 @@ namespace Context {
       this.context = newContext;
     }
 
-    public ApplicationContext getContext() {
+    public ApplicationContext GetContext() {
       if ( context is null ) {
         Trace.WriteLine("no context");
         Environment.Exit(1);
@@ -49,11 +48,11 @@ namespace Context {
       return this.context;
     }
 
-    public ApplicationContext buildDefaultContext() {
+    private ApplicationContext buildDefaultContext() {
       ApplicationContext context = new ApplicationContext();
       context.rootModel = new RootModel();
       context.browserModel = new BrowserModel();
-      context.browserModel.headers = crosswordService.getCrosswordHeaders();
+      context.browserModel.headers = crosswordService.GetCrosswordHeaders();
       context.statusModel = new StatusModel();
       context.statusModel.title = "Ohhhhhhh";
       context.helpModel = new HelpModel();    

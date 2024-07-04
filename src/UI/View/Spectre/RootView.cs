@@ -7,7 +7,7 @@ using UI.View.Spectre.Game;
 using UI.View.Spectre.Help;
 namespace UI.View.Spectre;
 
-public class RootView {
+public class RootView : ISpectreView<Layout> {
 
   private RootModel rootModel;
 
@@ -21,7 +21,7 @@ public class RootView {
     this.browserView = browserView;
   }
 
-  public void setContext(ApplicationContext context) {
+  public void SetContext(ApplicationContext context) {
     this.rootModel = context.rootModel;
   }
 

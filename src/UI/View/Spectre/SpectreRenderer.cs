@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Microsoft.Extensions.Hosting;
 using Spectre.Console;
 
@@ -11,21 +10,19 @@ public class SpectreRenderer {
   private Thread renderThread;
 
   public SpectreRenderer(IApplicationLifetime applicationLifetime,RootView rootView) {
-    applicationLifetime.ApplicationStopping.Register(stop);
+    applicationLifetime.ApplicationStopping.Register(Stop);
     this.rootView = rootView;
-    //Trace.WriteLine("Sleeping (temp fix) ...");
-    // Thread.Sleep(1000);
     Trace.WriteLine("SpectreRender starting...");
-    renderThread = new Thread(renderLoop);
+    renderThread = new Thread(RenderLoop);
     renderThread.Start();
   }
 
-  public void stop() {
+  public void Stop() {
     Trace.WriteLine("SpectreRender shutting down...");
     running = false;
   }
 
-  public void renderLoop() {
+  public void RenderLoop() {
     Layout root = new Layout();
     AnsiConsole.Live(root)
       .Start(ctx =>

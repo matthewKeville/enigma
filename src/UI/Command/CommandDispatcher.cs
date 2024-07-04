@@ -2,13 +2,13 @@ namespace UI.Command {
 
   public class CommandDispatcher {
 
-    public event EventHandler<UI.Command.CommandEventArgs> raiseCommandEvent;
+    public event EventHandler<UI.Command.CommandEventArgs> RaiseCommandEvent;
       private void triggerCommand(Command command) {
-        raiseCommandEvent(this, new CommandEventArgs(command));
+        RaiseCommandEvent(this, new CommandEventArgs(command));
       }
 
-    public void dispatchCommand(CommandEventArgs args) {
-      raiseCommandEvent(this,args);
+    public void DispatchCommand(CommandEventArgs args) {
+      RaiseCommandEvent(this,args);
     }
   }
 

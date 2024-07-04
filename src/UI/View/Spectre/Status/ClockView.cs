@@ -4,14 +4,17 @@ using UI.Model.Status;
 
 namespace UI.View.Spectre.Status {
 
-public class ClockView {
+public class ClockView : ISpectreView<Panel> {
 
   private ClockModel clock;
   private ContextAccessor contextAccessor;
 
   public ClockView(ContextAccessor contextAccessor) {
     this.contextAccessor = contextAccessor;
-    this.clock = contextAccessor.getContext().clockModel;
+    this.clock = contextAccessor.GetContext().clockModel;
+  }
+
+  public void SetContext(ApplicationContext context) {
   }
 
   public Panel Render() {

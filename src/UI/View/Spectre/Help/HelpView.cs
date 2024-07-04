@@ -4,12 +4,12 @@ using UI.Model.Help;
 
 namespace UI.View.Spectre.Help {
 
-  public class HelpView {
+  public class HelpView : ISpectreView<Layout> {
 
-    public HelpModel helpModel;
+    private HelpModel helpModel;
     private ContextAccessor contextAccesor;
 
-    public void setContext(ApplicationContext context) {
+    public void SetContext(ApplicationContext context) {
       this.helpModel = context.helpModel;
     }
 

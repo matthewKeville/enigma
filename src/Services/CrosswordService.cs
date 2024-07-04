@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Entity;
 using Repository;
 using UI.Model.Browser;
@@ -12,13 +11,13 @@ namespace Services {
       this.crosswordRepository = crosswordRepository;
     }
 
-    public Crossword getCrossword(int crosswordId) {
+    public Crossword GetCrossword(int crosswordId) {
 
-      if (!crosswordRepository.has(crosswordId)) {
+      if (!crosswordRepository.Has(crosswordId)) {
         Trace.WriteLine($" crossword {crosswordId} not found");
         Environment.Exit(4);
       }
-      Crossword crossword = crosswordRepository.getById(crosswordId);
+      Crossword crossword = crosswordRepository.GetById(crosswordId);
 
       // Started?
       if (crossword.startDate is not null) {
@@ -31,8 +30,8 @@ namespace Services {
  
     }
 
-    public List<CrosswordHeader> getCrosswordHeaders() {
-      return crosswordRepository.getAll()
+    public List<CrosswordHeader> GetCrosswordHeaders() {
+      return crosswordRepository.GetAll()
         .Select( cw => {
             return new CrosswordHeader(){
               puzzleId = cw.id,

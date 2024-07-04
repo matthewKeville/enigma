@@ -4,12 +4,12 @@ using UI.Model.Game;
 
 namespace UI.View.Spectre.Game {
 
-public class GridView {
+public class GridView : ISpectreView<Layout> {
 
   private const char block = ' ';
   private GridModel grid;
 
-  public void setContext(ApplicationContext context) {
+  public void SetContext(ApplicationContext context) {
     this.grid = context.gridModel;
   }
 

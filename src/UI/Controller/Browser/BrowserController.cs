@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Context;
 using UI.Command;
 using UI.Model.Browser;
@@ -14,9 +13,9 @@ public class BrowserController {
 
   public BrowserController(ContextAccessor contextAccessor, BrowserView browserView) {
     this.contextAccessor = contextAccessor;
-    this.browserModel = contextAccessor.getContext().browserModel;
+    this.browserModel = contextAccessor.GetContext().browserModel;
     this.browserView = browserView;
-    this.browserView.setContext(contextAccessor.getContext());
+    this.browserView.SetContext(contextAccessor.GetContext());
   }
 
   public void ProcessCommandEvent(object? sender, CommandEventArgs commandEventArgs) {

@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using UI.View.Spectre;
 using Services;
@@ -41,9 +40,9 @@ builder.Services.AddSingleton<ContextAccessor>();
 builder.Services.AddSingleton<SpectreRenderer>();
 builder.Services.AddSingleton<KeyCommandInterpreter>();
 builder.Services.AddSingleton<CommandDispatcher>();
+
 IHost host = builder.Build();
 
-CommandDispatcher commandDispatcher = host.Services.GetRequiredService<CommandDispatcher>();
 KeyCommandInterpreter interpreter = host.Services.GetRequiredService<KeyCommandInterpreter>();
 RootController controller = host.Services.GetRequiredService<RootController>();
 SpectreRenderer render = host.Services.GetRequiredService<SpectreRenderer>();
