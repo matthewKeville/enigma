@@ -1,4 +1,4 @@
-using Model;
+using UI.Model;
 
 namespace Entity {
   public class Crossword : IEntity {

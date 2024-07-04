@@ -1,4 +1,4 @@
-namespace Model {
+namespace UI.Model {
   public interface IModel {
   }
 }

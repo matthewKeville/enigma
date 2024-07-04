@@ -1,10 +1,10 @@
 using System.Diagnostics;
 using Context;
-using Model;
 using UI.Command;
+using UI.Model.Browser;
 using UI.View.Spectre.Browser;
 
-namespace UI.Controller {
+namespace UI.Controller.Browser {
 
 public class BrowserController {
 

@@ -1,6 +1,6 @@
 using Enums;
 
-namespace Model {
+namespace UI.Model.Game {
 
 public record ClueModel(int ordinal, String value);
 

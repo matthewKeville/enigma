@@ -1,7 +1,11 @@
 using System.Diagnostics;
 using Entity;
-using Model;
 using Services;
+using UI.Model;
+using UI.Model.Browser;
+using UI.Model.Game;
+using UI.Model.Help;
+using UI.Model.Status;
 
 namespace Context {
 

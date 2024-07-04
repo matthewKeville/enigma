@@ -2,7 +2,7 @@ using System.Diagnostics;
 using System.Drawing;
 using Enums;
 
-namespace Model {
+namespace UI.Model.Game {
 
   public class GridModel {
 

@@ -1,6 +1,7 @@
 using System.Text;
+using UI.Model.Game;
 
-namespace Model {
+namespace UI.Model {
 
 public class CrosswordModel {
 

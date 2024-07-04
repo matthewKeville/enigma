@@ -1,6 +1,6 @@
 using Context;
-using Model;
 using Spectre.Console;
+using UI.Model.Help;
 
 namespace UI.View.Spectre.Help {
 

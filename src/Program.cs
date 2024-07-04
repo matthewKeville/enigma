@@ -11,6 +11,8 @@ using UI.View.Spectre.Status;
 using Context;
 using UI.View.Spectre.Browser;
 using Repository;
+using UI.Controller.Browser;
+using UI.Controller.Game;
 
 Trace.Listeners.Add(new TextWriterTraceListener("./logs/enigma.log"));
 Trace.AutoFlush = true;
@@ -23,7 +25,7 @@ builder.Services.AddSingleton<BrowserView, BrowserView>();
 builder.Services.AddSingleton<BrowserController, BrowserController>();
 builder.Services.AddSingleton<GameView, GameView>();
 builder.Services.AddSingleton<StatusView, StatusView>();
-builder.Services.AddSingleton<UI.View.Spectre.Status.ClockView, ClockView>();
+builder.Services.AddSingleton<ClockView, ClockView>();
 builder.Services.AddSingleton<GridView, GridView>();
 builder.Services.AddSingleton<CluesView, CluesView>();
 

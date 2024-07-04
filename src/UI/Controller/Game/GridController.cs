@@ -2,11 +2,11 @@ using System.Diagnostics;
 using System.Drawing;
 using Context;
 using Enums;
-using Model;
 using UI.Command;
+using UI.Model.Game;
 using UI.View.Spectre.Game;
 
-namespace UI.Controller {
+namespace UI.Controller.Game {
 
 public class GridController {
 

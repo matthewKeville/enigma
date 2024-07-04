@@ -1,6 +1,6 @@
 using Enums;
 
-namespace Model {
+namespace UI.Model.Game {
 
   public class GameModel {
     public Pane activePane = Pane.GRID;

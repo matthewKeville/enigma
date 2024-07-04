@@ -1,9 +1,9 @@
 using System.Diagnostics;
 using Context;
-using Model;
 using UI.Command;
+using UI.Model.Game;
 
-namespace UI.Controller {
+namespace UI.Controller.Game {
 
 public class GameController {
 

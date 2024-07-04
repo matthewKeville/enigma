@@ -1,8 +1,7 @@
-using System.Diagnostics;
 using Context;
 using Enums;
-using Model;
 using Spectre.Console;
+using UI.Model;
 using UI.View.Spectre.Browser;
 using UI.View.Spectre.Game;
 using UI.View.Spectre.Help;

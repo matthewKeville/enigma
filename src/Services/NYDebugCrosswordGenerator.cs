@@ -1,6 +1,6 @@
-using System.Diagnostics;
 using Enums;
-using Model;
+using UI.Model;
+using UI.Model.Game;
 
 namespace Services
 {

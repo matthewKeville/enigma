@@ -1,6 +1,6 @@
 using Context;
-using Model;
 using Spectre.Console;
+using UI.Model.Browser;
 
 namespace UI.View.Spectre.Browser {
 

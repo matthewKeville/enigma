@@ -1,10 +1,11 @@
-using System.Diagnostics;
 using Context;
 using Entity;
 using Enums;
-using Model;
 using Services;
 using UI.Command;
+using UI.Controller.Browser;
+using UI.Controller.Game;
+using UI.Model;
 using UI.View.Spectre;
 using UI.View.Spectre.Help;
 
@@ -41,11 +42,6 @@ public class RootController {
 
     switch ( commandEventArgs.command ) {
 
-      // case Command.Command.UPDATE_CONTEXT:
-      //   Trace.WriteLine("puzzle swap triggered in root");
-      //   this.rootModel = contextAccessor.getContext().rootModel;
-      //   gameController.ProcessCommandEvent(this,commandEventArgs);
-      //   break;
       // case Command.Command.SWITCH_VIEW:
       //   rootModel.SwitchWindow();
       //   break;

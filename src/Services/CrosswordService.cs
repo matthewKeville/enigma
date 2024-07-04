@@ -1,8 +1,7 @@
 using System.Diagnostics;
-using Context;
 using Entity;
-using Model;
 using Repository;
+using UI.Model.Browser;
 
 namespace Services {
   public class CrosswordService {

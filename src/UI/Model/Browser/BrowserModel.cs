@@ -1,5 +1,4 @@
-namespace Model {
-
+namespace UI.Model.Browser {
 
   public class CrosswordHeader {
     public String name = "debug";
