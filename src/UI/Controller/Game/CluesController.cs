@@ -15,7 +15,7 @@ public class CluesController {
     this.contextAccessor = contextAccessor;
     this.clues = contextAccessor.GetContext().cluesModel;
     this.cluesView = cluesView;
-    this.cluesView.SetContext(contextAccessor.GetContext());
+    this.cluesView.SetContext(contextAccessor.GetContext().cluesModel);
   }
 
   public void ProcessCommandEvent(object? sender, CommandEventArgs commandEventArgs) {
@@ -23,7 +23,7 @@ public class CluesController {
       case Command.Command.UPDATE_CONTEXT:
         Trace.WriteLine("puzzle swap triggered in game clues controller");
         this.clues = contextAccessor.GetContext().cluesModel;
-        cluesView.SetContext(contextAccessor.GetContext());
+        cluesView.SetContext(contextAccessor.GetContext().cluesModel);
         break;
     }
   }

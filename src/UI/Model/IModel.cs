@@ -1,5 +1,4 @@
 namespace UI.Model {
-  //marker interface for the 
-  public interface IModel {
-  }
+  //Marker
+  public interface IModel {}
 }

@@ -3,7 +3,7 @@ using Enums;
 
 namespace UI.Model.Game {
 
-  public class GridModel {
+  public class GridModel : IModel {
 
     public char[,] charMatrix;
     public Point entry = new Point(0,0);

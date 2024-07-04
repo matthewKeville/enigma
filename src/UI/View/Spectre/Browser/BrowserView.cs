@@ -1,23 +1,18 @@
-using Context;
 using Spectre.Console;
+using Spectre.Console.Rendering;
 using UI.Model.Browser;
 
 namespace UI.View.Spectre.Browser {
 
-  public class BrowserView : ISpectreView<Layout> {
+  public class BrowserView : SpectreView<BrowserModel> {
 
-    private BrowserModel browserModel;
+    override protected IRenderable render() {
 
-    public void SetContext(ApplicationContext context) {
-      this.browserModel = context.browserModel;
-    }
-
-    public Layout Render() {
       Layout root = new Layout();
       Rows rows = new Rows(
-        browserModel.headers.Select( 
+        model.headers.Select( 
           x => { 
-            if ( x.puzzleId == browserModel.headers[browserModel.selection].puzzleId ) {
+            if ( x.puzzleId == model.headers[model.selection].puzzleId ) {
               return new Text($"{x.puzzleId.ToString()} {x.date.ToShortDateString()}", new Style(Color.Green1));  
             } else {
               return new Text($"{x.puzzleId.ToString()} {x.date.ToShortDateString()}");  
@@ -27,6 +22,7 @@ namespace UI.View.Spectre.Browser {
       );
       root.Update(rows);
       return root;
+
     }
 
   }

@@ -3,7 +3,7 @@ using Enums;
 namespace UI.Model.Game {
 
 
-public class WordModel {
+public class WordModel : IModel {
   public int x { get; set; }
   public int y { get; set; }
   public int i { get; set; }

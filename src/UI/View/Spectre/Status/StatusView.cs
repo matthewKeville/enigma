@@ -4,28 +4,13 @@ using UI.Model.Status;
 
 namespace UI.View.Spectre.Status {
 
-public class StatusView : ISpectreView<Layout> {
+public class StatusView : SpectreView<StatusModel> {
 
-  private StatusModel statusModel;
   private ClockView clockView;
-  private ContextAccessor contextAccessor;
 
-  public StatusView(ContextAccessor contextAccessor, ClockView clockView) {
-    this.contextAccessor = contextAccessor;
-    this.statusModel = contextAccessor.GetContext().statusModel;
-    this.clockView = clockView;
-  }
-
-  public void SetContext(ApplicationContext context) {
-  }
-
-  public Layout Render() {
+  protected override Layout render() {
 
     Layout layout = new Layout("Status");
-
-    if (this.statusModel is null) {
-      return layout;
-    }
 
     Table table = new Table();
     table.NoBorder();
@@ -35,7 +20,7 @@ public class StatusView : ISpectreView<Layout> {
     table.AddColumn("Clock");
     table.AddColumn("Title");
 
-    Panel name = new Panel(statusModel.title);
+    Panel name = new Panel(model.title);
     name.PadLeft(2).PadRight(2);
     name.NoBorder();
 

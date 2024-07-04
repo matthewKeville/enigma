@@ -4,7 +4,7 @@ namespace UI.Model.Game {
 
 public record ClueModel(int ordinal, String value);
 
-public class CluesModel {
+public class CluesModel : IModel {
 
   //I dont' love the depence on the GridModel, but i'm not sure
   //how to highlight the active word, without this.

@@ -1,5 +1,6 @@
 using Spectre.Console.Rendering;
+using UI.Model;
 
 namespace UI.View.Spectre {
-  public interface ISpectreView<T> : UI.View.IView<T> where T : IRenderable {}
+  public interface ISpectreView<K> : UI.View.IView<IRenderable,K> where K : IModel {}
 }

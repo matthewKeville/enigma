@@ -30,9 +30,9 @@ public class RootController {
 
     this.rootModel = contextAccessor.GetContext().rootModel;
     this.rootView = rootView;
-    this.rootView.SetContext(contextAccessor.GetContext());
+    this.rootView.SetContext(contextAccessor.GetContext().rootModel);
     this.helpView = helpView;
-    this.helpView.SetContext(contextAccessor.GetContext());
+    this.helpView.SetContext(contextAccessor.GetContext().helpModel);
     this.browserController = browserController;
     this.gameController = gameController;
     this.crosswordService = crosswordService;
@@ -57,10 +57,11 @@ public class RootController {
               int crosswordId = contextAccessor.GetContext().browserModel.getActiveHeader.puzzleId;
               Crossword crossword = crosswordService.GetCrossword(crosswordId);
               this.contextAccessor.UpdateContext(crossword);
-              this.rootView.SetContext(contextAccessor.GetContext());
-              
-              this.contextAccessor.GetContext().rootModel.activeWindow = Window.GAME;
+
               this.rootModel = contextAccessor.GetContext().rootModel;
+              this.rootView.SetContext(this.rootModel);
+              this.contextAccessor.GetContext().rootModel.activeWindow = Window.GAME;
+
               gameController.ProcessCommandEvent(this,new CommandEventArgs(Command.Command.UPDATE_CONTEXT));
             }
             browserController.ProcessCommandEvent(this,commandEventArgs);

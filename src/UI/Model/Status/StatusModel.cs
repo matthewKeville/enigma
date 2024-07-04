@@ -1,6 +1,6 @@
 namespace UI.Model.Status {
 
-  public class StatusModel {
+  public class StatusModel : IModel {
     public String title;
   }
 

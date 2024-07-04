@@ -9,7 +9,7 @@ namespace UI.Model.Browser {
 
   }
 
-  public class BrowserModel {
+  public class BrowserModel : IModel {
 
     public CrosswordHeader getActiveHeader { 
       get {

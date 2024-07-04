@@ -1,8 +1,8 @@
-using Context;
+using UI.Model;
 
 namespace UI.View {
-  public interface IView<T> {
+  public interface IView<T,K> where K : IModel {
     public T Render();
-    public void SetContext(ApplicationContext context);
+    public void SetContext(K model);
   }
 }

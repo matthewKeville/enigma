@@ -1,6 +1,6 @@
 namespace UI.Model.Status {
 
-  public class ClockModel {
+  public class ClockModel : IModel {
     public DateTime start;
   }
 

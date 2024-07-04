@@ -1,15 +1,12 @@
-using Context;
 using Enums;
-using Spectre.Console;
+using Spectre.Console.Rendering;
 using UI.Model;
 using UI.View.Spectre.Browser;
 using UI.View.Spectre.Game;
 using UI.View.Spectre.Help;
 namespace UI.View.Spectre;
 
-public class RootView : ISpectreView<Layout> {
-
-  private RootModel rootModel;
+public class RootView : SpectreView<RootModel> {
 
   private HelpView helpView;
   private GameView gameView;
@@ -21,12 +18,8 @@ public class RootView : ISpectreView<Layout> {
     this.browserView = browserView;
   }
 
-  public void SetContext(ApplicationContext context) {
-    this.rootModel = context.rootModel;
-  }
-
-  public Layout Render() {
-    switch ( rootModel.activeWindow ) {
+  protected override IRenderable render() {
+    switch ( model.activeWindow ) {
       case Window.BROWSER:
         return browserView.Render();
       case Window.GAME:

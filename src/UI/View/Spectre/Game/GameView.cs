@@ -1,10 +1,10 @@
-using Context;
 using Spectre.Console;
+using UI.Model.Game;
 using UI.View.Spectre.Status;
 
 namespace UI.View.Spectre.Game {
 
-  public class GameView : ISpectreView<Layout> {
+  public class GameView : SpectreView<GameModel> {
 
     private CluesView cluesView;
     private StatusView statusView;
@@ -16,9 +16,7 @@ namespace UI.View.Spectre.Game {
       this.cluesView = cluesView;
     }
 
-    public void SetContext(ApplicationContext ctx) {}
-
-    public Layout Render() {
+    protected override Layout render() {
       Layout root = new Layout();
       root.SplitRows(new Layout("Status"),new Layout("main"));
       root["Status"].Size = 4;

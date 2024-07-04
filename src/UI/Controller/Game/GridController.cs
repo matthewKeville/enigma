@@ -17,7 +17,7 @@ public class GridController {
     this.contextAccessor = contextAccessor;
     this.grid = contextAccessor.GetContext().gridModel;
     this.gridView = gridView;
-    this.gridView.SetContext(contextAccessor.GetContext());
+    this.gridView.SetContext(contextAccessor.GetContext().gridModel);
   }
 
   public void ProcessCommandEvent(object? sender, CommandEventArgs commandEventArgs) {
@@ -27,7 +27,7 @@ public class GridController {
       case Command.Command.UPDATE_CONTEXT:
         Trace.WriteLine("puzzle swap triggered in game grid controller");
         this.grid = contextAccessor.GetContext().gridModel;
-        gridView.SetContext(contextAccessor.GetContext());
+        gridView.SetContext(contextAccessor.GetContext().gridModel);
         break;
 
       case Command.Command.MOVE_LEFT:

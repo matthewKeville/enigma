@@ -15,7 +15,7 @@ public class BrowserController {
     this.contextAccessor = contextAccessor;
     this.browserModel = contextAccessor.GetContext().browserModel;
     this.browserView = browserView;
-    this.browserView.SetContext(contextAccessor.GetContext());
+    this.browserView.SetContext(contextAccessor.GetContext().browserModel);
   }
 
   public void ProcessCommandEvent(object? sender, CommandEventArgs commandEventArgs) {

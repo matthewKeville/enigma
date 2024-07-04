@@ -3,7 +3,7 @@ using UI.Model.Game;
 
 namespace UI.Model {
 
-public class CrosswordModel {
+public class CrosswordModel : IModel {
 
   public String name { get; set; } = "debug"; 
   public List<WordModel> words { get; set; } = new List<WordModel>();
