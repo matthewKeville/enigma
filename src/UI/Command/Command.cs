@@ -39,7 +39,8 @@ namespace UI.Command {
     INSERT_CHAR,
     DEL_CHAR,
     SWAP_ORIENTATION,
-    DEL_WORD
+    DEL_WORD,
+    DBG_PUZZLE_SWAP
 
   }
 

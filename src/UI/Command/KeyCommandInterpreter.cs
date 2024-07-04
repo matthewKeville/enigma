@@ -10,29 +10,35 @@ namespace UI.Command {
   // A. Implement my own Key Parser, or B. Use a different language
   // for key processing and send the keys over to this process.
 
-  public class CommandInterpreter {
+  public class KeyCommandInterpreter {
 
     enum Mode {
       NORMAL,
       INSERT
     }
 
-    public event EventHandler<UI.Command.CommandEventArgs> raiseCommandEvent;
     private Dictionary<ConsoleKey,Command> commandMap;
     private Mode mode = Mode.NORMAL;
     private Thread interpreterThread ;
     private bool running = true;
 
-    public CommandInterpreter(IApplicationLifetime applicationLifetime) {
+    private CommandDispatcher commandDispatcher;
+
+    public KeyCommandInterpreter(IApplicationLifetime applicationLifetime,CommandDispatcher commandDispatcher) {
+      this.commandDispatcher = commandDispatcher;
       applicationLifetime.ApplicationStopping.Register(stop);
-      Trace.WriteLine("CommandInterpreter starting ...");
+      Trace.WriteLine("KeyCommandInterpreter starting ...");
       buildCommandMap();
       interpreterThread = new Thread(processIO);
       interpreterThread.Start();
     }
 
     private void triggerCommand(Command command) {
-      raiseCommandEvent(this, new CommandEventArgs(command));
+      commandDispatcher.dispatchCommand(new CommandEventArgs(command));
+    }
+
+    private void triggerCommand(Command command,ConsoleKey key) {
+      commandDispatcher.dispatchCommand(new CommandEventArgs(command,key));
     }
 
     private void buildCommandMap() {
@@ -93,23 +99,15 @@ namespace UI.Command {
       if ( mode == Mode.INSERT ) {
         int keyNum = ((int)key);
         if ( 65 <= keyNum && keyNum <= 90 ) {
-          raiseCommandEvent(this, new CommandEventArgs(Command.INSERT_CHAR,key));
+          triggerCommand(Command.INSERT_CHAR,key);
         } else if ( 97 <= keyNum && keyNum <= 122 ) {
-          raiseCommandEvent(this, new CommandEventArgs(Command.INSERT_CHAR,key));
+          triggerCommand(Command.INSERT_CHAR,key);
         } else if ( key == ConsoleKey.Backspace ) {
-          raiseCommandEvent(this, new CommandEventArgs(Command.DEL_CHAR,key));
+          triggerCommand(Command.DEL_CHAR,key);
         }
         return;
       }
 
-    }
-
-    protected virtual void OnRaiseCustomEvent(CommandEventArgs e)
-    {
-        EventHandler<CommandEventArgs>? raiseEvent = raiseCommandEvent;
-        if (raiseEvent != null) { 
-          raiseEvent(this, e);
-        }
     }
 
     void processIO() {

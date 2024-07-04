@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Context;
 using Model;
 using UI.Command;
@@ -21,6 +22,12 @@ public class GameController {
 
   public void ProcessCommandEvent(object? sender, CommandEventArgs commandEventArgs) {
     switch ( commandEventArgs.command ) {
+      case Command.Command.DBG_PUZZLE_SWAP:
+        Trace.WriteLine("puzzle swap triggered in game controller");
+        this.game = contextAccessor.getContext().gameModel;
+        gridController.ProcessCommandEvent(this,commandEventArgs);
+        cluesController.ProcessCommandEvent(this,commandEventArgs);
+        break;
       default:
         gridController.ProcessCommandEvent(this,commandEventArgs);
         break;

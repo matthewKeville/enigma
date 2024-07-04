@@ -31,20 +31,23 @@ builder.Services.AddSingleton<CluesController, CluesController>();
 
 builder.Services.AddSingleton<ContextAccessor>();
 builder.Services.AddSingleton<SpectreRenderer>();
-builder.Services.AddSingleton<CommandInterpreter>();
+builder.Services.AddSingleton<KeyCommandInterpreter>();
+builder.Services.AddSingleton<CommandDispatcher>();
 IHost host = builder.Build();
 
 ContextAccessor ctxAccessor = host.Services.GetRequiredService<ContextAccessor>();
+CommandDispatcher commandDispatcher = host.Services.GetRequiredService<CommandDispatcher>();
 NYDebugCrosswordGenerator generator= new NYDebugCrosswordGenerator();
 ctxAccessor.setContext(new ApplicationContext(generator.sample1()));
 
 new Thread( () => {
     Thread.Sleep(3000);
-    ctxAccessor.setContext(new ApplicationContext(generator.sample2()));
-    Trace.WriteLine("setting new puzzle context");
+    commandDispatcher.dispatchCommand(new CommandEventArgs(Command.DBG_PUZZLE_SWAP));
+    //ctxAccessor.setContext(new ApplicationContext(generator.sample2()));
+    //Trace.WriteLine("setting new puzzle context");
 }).Start();
 
-CommandInterpreter interpreter = host.Services.GetRequiredService<CommandInterpreter>();
+KeyCommandInterpreter interpreter = host.Services.GetRequiredService<KeyCommandInterpreter>();
 RootController controller = host.Services.GetRequiredService<RootController>();
 SpectreRenderer render = host.Services.GetRequiredService<SpectreRenderer>();
 

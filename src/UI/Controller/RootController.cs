@@ -1,6 +1,8 @@
+using System.Diagnostics;
 using Context;
 using Enums;
 using Model;
+using Services;
 using UI.Command;
 using UI.View.Spectre;
 
@@ -13,11 +15,11 @@ public class RootController {
   private GameController gameController;
   private ContextAccessor contextAccessor;
 
-  public RootController(RootView rootView,CommandInterpreter commandInterpreter,
+  public RootController(RootView rootView,CommandDispatcher commandDispatcher,
       ContextAccessor contextAccessor,GameController gameController) {
 
     this.contextAccessor = contextAccessor;
-    commandInterpreter.raiseCommandEvent += ProcessCommandEvent;
+    commandDispatcher.raiseCommandEvent += ProcessCommandEvent;
 
     this.rootModel = contextAccessor.getContext().rootModel;
     this.rootView = rootView;
@@ -29,6 +31,14 @@ public class RootController {
 
     switch ( commandEventArgs.command ) {
 
+      case Command.Command.DBG_PUZZLE_SWAP:
+        Trace.WriteLine("puzzle swap triggered in root");
+        //tmp test
+        NYDebugCrosswordGenerator gen = new NYDebugCrosswordGenerator();
+        contextAccessor.setContext(new ApplicationContext(gen.sample2()));
+        //this.rootModel = contextAccessor.getContext().rootModel;
+        gameController.ProcessCommandEvent(this,commandEventArgs);
+        break;
       case Command.Command.SWITCH_VIEW:
         rootModel.SwitchWindow();
         break;

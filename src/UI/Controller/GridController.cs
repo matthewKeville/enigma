@@ -23,7 +23,13 @@ public class GridController {
 
   public void ProcessCommandEvent(object? sender, CommandEventArgs commandEventArgs) {
     switch ( commandEventArgs.command ) {
-      //fallthrough
+
+      case Command.Command.DBG_PUZZLE_SWAP:
+        Trace.WriteLine("puzzle swap triggered in game grid controller");
+        this.grid = contextAccessor.getContext().gridModel;
+        gridView.setContext(contextAccessor.getContext());
+        break;
+
       case Command.Command.MOVE_LEFT:
         MoveEntry(Move.LEFT);
         break;
