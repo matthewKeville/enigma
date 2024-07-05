@@ -1,3 +1,4 @@
+using Context;
 using Enums;
 using Spectre.Console.Rendering;
 using UI.Model;
@@ -12,7 +13,8 @@ public class RootView : SpectreView<RootModel> {
   private GameView gameView;
   private BrowserView browserView ;
 
-  public RootView(HelpView helpView,GameView gameView,BrowserView browserView) {
+  public RootView(ContextAccessor ctx, HelpView helpView,GameView gameView,BrowserView browserView) {
+    Register(ctx);
     this.gameView = gameView;
     this.helpView = helpView;
     this.browserView = browserView;

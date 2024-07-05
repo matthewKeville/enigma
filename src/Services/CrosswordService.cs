@@ -7,7 +7,7 @@ namespace Services {
 
     private CrosswordRepository crosswordRepository;
 
-    public CrosswordService(CrosswordRepository crosswordRepository ) {
+    public CrosswordService(CrosswordRepository crosswordRepository) {
       this.crosswordRepository = crosswordRepository;
     }
 

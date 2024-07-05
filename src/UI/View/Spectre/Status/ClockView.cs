@@ -6,6 +6,10 @@ namespace UI.View.Spectre.Status {
 
 public class ClockView : SpectreView<ClockModel> {
 
+  public ClockView(ContextAccessor ctx) {
+    Register(ctx);
+  }
+
   protected override Panel render() {
     TimeSpan elapsed = (DateTime.UtcNow - model.start);
     String minutes = elapsed.Minutes > 9 ? ""+elapsed.Minutes : "0"+elapsed.Minutes;

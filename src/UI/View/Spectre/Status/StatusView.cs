@@ -8,6 +8,11 @@ public class StatusView : SpectreView<StatusModel> {
 
   private ClockView clockView;
 
+  public StatusView(ContextAccessor ctx, ClockView clockView) {
+    Register(ctx);
+    this.clockView = clockView;
+  }
+
   protected override Layout render() {
 
     Layout layout = new Layout("Status");

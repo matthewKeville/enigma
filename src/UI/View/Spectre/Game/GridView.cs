@@ -1,3 +1,4 @@
+using Context;
 using Spectre.Console;
 using UI.Model.Game;
 
@@ -6,6 +7,10 @@ namespace UI.View.Spectre.Game {
 public class GridView : SpectreView<GridModel> {
 
   private const char block = ' ';
+
+  public GridView(ContextAccessor ctx) {
+    Register(ctx);
+  }
 
   protected override Layout render() {
 

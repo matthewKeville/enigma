@@ -1,3 +1,4 @@
+using Context;
 using Enums;
 using Spectre.Console;
 using UI.Model.Game;
@@ -7,6 +8,10 @@ namespace UI.View.Spectre.Game {
 public class CluesView : SpectreView<CluesModel> {
 
   private int clueCutoff = 40;
+
+  public CluesView(ContextAccessor ctx) {
+    Register(ctx);
+  }
 
   protected override Layout render() {
 

@@ -1,21 +1,17 @@
 using Context;
 using UI.Command;
 using UI.Model.Browser;
-using UI.View.Spectre.Browser;
 
 namespace UI.Controller.Browser {
 
 public class BrowserController {
 
-  private BrowserView browserView;
   private BrowserModel browserModel;
   private ContextAccessor contextAccessor;
 
-  public BrowserController(ContextAccessor contextAccessor, BrowserView browserView) {
+  public BrowserController(ContextAccessor contextAccessor) {
     this.contextAccessor = contextAccessor;
-    this.browserModel = contextAccessor.GetContext().browserModel;
-    this.browserView = browserView;
-    this.browserView.SetContext(contextAccessor.GetContext().browserModel);
+    this.browserModel = (BrowserModel) contextAccessor.GetModel<BrowserModel>();
   }
 
   public void ProcessCommandEvent(object? sender, CommandEventArgs commandEventArgs) {

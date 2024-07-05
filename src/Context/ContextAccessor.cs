@@ -20,6 +20,9 @@ namespace Context {
       this.context = buildDefaultContext();
     }
 
+    public event EventHandler<EventArgs> RaiseContextChangeEvent;
+
+
     public void UpdateContext(Crossword crossword) {
 
       ApplicationContext newContext = new ApplicationContext();
@@ -88,6 +91,9 @@ namespace Context {
       newContext.clockModel = new ClockModel();    
 
       this.context = newContext;
+
+      RaiseContextChangeEvent(this,new EventArgs());
+
     }
 
     public ApplicationContext GetContext() {
@@ -98,14 +104,43 @@ namespace Context {
       return this.context;
     }
 
+    public IModel GetModel<K>() where K : IModel {
+      Type type = typeof(K);
+      if ( type == typeof(RootModel)) {
+        return context.rootModel;
+      } else if (type == typeof(HelpModel)) {
+        return context.helpModel;
+      } else if (type == typeof(GameModel)) {
+        return context.gameModel;
+      } else if (type == typeof(CluesModel)) {
+        return context.cluesModel;
+      } else if (type == typeof(GridModel)) {
+        return context.gridModel;
+      } else if (type == typeof(ClockModel)) {
+        return context.clockModel;
+      } else if (type == typeof(StatusModel)) {
+        return context.statusModel;
+      } else if (type == typeof(BrowserModel)) {
+        return context.browserModel;
+      } else {
+        Trace.WriteLine($"Critical error : unable to resolve type for GetModel<{type.ToString}>");
+        Environment.Exit(0);
+        return default(K);
+      }
+    }
+
     private ApplicationContext buildDefaultContext() {
       ApplicationContext context = new ApplicationContext();
       context.rootModel = new RootModel();
+      context.clockModel = new ClockModel();
       context.browserModel = new BrowserModel();
       context.browserModel.headers = crosswordService.GetCrosswordHeaders();
       context.statusModel = new StatusModel();
       context.statusModel.title = "Ohhhhhhh";
       context.helpModel = new HelpModel();    
+
+      context.gridModel = new GridModel();
+      context.cluesModel = new CluesModel();
       return context;
     }
 

@@ -1,3 +1,4 @@
+using Context;
 using Spectre.Console;
 using UI.Model.Game;
 using UI.View.Spectre.Status;
@@ -10,7 +11,8 @@ namespace UI.View.Spectre.Game {
     private StatusView statusView;
     private GridView gridView;
 
-    public GameView(StatusView statusView,CluesView cluesView,GridView gridView) {
+    public GameView(ContextAccessor ctx,StatusView statusView,CluesView cluesView,GridView gridView) {
+      Register(ctx);
       this.statusView = statusView;
       this.gridView = gridView;
       this.cluesView = cluesView;

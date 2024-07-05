@@ -4,22 +4,18 @@ using UI.Command;
 using UI.Event;
 using UI.Events;
 using UI.Model.Game;
-using UI.View.Spectre.Game;
 
 namespace UI.Controller.Game {
 
 public class GridController {
 
-  private GridView gridView;
   private GridModel gridModel;
   private ContextAccessor contextAccessor;
   private EventDispatcher eventDispatcher;
 
-  public GridController(ContextAccessor contextAccessor, GridView gridView, EventDispatcher eventDispatcher) {
+  public GridController(ContextAccessor contextAccessor, EventDispatcher eventDispatcher) {
     this.contextAccessor = contextAccessor;
-    this.gridModel = contextAccessor.GetContext().gridModel;
-    this.gridView = gridView;
-    this.gridView.SetContext(contextAccessor.GetContext().gridModel);
+    this.gridModel = (GridModel) contextAccessor.GetModel<GridModel>();
     this.eventDispatcher = eventDispatcher;
     this.eventDispatcher.RaiseEvent += ProcessEvent;
   }
@@ -29,6 +25,7 @@ public class GridController {
     action();
     if ( !prevWord.Equals(gridModel.ActiveWord()) ) {
       WordModel current = gridModel.ActiveWord();
+      Trace.WriteLine($" move into (i,x,y) ({current.i},{current.x},{current.y}");
       eventDispatcher.DispatchEvent(new GridWordChangeEventArgs(current.i,current.direction));
     }
   }
@@ -39,8 +36,7 @@ public class GridController {
 
       case Command.Command.UPDATE_CONTEXT:
         Trace.WriteLine("puzzle swap triggered in game grid controller");
-        this.gridModel = contextAccessor.GetContext().gridModel;
-        gridView.SetContext(contextAccessor.GetContext().gridModel);
+        this.gridModel = (GridModel) contextAccessor.GetModel<GridModel>();
         break;
 
       case Command.Command.MOVE_LEFT:
