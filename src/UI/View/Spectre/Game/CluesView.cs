@@ -1,3 +1,4 @@
+using Enums;
 using Spectre.Console;
 using UI.Model.Game;
 
@@ -20,23 +21,27 @@ public class CluesView : SpectreView<CluesModel> {
     table.Columns[1].Alignment(Justify.Left);
     table.Columns[1].Width = 90;
 
-    List<ClueModel> across = new List<ClueModel>(model.across);
-    List<ClueModel> down = new List<ClueModel>(model.down);
+    List<ClueModel> across = new List<ClueModel>(model.Across);
+    List<ClueModel> down = new List<ClueModel>(model.Down);
+
+    var (activeOrdinal,activeDirection) = model.ActiveClue;
 
     while ( across.Count() != 0 || down.Count() != 0 ) {
       String aclue = "";
       String dclue = "";
-      bool activeAclue = false;
-      bool activeDclue = false;
+      bool activeAClue = false;
+      bool activeDClue = false;
       if (across.Any()) {
-        activeAclue = model.IsActiveClue(across[0]);
+        ClueModel clue = across[0];
+        activeAClue = clue.ordinal == activeOrdinal && activeDirection == Direction.Across;
         aclue = string.Format("{0}  {1}",
             across[0].ordinal.ToString().PadRight(2),
             across[0].value);
         across.RemoveAt(0);
       }
       if (down.Any()) {
-        activeDclue = model.IsActiveClue(down[0]);
+        ClueModel clue = down[0];
+        activeDClue = clue.ordinal == activeOrdinal && activeDirection == Direction.Down;
         dclue = string.Format("{0}  {1}",
             down[0].ordinal.ToString().PadRight(2),
             down[0].value);
@@ -46,18 +51,12 @@ public class CluesView : SpectreView<CluesModel> {
       aclue = aclue.Substring(0,Math.Min(aclue.Count(),clueCutoff));
       dclue = dclue.Substring(0,Math.Min(dclue.Count(),clueCutoff));
 
-      if ( activeAclue ) {
+      if ( activeAClue ) {
         aclue = $"[yellow]{aclue}[/]";
       }
-      if ( activeDclue ) {
+      if ( activeDClue ) {
         dclue = $"[yellow]{dclue}[/]";
       }
-
-      /**
-      alt = (alt + 1) % 2;
-      if ( alt == 0 ) {
-      }
-      */
 
       table.AddRow(
           aclue,dclue

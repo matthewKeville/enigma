@@ -12,6 +12,7 @@ using UI.View.Spectre.Browser;
 using Repository;
 using UI.Controller.Browser;
 using UI.Controller.Game;
+using UI.Event;
 
 Trace.Listeners.Add(new TextWriterTraceListener("./logs/enigma.log"));
 Trace.AutoFlush = true;
@@ -40,6 +41,7 @@ builder.Services.AddSingleton<ContextAccessor>();
 builder.Services.AddSingleton<SpectreRenderer>();
 builder.Services.AddSingleton<KeyCommandInterpreter>();
 builder.Services.AddSingleton<CommandDispatcher>();
+builder.Services.AddSingleton<EventDispatcher>();
 
 IHost host = builder.Build();
 

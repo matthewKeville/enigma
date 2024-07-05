@@ -40,27 +40,29 @@ public class GridView : SpectreView<GridModel> {
         String charDisplay;
         // render blocks
         
-        if ( model.charMatrix[i,j] == '\0' ) {
+        if ( model.CharMatrix[i,j] == '\0' ) {
           charDisplay = "[bold][invert]"+block+"[/][/]";
         } else {
 
-        // render characters
 
-          // render active characer
-          if ( model.entry.X == i && model.entry.Y == j ) {
-            // char
-            if ( model.charMatrix[i,j] != ' ' ) {
-              charDisplay = "[yellow]"+model.charMatrix[i,j]+"[/]";
-            } else {
-              charDisplay = "[yellow]*[/]";
-            }
-            // empty
-          // render characters in the current word
-          } else if (model.InActiveWord(i,j)) {
-            charDisplay = "[purple]"+model.charMatrix[i,j]+"[/]";
+        // render active characer
+        if ( model.Entry.X == i && model.Entry.Y == j ) {
+          // char
+          if ( model.CharMatrix[i,j] != ' ' ) {
+            charDisplay = "[yellow]"+model.CharMatrix[i,j]+"[/]";
           } else {
-            charDisplay = "[white]"+model.charMatrix[i,j]+"[/]";
+            charDisplay = "[yellow]*[/]";
           }
+    
+ 
+        // render characters in the current word
+        } else if (model.InActiveWord(i,j)) {
+          charDisplay = "[purple]"+model.CharMatrix[i,j]+"[/]";
+
+        // render non-word characteres
+        } else {
+          charDisplay = "[white]"+model.CharMatrix[i,j]+"[/]";
+        }
 
         }
         table.UpdateCell(j,i,charDisplay);
@@ -68,9 +70,12 @@ public class GridView : SpectreView<GridModel> {
       }
     }
 
-    Panel testPanel = new Panel(string.Format("x,y : {0},{1}",model.entry.X,model.entry.Y));
-    layout["Bottom"].Size(8);
-    layout["Bottom"].Update(testPanel);
+    Layout DebugInfo = new Layout();
+    DebugInfo.SplitRows(new Layout("Coordinate"),new Layout("Orientation"));
+    DebugInfo["Coordinate"].Update(new Panel(string.Format("x,y : {0},{1}",model.Entry.X,model.Entry.Y)));
+    DebugInfo["Orientation"].Update(new Panel(string.Format("{0}",model.Orientation)));
+    layout["Bottom"].Update(DebugInfo);
+    layout["Bottom"].Size(12);
 
     return layout;
 

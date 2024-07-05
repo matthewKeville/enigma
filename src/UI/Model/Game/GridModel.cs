@@ -5,91 +5,131 @@ namespace UI.Model.Game {
 
   public class GridModel : IModel {
 
-    public char[,] charMatrix;
-    public Point entry = new Point(0,0);
-    public Direction orientation = Direction.Across;
-
+    public Direction Orientation;
+    public Point Entry;
+    public char[,] CharMatrix;
     public int ColumnCount = 10;
     public int RowCount = 10;
-    public List<WordModel> words;
 
-    public GridModel(int columnCount,int rowCount,List<WordModel> words) {
-      this.ColumnCount = columnCount;
-      this.RowCount = rowCount;
-      this.words = words;
-      createCharMatrix();
-    }
+    //grid model needs to know about word boundaries,
+    //but the whole word is not necessary a grid word
+    //with the dimensions of the word, orientation and ordinal
+    //should suffice.
+    public List<WordModel> Words;
 
-  // i = col , j = row
-  private void createCharMatrix() {
+    public void MoveEntry(Move move) {
 
-    this.charMatrix = new char[ColumnCount,RowCount];
+      int offx = 0;
+      int offy = 0;
 
-    //set all to block 
-    for ( int i = 0; i < ColumnCount; i++ ) {
-      for ( int j = 0; j < RowCount; j++ ) {
-        this.charMatrix[i,j] = '\0';
+      //Out of Bounds?
+      switch (move) {
+        case Move.RIGHT:
+          if ( Entry.X != ColumnCount-1) {
+            offx = 1;
+          }
+          break;
+        case Move.UP:
+          if ( Entry.Y != 0 ) {
+            offy = -1;
+          }
+          break;
+        case Move.LEFT:
+          if ( Entry.X != 0 ) {
+            offx = -1;
+          }
+          break;
+        case Move.DOWN:
+          if ( Entry.Y != RowCount-1 ) {
+            offy = 1;
+          }
+          break;
+      }
+
+      //Valid word position
+      //Is this redundant?
+      Point nextEntry = Point.Add(Entry,new System.Drawing.Size(offx,offy));
+      if ( InWords(nextEntry.X,nextEntry.Y).Count() != 0 ) {
+        Entry = nextEntry;
       }
     }
 
-    //set words as spaces
-    foreach ( WordModel word in words ) {
-      for ( int x = 0; x < word.answer.Count(); x++ ) {
-        if ( word.direction == Direction.Across ) {
-          charMatrix[word.x+x,word.y] = ' ';
-        } else {
-          charMatrix[word.x,word.y+x] = ' ';
-        }
-      }
+    //What is the active word?
+    public WordModel ActiveWord() {
+      return InWords(Entry.X,Entry.Y).First( w => w.direction == Orientation );
+    }
+
+    //determine if this coordinate is inside the active word
+    public bool InActiveWord(int x, int y) {
+      return InWordRange(ActiveWord(),x,y);
     }
 
 
-    
-  }
+    //return the words that contain this coordinate
+    private List<WordModel> InWords(int x,int y) {
+      List<WordModel> inWords = Words.FindAll( w => 
+        { return InWordRange(w,x,y); }
+      );
+      return inWords;
+    }
 
-  //return the word the cursor is in
-  public List<WordModel> InWords(int x,int y) {
-    List<WordModel> inWords = words.FindAll( w => {
-    //WordModel? word = words.FirstOrDefault( w => {
-        int wxs = w.x;
-        int wxf = w.direction == Direction.Across ? 
-          w.x + w.answer.Count() -1:
-          w.x;
-        int wys = w.y;
-        int wyf = w.direction == Direction.Down ? 
-          w.y + w.answer.Count() -1:
-          w.y;
-        // Trace.WriteLine(
-        //     string.Format("{0} {1} {2} : {3} {4} {5}",wxs,x,wxf,wys,y,wyf));
+    //determine if the coordinate is inside the word
+    private bool InWordRange(WordModel word,int x, int y) {
+        int wxs = word.x;
+        int wxf = word.direction == Direction.Across ? 
+          word.x + word.answer.Count() -1:
+          word.x;
+        int wys = word.y;
+        int wyf = word.direction == Direction.Down ? 
+          word.y + word.answer.Count() -1:
+          word.y;
         return 
           Enumerable.Range(wxs,wxf-wxs+1).Contains(x) && 
           Enumerable.Range(wys,wyf-wys+1).Contains(y);
-    });
-    return inWords;
-  }
-
-  public bool IsInWord(int x,int y) {
-    return InWords(x,y).Any();
-  }
-
-  public WordModel? ActiveWord() {
-    return InWords(entry.X,entry.Y).FirstOrDefault( w => w.direction == orientation,null);
-  }
-
-  public bool InActiveWord(int x, int y) {
-    WordModel? expectWordModel = InWords(entry.X,entry.Y).FirstOrDefault( w => w.direction == orientation, null);
-    if ( expectWordModel == null ) {
-      Trace.WriteLine("ERROR : no active word");
-      return false;
     }
-    WordModel word = (WordModel) expectWordModel;
-    if (word.direction == Direction.Across) {
-      return (word.x <= x && x <= word.x + word.answer.Count()) && ( y == word.y );
-    } else {
-      return ( word.x == x ) && ( word.y <= y && y <= word.y + word.answer.Count());
+
+
+    public void SwapOrientation() {
+      Orientation = ( Orientation == Direction.Across ) ? Direction.Down : Direction.Across;
     }
-  }
 
-  }
 
+    public void InsertKey(ConsoleKey key) {
+      CharMatrix[Entry.X,Entry.Y] = (char) key;
+      MoveEntry(Orientation == Direction.Across ? Move.RIGHT : Move.DOWN);
+    }
+
+    public void DeleteKey() {
+      CharMatrix[Entry.X,Entry.Y] = ' ';
+      MoveEntry(Orientation == Direction.Across ? Move.LEFT : Move.UP);
+    }
+
+    public void DeleteWord() {
+
+      WordModel word = ActiveWord();
+
+      for ( int n = 0; n < word.answer.Count(); n++ ) {
+        if ( word.direction == Direction.Across ) {
+          CharMatrix[word.x + word.answer.Count()-1 - n , word.y] = ' ';
+        } else {
+          CharMatrix[word.x,word.y + word.answer.Count()-1 - n ] = ' ';
+        }
+      }
+
+    }
+
+    public void MoveToWordStart() {
+      WordModel word = ActiveWord();
+      Entry = new Point(word.x,word.y);
+    }
+
+    public void MoveToWordEnd() {
+      WordModel word = ActiveWord();
+      Entry = word.direction == Direction.Across ? 
+        new Point(word.x + word.answer.Count()-1,word.y) :
+        new Point(word.x,word.y + word.answer.Count()-1);
+    }
+
+
+}
 }

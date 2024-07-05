@@ -1,7 +1,8 @@
-using System.Drawing;
 using Context;
 using Enums;
 using UI.Command;
+using UI.Event;
+using UI.Events;
 using UI.Model.Game;
 using UI.View.Spectre.Game;
 
@@ -10,14 +11,26 @@ namespace UI.Controller.Game {
 public class GridController {
 
   private GridView gridView;
-  private GridModel grid;
+  private GridModel gridModel;
   private ContextAccessor contextAccessor;
+  private EventDispatcher eventDispatcher;
 
-  public GridController(ContextAccessor contextAccessor, GridView gridView) {
+  public GridController(ContextAccessor contextAccessor, GridView gridView, EventDispatcher eventDispatcher) {
     this.contextAccessor = contextAccessor;
-    this.grid = contextAccessor.GetContext().gridModel;
+    this.gridModel = contextAccessor.GetContext().gridModel;
     this.gridView = gridView;
     this.gridView.SetContext(contextAccessor.GetContext().gridModel);
+    this.eventDispatcher = eventDispatcher;
+    this.eventDispatcher.RaiseEvent += ProcessEvent;
+  }
+
+  public void PerformAndNotifyGridWordChange(Action action) {
+    WordModel prevWord = gridModel.ActiveWord();
+    action();
+    if ( !prevWord.Equals(gridModel.ActiveWord()) ) {
+      WordModel current = gridModel.ActiveWord();
+      eventDispatcher.DispatchEvent(new GridWordChangeEventArgs(current.i,current.direction));
+    }
   }
 
   public void ProcessCommandEvent(object? sender, CommandEventArgs commandEventArgs) {
@@ -26,149 +39,57 @@ public class GridController {
 
       case Command.Command.UPDATE_CONTEXT:
         Trace.WriteLine("puzzle swap triggered in game grid controller");
-        this.grid = contextAccessor.GetContext().gridModel;
+        this.gridModel = contextAccessor.GetContext().gridModel;
         gridView.SetContext(contextAccessor.GetContext().gridModel);
         break;
 
       case Command.Command.MOVE_LEFT:
-        MoveEntry(Move.LEFT);
+        PerformAndNotifyGridWordChange( () => { gridModel.MoveEntry(Move.LEFT);} );
         break;
 
       case Command.Command.MOVE_RIGHT:
-        MoveEntry(Move.RIGHT);
+        PerformAndNotifyGridWordChange( () => { gridModel.MoveEntry(Move.RIGHT);} );
         break;
 
       case Command.Command.MOVE_UP:
-        MoveEntry(Move.UP);
+        PerformAndNotifyGridWordChange( () => { gridModel.MoveEntry(Move.UP);} );
         break;
 
       case Command.Command.MOVE_DOWN:
-        MoveEntry(Move.DOWN);
+        PerformAndNotifyGridWordChange( () => { gridModel.MoveEntry(Move.DOWN);} );
         break;
 
       case Command.Command.MOVE_WORD_START:
-        MoveToWordStart();
+          gridModel.MoveToWordStart();
         break;
       case Command.Command.MOVE_WORD_END:
-        MoveToWordEnd();
+          gridModel.MoveToWordEnd();
         break;
 
       case Command.Command.INSERT_CHAR:
-        Trace.WriteLine("inserting character");
         if (commandEventArgs.key is null) {
           Trace.WriteLine("Critical error , INSERT_CHAR command requires a key, it is null");
           Environment.Exit(1);
         } 
-        InsertKey((ConsoleKey)commandEventArgs.key);
+        gridModel.InsertKey((ConsoleKey)commandEventArgs.key);
         break;
 
       case Command.Command.DEL_CHAR:
-        DeleteKey();
+        gridModel.DeleteKey();
         break;
 
       case Command.Command.DEL_WORD:
-        DeleteWord();
+        gridModel.DeleteWord();
         break;
 
       case Command.Command.SWAP_ORIENTATION:
-        SwapOrientation();
+        PerformAndNotifyGridWordChange( () => { gridModel.SwapOrientation();} );
         break;
     }
   }
 
-
-
-  public void MoveEntry(Move move) {
-
-    int offx = 0;
-    int offy = 0;
-
-    //OOB check
-    switch (move) {
-      case Move.RIGHT:
-        if ( grid.entry.X != grid.ColumnCount-1) {
-          offx = 1;
-        }
-        break;
-      case Move.UP:
-        if ( grid.entry.Y != 0 ) {
-          offy = -1;
-        }
-        break;
-      case Move.LEFT:
-        if ( grid.entry.X != 0 ) {
-          offx = -1;
-        }
-        break;
-      case Move.DOWN:
-        if ( grid.entry.Y != grid.RowCount-1 ) {
-          offy = 1;
-        }
-        break;
-    }
-
-    //Valid word position?
-    Point nextEntry = Point.Add(grid.entry,new System.Drawing.Size(offx,offy));
-    if ( grid.IsInWord(nextEntry.X,nextEntry.Y) ) {
-      grid.entry = nextEntry;
-    }
-
-  }
-
-  public void SwapOrientation() {
-    grid.orientation = ( grid.orientation == Direction.Across ) ? Direction.Down : Direction.Across;
-  }
-
-
-  public void MoveToWordStart() {
-    WordModel? expectWord = grid.ActiveWord();
-    if (expectWord == null) {
-      Trace.WriteLine("Critical Error : ActiveWord not found");
-      Environment.Exit(0);
-    }
-    WordModel word = (WordModel) expectWord;
-    grid.entry = new Point(word.x,word.y);
-  }
-
-  public void MoveToWordEnd() {
-    WordModel? expectWord = grid.ActiveWord();
-    if (expectWord == null) {
-      Trace.WriteLine("Critical Error : ActiveWord not found");
-      Environment.Exit(0);
-    }
-    WordModel word = (WordModel) expectWord;
-    grid.entry = word.direction == Direction.Across ? 
-      new Point(word.x + word.answer.Count()-1,word.y) :
-      new Point(word.x,word.y + word.answer.Count()-1);
-  }
-
-  public void InsertKey(ConsoleKey key) {
-    grid.charMatrix[grid.entry.X,grid.entry.Y] = (char) key;
-    MoveEntry(grid.orientation == Direction.Across ? Move.RIGHT : Move.DOWN);
-  }
-
-  public void DeleteKey() {
-    grid.charMatrix[grid.entry.X,grid.entry.Y] = ' ';
-    MoveEntry(grid.orientation == Direction.Across ? Move.LEFT : Move.UP);
-  }
-
-  public void DeleteWord() {
-    WordModel? expectWord = grid.ActiveWord();
-    if (expectWord == null) {
-      Trace.WriteLine("Critical Error : ActiveWord not found");
-      Environment.Exit(0);
-    }
-
-    WordModel word = (WordModel) expectWord;
-
-    for ( int n = 0; n < word.answer.Count(); n++ ) {
-      if ( word.direction == Direction.Across ) {
-        grid.charMatrix[word.x + word.answer.Count()-1 - n , word.y] = ' ';
-      } else {
-        grid.charMatrix[word.x,word.y + word.answer.Count()-1 - n ] = ' ';
-      }
-    }
-
+  public void ProcessEvent(object? sender,EventArgs eventArgs) {
+    // respond to clues change event
   }
 
 }

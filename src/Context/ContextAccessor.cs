@@ -1,4 +1,6 @@
+using System.Drawing;
 using Entity;
+using Enums;
 using Services;
 using UI.Model;
 using UI.Model.Browser;
@@ -21,6 +23,7 @@ namespace Context {
     public void UpdateContext(Crossword crossword) {
 
       ApplicationContext newContext = new ApplicationContext();
+      //TOOD sync inital data between clues & grid
 
       //keep
       newContext.rootModel = context.rootModel;
@@ -30,11 +33,58 @@ namespace Context {
       //context changed
       newContext.statusModel = new StatusModel();
       newContext.statusModel.title = "Ohhhhhhh";
+
+      // GAME
+
       newContext.gameModel = new GameModel();    
 
-      //todo : disentagle model from entity
-      newContext.gridModel = new GridModel(crossword.model.colCount,crossword.model.rowCount,crossword.model.words);
-      newContext.cluesModel = new CluesModel(crossword.model,newContext.gridModel); //this is bad, pls fixme
+      // GAME :-> GRID
+
+      newContext.gridModel = new GridModel();
+      newContext.gridModel.ColumnCount = crossword.model.colCount;
+      newContext.gridModel.RowCount = crossword.model.rowCount;
+      newContext.gridModel.Entry = new Point(0,0);
+      newContext.gridModel.Orientation = Direction.Across;
+      newContext.gridModel.Words = crossword.model.words;
+
+      char[,] charMatrix = new char[crossword.model.colCount,crossword.model.rowCount];
+
+      //set all to block 
+      for ( int i = 0; i < crossword.model.colCount; i++ ) {
+        for ( int j = 0; j < crossword.model.rowCount; j++ ) {
+          charMatrix[i,j] = '\0';
+        }
+      }
+
+      //set words as spaces
+      foreach ( WordModel word in crossword.model.words ) {
+        for ( int x = 0; x < word.answer.Count(); x++ ) {
+          if ( word.direction == Direction.Across ) {
+            charMatrix[word.x+x,word.y] = ' ';
+          } else {
+            charMatrix[word.x,word.y+x] = ' ';
+          }
+        }
+      }
+
+      newContext.gridModel.CharMatrix = charMatrix;
+
+      // GAME :-> CLUES
+
+      newContext.cluesModel = new CluesModel()
+      {
+          Across = crossword.model.words.Where( w => w.direction == Direction.Across )
+            .OrderBy( w => w.i )
+            .Select( w => new ClueModel(w.i,w.prompt))
+            .ToList(),
+          Down = crossword.model.words
+            .Where( w => w.direction == Direction.Down )
+            .OrderBy( w => w.i )
+            .Select( w => new ClueModel(w.i,w.prompt))
+            .ToList(),
+          ActiveClue = (0,Direction.Across)
+      };
+
       newContext.clockModel = new ClockModel();    
 
       this.context = newContext;
