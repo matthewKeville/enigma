@@ -26,10 +26,12 @@ namespace Context {
     public void UpdateContext(Crossword crossword) {
 
       ApplicationContext newContext = new ApplicationContext();
-      //TOOD sync inital data between clues & grid
+
+      //TOOD sync inital models between clues & grid
 
       //keep
       newContext.rootModel = context.rootModel;
+      newContext.rootModel.activeWindow = Window.GAME;
       newContext.browserModel = context.browserModel;
       newContext.helpModel = context.helpModel;
 

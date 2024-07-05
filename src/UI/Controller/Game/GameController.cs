@@ -1,35 +1,37 @@
 using Context;
+using Enums;
 using UI.Command;
 using UI.Model.Game;
 
 namespace UI.Controller.Game {
 
-public class GameController {
+public class GameController : Controller<GameModel> {
 
-  private GameModel gameModel;
   private GridController gridController;
   private CluesController cluesController;
   private ContextAccessor contextAccessor;
 
-  public GameController(ContextAccessor contextAccessor,GridController gridController,CluesController cluesController) {
-    this.contextAccessor = contextAccessor;
-    this.gameModel = (GameModel) contextAccessor.GetModel<GameModel>();
+  public GameController(ContextAccessor ctx,GridController gridController,CluesController cluesController) {
+    this.contextAccessor = ctx;
+    Register(ctx);
     this.gridController = gridController;
     this.cluesController = cluesController;
   }
 
   public void ProcessCommandEvent(object? sender, CommandEventArgs commandEventArgs) {
-    switch ( commandEventArgs.command ) {
-      case Command.Command.UPDATE_CONTEXT:
-        Trace.WriteLine("puzzle swap triggered in game controller");
-        this.gameModel = (GameModel) contextAccessor.GetModel<GameModel>();
+
+    switch ( model.activePane) {
+
+      case Pane.GRID:
         gridController.ProcessCommandEvent(this,commandEventArgs);
+        break;
+      case Pane.CLUES:
         cluesController.ProcessCommandEvent(this,commandEventArgs);
         break;
       default:
-        gridController.ProcessCommandEvent(this,commandEventArgs);
         break;
     }
+
   }
 
 }

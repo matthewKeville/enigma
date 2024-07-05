@@ -6,18 +6,14 @@ using UI.Model.Game;
 
 namespace UI.Controller.Game {
 
-public class CluesController {
+public class CluesController : Controller<CluesModel> {
 
-  private CluesModel cluesModel;
   private ContextAccessor contextAccessor;
 
-  public CluesController(ContextAccessor contextAccessor, EventDispatcher eventDispatcher) {
-    this.contextAccessor = contextAccessor;
-    this.cluesModel = (CluesModel) contextAccessor.GetModel<CluesModel>();
+  public CluesController(ContextAccessor ctx, EventDispatcher eventDispatcher) {
+    this.contextAccessor = ctx;
+    Register(ctx);
     eventDispatcher.RaiseEvent += ProcessEvent;
-    contextAccessor.RaiseContextChangeEvent += (Object? sender,EventArgs args) => { 
-      this.cluesModel = (CluesModel) contextAccessor.GetModel<CluesModel>();
-    };
   }
 
   public void ProcessCommandEvent(object? sender, CommandEventArgs commandEventArgs) {
@@ -31,8 +27,8 @@ public class CluesController {
     if (eventArgs.GetType() == typeof(GridWordChangeEventArgs)) {
       Trace.WriteLine(" Recieved grid word change ");
       GridWordChangeEventArgs args = ((GridWordChangeEventArgs) eventArgs);
-      this.cluesModel.ActiveClue = (args.ordinal,args.direction);
-      Trace.WriteLine($"active clue (i,d) {this.cluesModel.ActiveClue.ToString()}");
+      this.model.ActiveClue = (args.ordinal,args.direction);
+      Trace.WriteLine($"active clue (i,d) {this.model.ActiveClue.ToString()}");
     }
   }
 
