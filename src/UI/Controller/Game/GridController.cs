@@ -79,7 +79,14 @@ public class GridController : Controller<GridModel> {
   }
 
   public void ProcessEvent(object? sender,EventArgs eventArgs) {
-    // respond to clues change event
+
+    if (eventArgs.GetType() == typeof(CluesWordChangeEventArgs)) {
+
+      Trace.WriteLine(" Recieved Clue Word Change ");
+      CluesWordChangeEventArgs args = ((CluesWordChangeEventArgs) eventArgs);
+      this.model.MoveToOrdinal(args.ordinal,args.direction);
+
+    }
   }
 
 }

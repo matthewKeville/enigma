@@ -20,6 +20,15 @@ public class GameController : Controller<GameModel> {
 
   public void ProcessCommandEvent(object? sender, CommandEventArgs commandEventArgs) {
 
+    switch ( commandEventArgs.command ) {
+      case Command.Command.SWAP_PANE:
+        model.SwapPane();
+        Trace.WriteLine("pane swap");
+        break;
+      default:
+        break;
+    }
+
     switch ( model.activePane) {
 
       case Pane.GRID:
@@ -30,6 +39,7 @@ public class GameController : Controller<GameModel> {
         break;
       default:
         break;
+
     }
 
   }

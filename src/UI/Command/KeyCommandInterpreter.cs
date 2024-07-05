@@ -39,7 +39,7 @@ namespace UI.Command {
       commandMap = new Dictionary<ConsoleKey,Command>();
       commandMap.Add(ConsoleKey.Escape,Command.NORMAL_MODE);
       commandMap.Add(ConsoleKey.I,Command.INSERT_MODE);
-      commandMap.Add(ConsoleKey.Tab,Command.SWITCH_VIEW);
+      commandMap.Add(ConsoleKey.Tab,Command.SWAP_PANE);
       commandMap.Add(ConsoleKey.H,Command.MOVE_LEFT);
       commandMap.Add(ConsoleKey.L,Command.MOVE_RIGHT);
       commandMap.Add(ConsoleKey.K,Command.MOVE_UP);

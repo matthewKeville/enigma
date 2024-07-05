@@ -16,6 +16,7 @@ namespace UI.Command {
         Command.MOVE_WORD_START,
         Command.MOVE_WORD_END,
         Command.SWAP_ORIENTATION,
+        Command.SWAP_PANE,
         Command.DEL_WORD,
         Command.CONFIRM
     };
@@ -40,12 +41,9 @@ namespace UI.Command {
     INSERT_CHAR,
     DEL_CHAR,
     SWAP_ORIENTATION,
+    SWAP_PANE,
     DEL_WORD,
     CONFIRM,
-
-    UPDATE_CONTEXT, //this is really an event... FIXME
-
-    DBG_PUZZLE_SWAP,
 
   }
 

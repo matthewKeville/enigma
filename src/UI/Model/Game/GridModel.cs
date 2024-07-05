@@ -17,6 +17,11 @@ namespace UI.Model.Game {
     //should suffice.
     public List<WordModel> Words;
 
+    public void MoveToOrdinal(int ordinal,Direction direction) {
+      WordModel moveWord = Words.Find( w => w.i == ordinal && w.direction == direction );
+      Entry = new Point(moveWord.x,moveWord.y);
+    }
+
     public void MoveEntry(Move move) {
 
       int offx = 0;
