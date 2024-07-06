@@ -10,7 +10,7 @@ public class CluesView : SpectreView<CluesModel> {
   private int clueCutoff = 40;
   private int columnWidth = 90;
   private int tableWidth = 200;
-  private bool nowrap = false;
+  private bool nowrap = true;
 
   public CluesView(ContextAccessor ctx) {
     Register(ctx);
@@ -63,7 +63,7 @@ public class CluesView : SpectreView<CluesModel> {
       if ( nowrap ) {
         aclue = aclue.Substring(0,Math.Min(aclue.Count(),clueCutoff));
         dclue = dclue.Substring(0,Math.Min(dclue.Count(),clueCutoff));
-      }
+      } 
 
       if ( activeAClue ) {
         aclue = $"[yellow]{aclue}[/]";

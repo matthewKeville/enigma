@@ -85,7 +85,7 @@ public class GridView : SpectreView<GridModel> {
     return table;
   }
 
-  protected override /**Layout*/IRenderable render() {
+  protected override IRenderable render() {
 
 
     Table debugTable = buildDebugTable();

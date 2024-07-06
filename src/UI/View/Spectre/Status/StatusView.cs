@@ -13,22 +13,17 @@ public class StatusView : SpectreView<StatusModel> {
     this.clockView = clockView;
   }
 
-  protected override Layout render() {
+  protected override Table render() {
 
-    Layout layout = new Layout("Status");
     Table table = new Table();
     table.Centered();
     table.AddColumn(new TableColumn("Clock").Centered());
-
     table.HideHeaders();
     table.NoBorder();
-
     table.AddRow(new Markup(model.title));
     table.AddRow(new Markup(" ----<>---- "));
     table.AddRow(clockView.Render());
-
-    layout.Update(table);
-    return layout;
+    return table;
   }
 
 }

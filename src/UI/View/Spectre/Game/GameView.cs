@@ -26,6 +26,7 @@ namespace UI.View.Spectre.Game {
       table.AddColumn(new TableColumn("Grid"));
       table.AddColumn(new TableColumn("Clues"));
       table.HideHeaders();
+      table.NoBorder();
 
       table.AddRow(gridView.Render(),cluesView.Render());
 
@@ -34,9 +35,9 @@ namespace UI.View.Spectre.Game {
             new Layout("top"),
             new Layout("bottom")
         );
-      layout["top"].Update(new Padder(statusView.Render()).PadTop(2));
+      layout["top"].Update(statusView.Render());
       layout["bottom"].Update(table);
-      layout["top"].Size = 6;
+      layout["top"].Size = 3;
       return layout;
 
       //return table;
