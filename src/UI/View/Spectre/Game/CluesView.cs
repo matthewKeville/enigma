@@ -8,23 +8,30 @@ namespace UI.View.Spectre.Game {
 public class CluesView : SpectreView<CluesModel> {
 
   private int clueCutoff = 40;
+  private int columnWidth = 90;
+  private int tableWidth = 200;
+  private bool nowrap = false;
 
   public CluesView(ContextAccessor ctx) {
     Register(ctx);
   }
 
-  protected override Layout render() {
+  protected override Table render() {
 
-    Layout layout = new Layout("Clues");
     Table table = new Table();
 
     table.AddColumn("Across");
     table.AddColumn("Down");
-    table.Width = 200;
+    table.Width = tableWidth;
     table.Columns[0].Alignment(Justify.Left);
-    table.Columns[0].Width = 90;
+    table.Columns[0].Width = columnWidth;
     table.Columns[1].Alignment(Justify.Left);
-    table.Columns[1].Width = 90;
+    table.Columns[1].Width = columnWidth;
+    if ( nowrap ) {
+      table.Columns[0].NoWrap();
+      table.Columns[1].NoWrap();
+    }
+    clueCutoff = columnWidth - 6;
 
     List<ClueModel> across = new List<ClueModel>(model.Across);
     List<ClueModel> down = new List<ClueModel>(model.Down);
@@ -53,8 +60,10 @@ public class CluesView : SpectreView<CluesModel> {
         down.RemoveAt(0);
       }
 
-      aclue = aclue.Substring(0,Math.Min(aclue.Count(),clueCutoff));
-      dclue = dclue.Substring(0,Math.Min(dclue.Count(),clueCutoff));
+      if ( nowrap ) {
+        aclue = aclue.Substring(0,Math.Min(aclue.Count(),clueCutoff));
+        dclue = dclue.Substring(0,Math.Min(dclue.Count(),clueCutoff));
+      }
 
       if ( activeAClue ) {
         aclue = $"[yellow]{aclue}[/]";
@@ -68,9 +77,8 @@ public class CluesView : SpectreView<CluesModel> {
       );
     }
 
-    layout.Update(table);
 
-    return layout;
+    return table;
   }
 
 }

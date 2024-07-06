@@ -39,6 +39,7 @@ namespace Context {
       newContext.statusModel = new StatusModel();
       newContext.statusModel.title = crossword.published.ToShortDateString();
 
+
       // GAME
 
       newContext.gameModel = new GameModel();    
@@ -144,7 +145,6 @@ namespace Context {
       context.statusModel = new StatusModel();
       context.statusModel.title = "";
       context.helpModel = new HelpModel();    
-
       context.gridModel = new GridModel();
       context.cluesModel = new CluesModel();
       return context;

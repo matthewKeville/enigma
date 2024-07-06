@@ -1,5 +1,6 @@
 using Context;
 using Spectre.Console;
+using Spectre.Console.Rendering;
 using UI.Model.Game;
 
 namespace UI.View.Spectre.Game {
@@ -12,13 +13,25 @@ public class GridView : SpectreView<GridModel> {
     Register(ctx);
   }
 
-  protected override Layout render() {
+  private Table buildDebugTable() {
+    Table DebugTable = new Table();
+    DebugTable.HideHeaders();
+    DebugTable.NoBorder();
+    DebugTable.AddColumn("Coordinate");
+    DebugTable.AddColumn("Orientation");
+    DebugTable.AddRow(
+        new Panel(string.Format("x,y : {0},{1}",model.Entry.X,model.Entry.Y)),
+        new Panel(string.Format("{0}",model.Orientation))
+    );
+    return DebugTable;
+  }
 
+  private Table buildGridTable() {
+    //skeleton
     Table table = new Table();
     table.Border(TableBorder.Heavy);
-    Layout layout = new Layout("Grid");
-
-    //skeleton
+    table.ShowRowSeparators();
+    table.HideHeaders();
     
     for ( int i = 0; i < model.ColumnCount; i++ ) {
       table.AddColumn(""+i);
@@ -30,12 +43,6 @@ public class GridView : SpectreView<GridModel> {
       }
       table.AddRow(rowChars);
     }
-    table.ShowRowSeparators();
-    table.HideHeaders();
-
-    layout.SplitRows(new Layout("Top"),new Layout("Bottom"));
-    layout["Top"].Update(table);
-    layout["Top"].Size(40);
 
     //render view model
   
@@ -75,14 +82,23 @@ public class GridView : SpectreView<GridModel> {
       }
     }
 
-    Layout DebugInfo = new Layout();
-    DebugInfo.SplitRows(new Layout("Coordinate"),new Layout("Orientation"));
-    DebugInfo["Coordinate"].Update(new Panel(string.Format("x,y : {0},{1}",model.Entry.X,model.Entry.Y)));
-    DebugInfo["Orientation"].Update(new Panel(string.Format("{0}",model.Orientation)));
-    layout["Bottom"].Update(DebugInfo);
-    layout["Bottom"].Size(12);
+    return table;
+  }
 
-    return layout;
+  protected override /**Layout*/IRenderable render() {
+
+
+    Table debugTable = buildDebugTable();
+    Table gridTable = buildGridTable();
+
+    Table container = new Table();
+    container.Centered();
+    container.AddColumn(new TableColumn(""));
+    container.AddRow(gridTable);
+    container.AddRow(debugTable);
+    container.HideHeaders();
+    container.NoBorder();
+    return container;
 
   }
 

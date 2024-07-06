@@ -1,5 +1,6 @@
 using Context;
 using Spectre.Console;
+using Spectre.Console.Rendering;
 using UI.Model.Game;
 using UI.View.Spectre.Status;
 
@@ -17,16 +18,28 @@ namespace UI.View.Spectre.Game {
       this.gridView = gridView;
       this.cluesView = cluesView;
     }
+    
+    protected override IRenderable render() {
 
-    protected override Layout render() {
-      Layout root = new Layout();
-      root.SplitRows(new Layout("Status"),new Layout("main"));
-      root["Status"].Size = 8;
-      root["Status"].Update(new Padder(statusView.Render()).PadTop(2));
-      root["main"].SplitColumns(new Layout("Grid"),new Layout("Clues"));
-      root["main"]["Grid"].Update(gridView.Render());
-      root["main"]["Clues"].Update(cluesView.Render());
-      return root;
+      Table table = new Table();
+      table.Centered();
+      table.AddColumn(new TableColumn("Grid"));
+      table.AddColumn(new TableColumn("Clues"));
+      table.HideHeaders();
+
+      table.AddRow(gridView.Render(),cluesView.Render());
+
+      Layout layout = new Layout("Root")
+        .SplitRows(
+            new Layout("top"),
+            new Layout("bottom")
+        );
+      layout["top"].Update(new Padder(statusView.Render()).PadTop(2));
+      layout["bottom"].Update(table);
+      layout["top"].Size = 6;
+      return layout;
+
+      //return table;
     }
 
   }

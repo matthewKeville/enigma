@@ -25,18 +25,22 @@ public class RootController : Controller<RootModel> {
 
   private void ProcessCommandEvent(object? sender, CommandEventArgs commandEventArgs) {
 
-      switch ( model.activeWindow ) {
+    if (commandEventArgs.command == Command.Command.TOGGLE_HELP) {
+      model.ToggleHelp();
+    }
 
-        case Window.GAME:
-          gameController.ProcessCommandEvent(this,commandEventArgs);
-          break;
-        case Window.BROWSER:
-          browserController.ProcessCommandEvent(this,commandEventArgs);
-          break;
-        default:
-          break;
+    switch ( model.activeWindow ) {
 
-      }
+      case Window.GAME:
+        gameController.ProcessCommandEvent(this,commandEventArgs);
+        break;
+      case Window.BROWSER:
+        browserController.ProcessCommandEvent(this,commandEventArgs);
+        break;
+      default:
+        break;
+
+    }
   }
 
 

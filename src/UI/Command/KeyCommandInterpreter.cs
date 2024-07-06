@@ -50,6 +50,7 @@ namespace UI.Command {
       commandMap.Add(ConsoleKey.Backspace,Command.DEL_CHAR);
       commandMap.Add(ConsoleKey.D,Command.DEL_WORD);
       commandMap.Add(ConsoleKey.Enter,Command.CONFIRM);
+      commandMap.Add(ConsoleKey.F1,Command.TOGGLE_HELP);
     }
 
     private Command? tryGetNormalCommand(ConsoleKey key) {

@@ -18,7 +18,8 @@ namespace UI.Command {
         Command.SWAP_ORIENTATION,
         Command.SWAP_PANE,
         Command.DEL_WORD,
-        Command.CONFIRM
+        Command.CONFIRM,
+        Command.TOGGLE_HELP,
     };
 
     public static List<Command> Insert { get; } = new List<Command>() {
@@ -44,6 +45,7 @@ namespace UI.Command {
     SWAP_PANE,
     DEL_WORD,
     CONFIRM,
+    TOGGLE_HELP,
 
   }
 
