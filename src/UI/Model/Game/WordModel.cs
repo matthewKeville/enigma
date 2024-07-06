@@ -11,6 +11,7 @@ public class WordModel : IModel {
   public String answer { get; set; } 
   public String prompt { get; set; } 
 
+  /**
   public WordModel(int x, int y, int i, Direction direction,String answer, String prompt) {
     this.x = x;
     this.y = y;
@@ -20,6 +21,7 @@ public class WordModel : IModel {
     this.prompt = prompt;
   
   }
+  */
 
   public override String ToString() {
     return string.Format(

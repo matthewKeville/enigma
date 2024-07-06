@@ -1,14 +1,13 @@
+using Entity;
 using Enums;
-using UI.Model;
-using UI.Model.Game;
 
-namespace Services
+namespace Services.CrosswordFinder.Debug
 {
 
     public class NYDebugCrosswordGenerator 
     {
 
-        public CrosswordModel Sample1() {
+        public Crossword Sample1() {
 
           int rows = 15;
           int cols = 15;
@@ -128,8 +127,11 @@ namespace Services
 
           // Trace.WriteLine($" ACLUES {acrossClues.Count()} DCLUES {downClues.Count()}");
 
-          CrosswordModel crossword = new CrosswordModel(rows, cols);
-          crossword.name = "NY TIMES";
+          Crossword crossword = new Crossword() {
+            Rows = rows,
+            Columns = cols
+          };
+          crossword.Title = "NY TIMES";
 
           int ordinal = 1;
 
@@ -172,7 +174,14 @@ namespace Services
                           wend++;
                       }
                       // Trace.WriteLine("\tand the answer is " + answer);
-                      crossword.words.Add(new WordModel(i, j, ordinal, Direction.Across, answer, clue));
+                      crossword.Words.Add(new Word() {
+                          X = i,
+                          Y = j,
+                          I = ordinal,
+                          Direction = Direction.Across,
+                          Answer = answer,
+                          Clue = clue
+                      });
                       wordHit = true;
                   }
 
@@ -202,7 +211,14 @@ namespace Services
                           wend++;
                       }
                       // Trace.WriteLine("\tand the answer is " + answer);
-                      crossword.words.Add(new WordModel(i, j, ordinal, Direction.Down, answer, clue));
+                      crossword.Words.Add(new Word(){
+                          X=i,
+                          Y=j,
+                          I=ordinal,
+                          Direction=Direction.Down,
+                          Answer=answer,
+                          Clue=clue
+                        });
 
                       wordHit = true;
                   }
@@ -222,7 +238,7 @@ namespace Services
 
 
 
-        public CrosswordModel Sample2() {
+        public Crossword Sample2() {
 
           int rows = 15;
           int cols = 15;
@@ -332,8 +348,11 @@ namespace Services
 
           // Trace.WriteLine($" ACLUES {acrossClues.Count()} DCLUES {downClues.Count()}");
 
-          CrosswordModel crossword = new CrosswordModel(rows, cols);
-          crossword.name = "NY TIMES 2020 03 28";
+          Crossword crossword = new Crossword() {
+            Rows=rows,
+            Columns=cols
+          };
+          crossword.Title = "NY TIMES 2020 03 28";
 
           int ordinal = 1;
 
@@ -376,7 +395,14 @@ namespace Services
                           wend++;
                       }
                       // Trace.WriteLine("\tand the answer is " + answer);
-                      crossword.words.Add(new WordModel(i, j, ordinal, Direction.Across, answer, clue));
+                      crossword.Words.Add(new Word() {
+                        X=i,
+                        Y=j,
+                        I=ordinal,
+                        Direction = Direction.Across,
+                        Answer = answer,
+                        Clue = clue
+                      });
                       wordHit = true;
                   }
 
@@ -406,7 +432,14 @@ namespace Services
                           wend++;
                       }
                       // Trace.WriteLine("\tand the answer is " + answer);
-                      crossword.words.Add(new WordModel(i, j, ordinal, Direction.Down, answer, clue));
+                      crossword.Words.Add(new Word(){
+                          X=i,
+                          Y=j,
+                          I=ordinal,
+                          Direction=Direction.Down,
+                          Answer=answer,
+                          Clue=clue
+                      });
 
                       wordHit = true;
                   }

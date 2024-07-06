@@ -22,10 +22,21 @@ namespace Context {
 
     public event EventHandler<EventArgs> RaiseContextChangeEvent;
 
-
     public void UpdateContext(Crossword crossword) {
 
       ApplicationContext newContext = new ApplicationContext();
+
+      List<WordModel> wordModels = new List<WordModel>();
+      foreach ( Word eword in crossword.Words ) {
+        wordModels.Add( new WordModel(){
+          x = eword.X,
+          y = eword.Y,
+          i = eword.I,
+          direction = eword.Direction,
+          answer = eword.Answer,
+          prompt = eword.Clue
+        });
+      }
 
       //TOOD sync inital models between clues & grid
 
@@ -37,7 +48,7 @@ namespace Context {
 
       //context changed
       newContext.statusModel = new StatusModel();
-      newContext.statusModel.title = crossword.published.ToShortDateString();
+      newContext.statusModel.title = crossword.Published.ToShortDateString();
 
 
       // GAME
@@ -47,28 +58,28 @@ namespace Context {
       // GAME :-> GRID
 
       newContext.gridModel = new GridModel();
-      newContext.gridModel.ColumnCount = crossword.model.colCount;
-      newContext.gridModel.RowCount = crossword.model.rowCount;
+      newContext.gridModel.ColumnCount = crossword.Columns;
+      newContext.gridModel.RowCount = crossword.Rows;
       newContext.gridModel.Entry = new Point(0,0);
       newContext.gridModel.Orientation = Direction.Across;
-      newContext.gridModel.Words = crossword.model.words;
+      newContext.gridModel.Words = wordModels;
 
-      char[,] charMatrix = new char[crossword.model.colCount,crossword.model.rowCount];
+      char[,] charMatrix = new char[crossword.Columns,crossword.Rows];
 
       //set all to block 
-      for ( int i = 0; i < crossword.model.colCount; i++ ) {
-        for ( int j = 0; j < crossword.model.rowCount; j++ ) {
+      for ( int i = 0; i < crossword.Columns; i++ ) {
+        for ( int j = 0; j < crossword.Rows; j++ ) {
           charMatrix[i,j] = '\0';
         }
       }
 
       //set words as spaces
-      foreach ( WordModel word in crossword.model.words ) {
-        for ( int x = 0; x < word.answer.Count(); x++ ) {
-          if ( word.direction == Direction.Across ) {
-            charMatrix[word.x+x,word.y] = ' ';
+      foreach ( Word word in crossword.Words ) {
+        for ( int x = 0; x < word.Answer.Count(); x++ ) {
+          if ( word.Direction == Direction.Across ) {
+            charMatrix[word.X+x,word.Y] = ' ';
           } else {
-            charMatrix[word.x,word.y+x] = ' ';
+            charMatrix[word.X,word.Y+x] = ' ';
           }
         }
       }
@@ -79,14 +90,14 @@ namespace Context {
 
       newContext.cluesModel = new CluesModel()
       {
-          Across = crossword.model.words.Where( w => w.direction == Direction.Across )
-            .OrderBy( w => w.i )
-            .Select( w => new ClueModel(w.i,w.prompt))
+          Across = crossword.Words.Where( w => w.Direction == Direction.Across )
+            .OrderBy( w => w.I )
+            .Select( w => new ClueModel(w.I,w.Clue))
             .ToList(),
-          Down = crossword.model.words
-            .Where( w => w.direction == Direction.Down )
-            .OrderBy( w => w.i )
-            .Select( w => new ClueModel(w.i,w.prompt))
+          Down = crossword.Words
+            .Where( w => w.Direction == Direction.Down )
+            .OrderBy( w => w.I )
+            .Select( w => new ClueModel(w.I,w.Clue))
             .ToList(),
           ActiveClue = (0,Direction.Across)
       };

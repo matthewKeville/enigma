@@ -9,15 +9,19 @@ using UI.View.Spectre.Game;
 using UI.View.Spectre.Status;
 using Context;
 using UI.View.Spectre.Browser;
-using Repository;
 using UI.Controller.Browser;
 using UI.Controller.Game;
 using UI.Event;
+using Services.CrosswordFinder.Debug;
+using Services.CrosswordFinder;
+
 
 Trace.Listeners.Add(new TextWriterTraceListener("./logs/enigma.log"));
 Trace.AutoFlush = true;
 
 HostApplicationBuilder builder = Host.CreateEmptyApplicationBuilder(new HostApplicationBuilderSettings());
+
+builder.Services.AddSingleton<DatabaseContext, DatabaseContext>();
 
 builder.Services.AddSingleton<RootView, RootView>();
 builder.Services.AddSingleton<HelpView, HelpView>();
@@ -34,8 +38,10 @@ builder.Services.AddSingleton<GameController, GameController>();
 builder.Services.AddSingleton<GridController, GridController>();
 builder.Services.AddSingleton<CluesController, CluesController>();
 
-builder.Services.AddSingleton<CrosswordRepository, CrosswordRepository>();
 builder.Services.AddSingleton<CrosswordService, CrosswordService>();
+builder.Services.AddSingleton<CrosswordFinderService, CrosswordFinderService>();
+builder.Services.AddSingleton<DebugFinder, DebugFinder>();
+builder.Services.AddSingleton<NYDebugCrosswordGenerator, NYDebugCrosswordGenerator>();
 
 builder.Services.AddSingleton<ContextAccessor>();
 builder.Services.AddSingleton<SpectreRenderer>();
@@ -48,5 +54,6 @@ IHost host = builder.Build();
 KeyCommandInterpreter interpreter = host.Services.GetRequiredService<KeyCommandInterpreter>();
 RootController controller = host.Services.GetRequiredService<RootController>();
 SpectreRenderer render = host.Services.GetRequiredService<SpectreRenderer>();
+CrosswordFinderService finder = host.Services.GetRequiredService<CrosswordFinderService>();
 
 host.Run();

@@ -28,7 +28,14 @@ public class BrowserController : Controller<BrowserModel> {
         break;
       case Command.Command.CONFIRM:
         int crosswordId = ((BrowserModel)contextAccessor.GetModel<BrowserModel>()).getActiveHeader.puzzleId;
+        Trace.WriteLine($"requesting crossword id {crosswordId} from Browser Controller");
         Crossword crossword = crosswordService.GetCrossword(crosswordId);
+        Trace.WriteLine($"retrieved {crosswordId} from Browser Controller");
+        Trace.WriteLine($"{crossword.Columns},{crossword.Rows}");
+        Trace.WriteLine($"printing words");
+        foreach ( Word word in crossword.Words ) {
+          Trace.WriteLine(word.Answer);
+        }
         contextAccessor.UpdateContext(crossword);
         break;
 
