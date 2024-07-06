@@ -16,21 +16,16 @@ public class StatusView : SpectreView<StatusModel> {
   protected override Layout render() {
 
     Layout layout = new Layout("Status");
-
     Table table = new Table();
-    table.NoBorder();
-    table.HideHeaders();
     table.Centered();
+    table.AddColumn(new TableColumn("Clock").Centered());
 
-    table.AddColumn("Clock");
-    table.AddColumn("Title");
+    table.HideHeaders();
+    table.NoBorder();
 
-    Panel name = new Panel(model.title);
-    name.PadLeft(2).PadRight(2);
-    name.NoBorder();
-
+    table.AddRow(new Markup(model.title));
+    table.AddRow(new Markup(" ----<>---- "));
     table.AddRow(clockView.Render());
-    table.AddRow(name);
 
     layout.Update(table);
     return layout;

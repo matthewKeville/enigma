@@ -21,8 +21,8 @@ namespace UI.View.Spectre.Game {
     protected override Layout render() {
       Layout root = new Layout();
       root.SplitRows(new Layout("Status"),new Layout("main"));
-      root["Status"].Size = 4;
-      root["Status"].Update(statusView.Render());
+      root["Status"].Size = 8;
+      root["Status"].Update(new Padder(statusView.Render()).PadTop(2));
       root["main"].SplitColumns(new Layout("Grid"),new Layout("Clues"));
       root["main"]["Grid"].Update(gridView.Render());
       root["main"]["Clues"].Update(cluesView.Render());

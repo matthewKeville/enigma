@@ -37,7 +37,7 @@ namespace Context {
 
       //context changed
       newContext.statusModel = new StatusModel();
-      newContext.statusModel.title = "Ohhhhhhh";
+      newContext.statusModel.title = crossword.published.ToShortDateString();
 
       // GAME
 
@@ -90,7 +90,11 @@ namespace Context {
           ActiveClue = (0,Direction.Across)
       };
 
-      newContext.clockModel = new ClockModel();    
+      newContext.clockModel = new ClockModel(){
+        Elapsed = TimeSpan.Zero,
+        LastResumed = DateTime.UtcNow
+      };
+
 
       this.context = newContext;
 
@@ -138,7 +142,7 @@ namespace Context {
       context.browserModel = new BrowserModel();
       context.browserModel.headers = crosswordService.GetCrosswordHeaders();
       context.statusModel = new StatusModel();
-      context.statusModel.title = "Ohhhhhhh";
+      context.statusModel.title = "";
       context.helpModel = new HelpModel();    
 
       context.gridModel = new GridModel();

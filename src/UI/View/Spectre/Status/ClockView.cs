@@ -10,13 +10,11 @@ public class ClockView : SpectreView<ClockModel> {
     Register(ctx);
   }
 
-  protected override Panel render() {
-    TimeSpan elapsed = (DateTime.UtcNow - model.start);
-    String minutes = elapsed.Minutes > 9 ? ""+elapsed.Minutes : "0"+elapsed.Minutes;
-    String seconds = elapsed.Seconds > 9 ? ""+elapsed.Seconds : "0"+elapsed.Seconds;
+  protected override Markup/**Panel*/ render() {
+    String minutes = model.SessionElapsed().Minutes > 9 ? ""+model.SessionElapsed().Minutes : "0"+model.SessionElapsed().Minutes;
+    String seconds = model.SessionElapsed().Seconds > 9 ? ""+model.SessionElapsed().Seconds : "0"+model.SessionElapsed().Seconds;
     String timestring = string.Format("{0}:{1}",minutes,seconds);
-    Panel panel = new Panel(timestring);
-    return panel;
+    return new Markup(timestring);
   }
 
 }
