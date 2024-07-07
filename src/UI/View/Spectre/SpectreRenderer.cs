@@ -8,6 +8,7 @@ public class SpectreRenderer {
   private RootView rootView;
   private bool running = true;
   private Thread renderThread;
+  public const String Rendering = "no";
 
   public SpectreRenderer(IApplicationLifetime applicationLifetime,RootView rootView) {
     applicationLifetime.ApplicationStopping.Register(Stop);
@@ -28,8 +29,10 @@ public class SpectreRenderer {
       .Start(ctx =>
       {
         while (running) {
-          root.Update(rootView.Render());
-          ctx.Refresh();
+          lock(Rendering) {
+            root.Update(rootView.Render());
+            ctx.Refresh();
+          }
         }
       });
   }

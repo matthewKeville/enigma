@@ -52,6 +52,31 @@ namespace crossword.Migrations
                     b.ToTable("Crosswords");
                 });
 
+            modelBuilder.Entity("Entity.GridChar", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<char>("C")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("CrosswordId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("X")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Y")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CrosswordId");
+
+                    b.ToTable("GridChars");
+                });
+
             modelBuilder.Entity("Entity.Word", b =>
                 {
                     b.Property<int>("Id")
@@ -66,7 +91,7 @@ namespace crossword.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("CrosswordId")
+                    b.Property<int>("CrosswordId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Direction")
@@ -88,15 +113,32 @@ namespace crossword.Migrations
                     b.ToTable("Words");
                 });
 
+            modelBuilder.Entity("Entity.GridChar", b =>
+                {
+                    b.HasOne("Entity.Crossword", "crossword")
+                        .WithMany("GridChars")
+                        .HasForeignKey("CrosswordId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("crossword");
+                });
+
             modelBuilder.Entity("Entity.Word", b =>
                 {
-                    b.HasOne("Entity.Crossword", null)
+                    b.HasOne("Entity.Crossword", "crossword")
                         .WithMany("Words")
-                        .HasForeignKey("CrosswordId");
+                        .HasForeignKey("CrosswordId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("crossword");
                 });
 
             modelBuilder.Entity("Entity.Crossword", b =>
                 {
+                    b.Navigation("GridChars");
+
                     b.Navigation("Words");
                 });
 #pragma warning restore 612, 618

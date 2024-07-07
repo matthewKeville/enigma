@@ -36,7 +36,7 @@ public class BrowserController : Controller<BrowserModel> {
         foreach ( Word word in crossword.Words ) {
           Trace.WriteLine(word.Answer);
         }
-        contextAccessor.UpdateContext(crossword);
+        contextAccessor.LoadCrossword(crossword);
         break;
 
     }

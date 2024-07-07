@@ -30,14 +30,22 @@ namespace Services.CrosswordFinder.Debug
                 @"ARMED#THEE#NEED".ToCharArray(),
               ];
 
+          List<GridChar> gridChars = new List<GridChar>();
           char[,] answerMatrix = new char[cols, rows];
           for (int i = 0; i < cols; i++)
           {
               for (int j = 0; j < rows; j++)
               {
                   answerMatrix[i, j] = answerMatrixTranspose[j][i];
+                  Char actual = answerMatrixTranspose[j][i];
+                  gridChars.Add(new GridChar(){
+                      X=i,
+                      Y=j,
+                      C=actual != '#' ? ' ' : '\0'
+                    });
               }
           }
+
 
 
           List<String> acrossClues = new List<String> {
@@ -132,6 +140,7 @@ namespace Services.CrosswordFinder.Debug
             Columns = cols
           };
           crossword.Title = "NY TIMES";
+          crossword.GridChars.AddRange(gridChars);
 
           int ordinal = 1;
 
@@ -261,12 +270,19 @@ namespace Services.CrosswordFinder.Debug
                 @"DET#AKA#TEEPEES".ToCharArray(),
               ];
 
+          List<GridChar> gridChars = new List<GridChar>();
           char[,] answerMatrix = new char[cols, rows];
           for (int i = 0; i < cols; i++)
           {
               for (int j = 0; j < rows; j++)
               {
                   answerMatrix[i, j] = answerMatrixTranspose[j][i];
+                  Char actual = answerMatrixTranspose[j][i];
+                  gridChars.Add(new GridChar(){
+                      X=i,
+                      Y=j,
+                      C=actual != '#' ? ' ' : '\0'
+                    });
               }
           }
 
@@ -353,6 +369,7 @@ namespace Services.CrosswordFinder.Debug
             Columns=cols
           };
           crossword.Title = "NY TIMES 2020 03 28";
+          crossword.GridChars.AddRange(gridChars);
 
           int ordinal = 1;
 

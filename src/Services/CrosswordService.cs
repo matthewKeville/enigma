@@ -12,7 +12,11 @@ namespace Services {
     }
 
     public Crossword GetCrossword(int crosswordId) {
-      Crossword? crosswordQ = dbCtx.Crosswords.Where( c => c.Id == crosswordId).Include( c => c.Words).FirstOrDefault();
+      Crossword? crosswordQ = dbCtx.Crosswords
+        .Where( c => c.Id == crosswordId)
+        .Include( c => c.Words)
+        .Include( c => c.GridChars)
+        .FirstOrDefault();
       if ( crosswordQ is null ) {
         Trace.WriteLine($" trying to access a crossword entity that does not exist id {crosswordId}");
         Environment.Exit(4);
@@ -41,6 +45,11 @@ namespace Services {
 
     public void AddCrossword(Crossword crossword) {
       dbCtx.Crosswords.Add(crossword);
+      dbCtx.SaveChanges();
+    }
+
+    public void UpdateCrossword(Crossword crossword) {
+      dbCtx.Update(crossword);
       dbCtx.SaveChanges();
     }
 

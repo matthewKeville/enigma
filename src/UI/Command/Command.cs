@@ -20,6 +20,7 @@ namespace UI.Command {
         Command.DEL_WORD,
         Command.CONFIRM,
         Command.TOGGLE_HELP,
+        Command.EXIT,
     };
 
     public static List<Command> Insert { get; } = new List<Command>() {
@@ -46,6 +47,7 @@ namespace UI.Command {
     DEL_WORD,
     CONFIRM,
     TOGGLE_HELP,
+    EXIT
 
   }
 

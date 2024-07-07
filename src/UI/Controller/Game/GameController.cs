@@ -21,6 +21,12 @@ public class GameController : Controller<GameModel> {
   public void ProcessCommandEvent(object? sender, CommandEventArgs commandEventArgs) {
 
     switch ( commandEventArgs.command ) {
+
+      case Command.Command.EXIT:
+        Trace.WriteLine("exiting game");
+        contextAccessor.SaveCrossword();
+        return;
+
       case Command.Command.SWAP_PANE:
         model.SwapPane();
         Trace.WriteLine("pane swap");
