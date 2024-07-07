@@ -8,8 +8,11 @@ namespace UI.Model.Game {
     public Direction Orientation;
     public Point Entry;
     public char[,] CharMatrix;
+    public int[,] StatusMatrix;
     public int ColumnCount = 10;
     public int RowCount = 10;
+
+    public int WordCheckCount;
 
     //grid model needs to know about word boundaries,
     //but the whole word is not necessary a grid word
@@ -93,7 +96,6 @@ namespace UI.Model.Game {
           Enumerable.Range(wys,wyf-wys+1).Contains(y);
     }
 
-
     public void SwapOrientation() {
       Orientation = ( Orientation == Direction.Across ) ? Direction.Down : Direction.Across;
     }
@@ -101,11 +103,13 @@ namespace UI.Model.Game {
 
     public void InsertKey(ConsoleKey key) {
       CharMatrix[Entry.X,Entry.Y] = (char) key;
+      StatusMatrix[Entry.X,Entry.Y] = 0;
       MoveEntry(Orientation == Direction.Across ? Move.RIGHT : Move.DOWN);
     }
 
     public void DeleteKey() {
       CharMatrix[Entry.X,Entry.Y] = ' ';
+      StatusMatrix[Entry.X,Entry.Y] = 0;
       MoveEntry(Orientation == Direction.Across ? Move.LEFT : Move.UP);
     }
 
@@ -116,8 +120,10 @@ namespace UI.Model.Game {
       for ( int n = 0; n < word.answer.Count(); n++ ) {
         if ( word.direction == Direction.Across ) {
           CharMatrix[word.x + word.answer.Count()-1 - n , word.y] = ' ';
+          StatusMatrix[word.x + word.answer.Count()-1-n, word.y ] = 0;
         } else {
           CharMatrix[word.x,word.y + word.answer.Count()-1 - n ] = ' ';
+          StatusMatrix[word.x,word.y + word.answer.Count()-1 - n ] = 0;
         }
       }
 
@@ -155,6 +161,35 @@ namespace UI.Model.Game {
         .FirstOrDefault( w => w.i < word.i);
       if ( nextWord is not null ) {
         Entry = new Point(nextWord.x,nextWord.y);
+      }
+    }
+
+    public void CheckWord() {
+
+      WordCheckCount++;
+      int z = 0;
+      WordModel active = ActiveWord();
+
+      while ( z < active.answer.Count() ) {
+
+        int ix;
+        int iy;
+
+        if ( Orientation == Direction.Across ) {
+          ix = active.x + z;
+          iy = active.y;
+        } else {
+          ix = active.x;
+          iy = active.y+z;
+        }
+
+        if ( active.answer[z] != CharMatrix[ix,iy] ) {
+          StatusMatrix[ix,iy] = 1;
+        } else {
+          StatusMatrix[ix,iy] = 2;
+        }
+
+        z++;
       }
     }
 

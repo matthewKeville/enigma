@@ -25,7 +25,7 @@ namespace crossword.Migrations
                     b.Property<int>("Columns")
                         .HasColumnType("INTEGER");
 
-                    b.Property<TimeSpan?>("Elapsed")
+                    b.Property<TimeSpan>("Elapsed")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("FinishDate")
@@ -45,6 +45,9 @@ namespace crossword.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Type")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("WordCheckCount")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");

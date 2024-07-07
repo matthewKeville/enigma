@@ -41,6 +41,7 @@ namespace Context {
       }
 
       gameContext.crossword.Elapsed += DateTime.UtcNow - gameContext.clockModel.LastResumed;
+      gameContext.crossword.WordCheckCount = gameContext.gridModel.WordCheckCount;
 
       crosswordService.UpdateCrossword(gameContext.crossword);
       rootContext.rootModel.activeWindow = Window.BROWSER;
@@ -87,6 +88,7 @@ namespace Context {
         newGameContext.gridModel.Entry = new Point(0,0);
         newGameContext.gridModel.Orientation = Direction.Across;
         newGameContext.gridModel.Words = wordModels;
+        newGameContext.gridModel.WordCheckCount = crossword.WordCheckCount;
 
         char[,] charMatrix = new char[crossword.Columns,crossword.Rows];
 
@@ -95,6 +97,7 @@ namespace Context {
         }
 
         newGameContext.gridModel.CharMatrix = charMatrix;
+        newGameContext.gridModel.StatusMatrix = new int[crossword.Columns,crossword.Rows];
 
         // GAME :-> CLUES
 

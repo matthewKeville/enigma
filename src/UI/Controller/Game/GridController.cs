@@ -63,6 +63,10 @@ public class GridController : Controller<GridModel> {
         PerformAndNotifyGridWordChange( () => { model.MoveBackWord();} );
         break;
 
+      case Command.Command.CHECK_WORD:
+        model.CheckWord();
+        break;
+
       case Command.Command.INSERT_CHAR:
         if (commandEventArgs.key is null) {
           Trace.WriteLine("Critical error , INSERT_CHAR command requires a key, it is null");

@@ -12,6 +12,7 @@ namespace Entity {
     public TimeSpan Elapsed { get; set; } = TimeSpan.Zero;
     public int Rows { get; set; }
     public int Columns { get; set; }
+    public int WordCheckCount { get; set; } = 0;
 
     public List<Word> Words { get; } = new List<Word>();
     public List<GridChar> GridChars { get; } = new List<GridChar>();
