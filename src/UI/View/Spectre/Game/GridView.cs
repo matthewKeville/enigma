@@ -7,7 +7,9 @@ namespace UI.View.Spectre.Game {
 
 public class GridView : SpectreView<GridModel> {
 
-  private const char block = ' ';
+  // WARN : Unicode character , need to enable a set to opt
+  // into unicode rendering
+  private const char block = '█';
 
   public GridView(ContextAccessor ctx) {
     Register(ctx);
@@ -53,7 +55,8 @@ public class GridView : SpectreView<GridModel> {
         // render blocks
         
         if ( model.CharMatrix[i,j] == '\0' ) {
-          charDisplay = "[bold][invert]"+block+"[/][/]";
+          //charDisplay = "[bold][invert]"+block+"[/][/]";
+          charDisplay = "[bold][black]"+block+"[/][/]";
         } else {
 
 
@@ -69,7 +72,12 @@ public class GridView : SpectreView<GridModel> {
  
         // render characters in the current word
         } else if (model.InActiveWord(i,j)) {
-          charDisplay = "[purple]"+model.CharMatrix[i,j]+"[/]";
+          if ( model.CharMatrix[i,j] != ' ' ) {
+            charDisplay = "[purple]"+model.CharMatrix[i,j]+"[/]";
+          } else {
+            //charDisplay = "[on cyan]+[/]";
+            charDisplay = "[cyan].[/]";
+          }
 
         // render non-word characteres
         } else {

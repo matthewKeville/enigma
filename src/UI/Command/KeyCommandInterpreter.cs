@@ -52,6 +52,8 @@ namespace UI.Command {
       commandMap.Add(ConsoleKey.Enter,Command.CONFIRM);
       commandMap.Add(ConsoleKey.F1,Command.TOGGLE_HELP);
       commandMap.Add(ConsoleKey.Q,Command.EXIT);
+      commandMap.Add(ConsoleKey.W,Command.MOVE_WORD);
+      commandMap.Add(ConsoleKey.B,Command.MOVE_BACK_WORD);
     }
 
     private Command? tryGetNormalCommand(ConsoleKey key) {

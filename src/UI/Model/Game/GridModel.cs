@@ -135,6 +135,28 @@ namespace UI.Model.Game {
         new Point(word.x,word.y + word.answer.Count()-1);
     }
 
+    public void MoveWord() {
+      WordModel word = ActiveWord();
+      WordModel? nextWord = Words
+        .FindAll(w => w.direction == Orientation)
+        .OrderBy( w => w.i )
+        .FirstOrDefault( w => w.i > word.i);
+      if ( nextWord is not null ) {
+        Entry = new Point(nextWord.x,nextWord.y);
+      }
+    }
+
+    public void MoveBackWord() {
+      WordModel word = ActiveWord();
+      WordModel? nextWord = Words
+        .FindAll(w => w.direction == Orientation)
+        .OrderBy( w => w.i )
+        .Reverse()
+        .FirstOrDefault( w => w.i < word.i);
+      if ( nextWord is not null ) {
+        Entry = new Point(nextWord.x,nextWord.y);
+      }
+    }
 
 }
 }
