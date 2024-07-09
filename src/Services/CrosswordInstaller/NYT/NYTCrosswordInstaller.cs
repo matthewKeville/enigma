@@ -58,7 +58,13 @@ namespace Services.CrosswordInstaller.NYT {
       reader.ReadLine(); //blank line
 
       //url date and puzzle date are offset : TODO
-      reader.ReadLine(); // date line
+      String realDateStr = reader.ReadLine(); // date line
+      int year = int.Parse(realDateStr.ToString().Substring(0,2))+2000;
+      int month = int.Parse(realDateStr.ToString().Substring(2,2));
+      int day = int.Parse(realDateStr.ToString().Substring(4,2));
+      DateOnly published = new DateOnly(year,month,day);
+      //realDate.Month;
+      //realDate.Day;
       /**
       if ( ! reader.ReadLine().Equals(dateString) ) {
         Fail(request,"Date checksum mismatch");
@@ -109,7 +115,13 @@ namespace Services.CrosswordInstaller.NYT {
       }
 
       try {
-        return parser.Parse(bRows,bColumns,bSolution,bAcrossClues,bDownClues);
+        Crossword? crossword = parser.Parse(bRows,bColumns,bSolution,bAcrossClues,bDownClues);
+        if ( crossword is null ) {
+          return null;
+        }
+        crossword.Published = published.ToDateTime(TimeOnly.MinValue);
+        crossword.Title = $"NYT DAILY {crossword.Published.ToShortDateString()}";
+        return crossword;
       } catch (Exception ex) {
         Trace.WriteLine($" Unexpected error parsing NYT Crossword : URL {url}");
         Trace.WriteLine(ex.ToString());

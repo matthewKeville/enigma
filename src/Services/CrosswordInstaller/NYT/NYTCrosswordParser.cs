@@ -142,8 +142,6 @@ namespace Services.CrosswordInstaller.NYT
             Columns = columns,
           };
           crossword.Type = CrosswordType.NYTIMES;
-          crossword.Published = DateTime.Parse("03/21/2021");
-          crossword.Title = crossword.Published.ToShortDateString();
           crossword.Words.AddRange(Words);
           crossword.GridChars.AddRange(gridChars);
 
