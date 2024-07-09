@@ -13,6 +13,8 @@ namespace Context {
 
   public class BrowserContext {
     public BrowserModel browserModel;
+    public PickerModel pickerModel;
+    public InstallerModel installerModel;
   }
 
   public class HelpContext {

@@ -31,7 +31,15 @@ namespace Services {
 
     public List<CrosswordHeader> GetCrosswordHeaders() {
       return dbCtx.Crosswords
-        .Select( cw => new CrosswordHeader(){ puzzleId = cw.Id, date = cw.Published } )
+        .Select( cw => new CrosswordHeader(){ 
+            Title = cw.Title,
+            Type = cw.Type,
+            Published = cw.Published,
+            StartDate = cw.StartDate,
+            FinishDate = cw.FinishDate,
+            Elapsed = cw.Elapsed,
+            PuzzleId = cw.Id,
+            } )
         .ToList();
     }
 

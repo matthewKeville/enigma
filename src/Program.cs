@@ -15,7 +15,6 @@ using UI.Event;
 using Services.CrosswordFinder.Debug;
 using Services.CrosswordFinder;
 
-
 Trace.Listeners.Add(new TextWriterTraceListener("./logs/enigma.log"));
 Trace.AutoFlush = true;
 
@@ -24,9 +23,13 @@ HostApplicationBuilder builder = Host.CreateEmptyApplicationBuilder(new HostAppl
 builder.Services.AddSingleton<DatabaseContext, DatabaseContext>();
 
 builder.Services.AddSingleton<RootView, RootView>();
+
 builder.Services.AddSingleton<HelpView, HelpView>();
+
 builder.Services.AddSingleton<BrowserView, BrowserView>();
-builder.Services.AddSingleton<BrowserController, BrowserController>();
+builder.Services.AddSingleton<InstallerView, InstallerView>();
+builder.Services.AddSingleton<PickerView, PickerView>();
+
 builder.Services.AddSingleton<GameView, GameView>();
 builder.Services.AddSingleton<StatusView, StatusView>();
 builder.Services.AddSingleton<ClockView, ClockView>();
@@ -34,6 +37,10 @@ builder.Services.AddSingleton<GridView, GridView>();
 builder.Services.AddSingleton<CluesView, CluesView>();
 
 builder.Services.AddSingleton<RootController, RootController>();
+builder.Services.AddSingleton<BrowserController, BrowserController>();
+builder.Services.AddSingleton<PickerController, PickerController>();
+builder.Services.AddSingleton<InstallerController, InstallerController>();
+
 builder.Services.AddSingleton<GameController, GameController>();
 builder.Services.AddSingleton<GridController, GridController>();
 builder.Services.AddSingleton<CluesController, CluesController>();

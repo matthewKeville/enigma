@@ -21,15 +21,11 @@ namespace Services.CrosswordFinder.Debug {
 
       if ( !crosswordService.HasNYTCrossword(dbg1) ) {
         Crossword cross = dbgGenerator.Sample1();
-        cross.Published = DateTime.Parse("03/21/2021");
-        cross.Type = CrosswordType.NYTIMES;
         crosswordService.AddCrossword(cross);
       }
 
       if ( !crosswordService.HasNYTCrossword(dbg2) ) {
         Crossword cross = dbgGenerator.Sample2();
-        cross.Published = DateTime.Parse("04/03/2010");
-        cross.Type = CrosswordType.NYTIMES;
         crosswordService.AddCrossword(cross);
       }
 

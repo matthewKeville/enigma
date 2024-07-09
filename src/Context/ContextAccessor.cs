@@ -149,6 +149,10 @@ namespace Context {
         return gameContext?.statusModel;
       } else if (type == typeof(BrowserModel)) {
         return browserContext.browserModel;
+      } else if (type == typeof(PickerModel)) {
+        return browserContext.pickerModel;
+      } else if (type == typeof(InstallerModel)) {
+        return browserContext.installerModel;
       } else {
         Trace.WriteLine($"Critical error : unable to resolve type for GetModel<{type.ToString}>");
         Environment.Exit(0);
@@ -170,7 +174,10 @@ namespace Context {
     private BrowserContext buildBrowserContext() {
       BrowserContext browserContext = new BrowserContext();
       browserContext.browserModel = new BrowserModel();
-      browserContext.browserModel.headers = crosswordService.GetCrosswordHeaders();
+      browserContext.pickerModel = new PickerModel();
+      browserContext.pickerModel.headers = crosswordService.GetCrosswordHeaders();
+      browserContext.installerModel = new InstallerModel();
+      browserContext.installerModel = new InstallerModel();
       return browserContext;
     }
 

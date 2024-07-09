@@ -139,7 +139,9 @@ namespace Services.CrosswordFinder.Debug
             Rows = rows,
             Columns = cols
           };
-          crossword.Title = "NY TIMES";
+          crossword.Type = CrosswordType.NYTIMES;
+          crossword.Published = DateTime.Parse("03/21/2021");
+          crossword.Title = crossword.Published.ToShortDateString();
           crossword.GridChars.AddRange(gridChars);
 
           int ordinal = 1;
@@ -368,7 +370,9 @@ namespace Services.CrosswordFinder.Debug
             Rows=rows,
             Columns=cols
           };
-          crossword.Title = "NY TIMES 2020 03 28";
+          crossword.Type = CrosswordType.NYTIMES;
+          crossword.Published = DateTime.Parse("04/03/2010");
+          crossword.Title = crossword.Published.ToShortDateString();
           crossword.GridChars.AddRange(gridChars);
 
           int ordinal = 1;

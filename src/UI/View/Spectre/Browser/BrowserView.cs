@@ -1,34 +1,31 @@
 using Context;
-using Spectre.Console;
+using Enums;
 using Spectre.Console.Rendering;
 using UI.Model.Browser;
+using UI.View.Spectre.Browser;
+namespace UI.View.Spectre;
 
-namespace UI.View.Spectre.Browser {
+public class BrowserView : SpectreView<BrowserModel> {
 
-  public class BrowserView : SpectreView<BrowserModel> {
+  private PickerView pickerView;
+  private InstallerView installerView;
 
-    public BrowserView(ContextAccessor ctx) {
-      Register(ctx);
-    }
-
-    override protected IRenderable render() {
-
-      Layout root = new Layout();
-      Rows rows = new Rows(
-        model.headers.Select( 
-          x => { 
-            if ( x.puzzleId == model.headers[model.selection].puzzleId ) {
-              return new Text($"{x.puzzleId.ToString()} {x.date.ToShortDateString()}", new Style(Color.Green1));  
-            } else {
-              return new Text($"{x.puzzleId.ToString()} {x.date.ToShortDateString()}");  
-            }
-          }
-        )
-      );
-      root.Update(rows);
-      return root;
-
-    }
-
+  public BrowserView(ContextAccessor ctx, PickerView pickerView, InstallerView installerView) {
+    Register(ctx);
+    this.pickerView = pickerView;
+    this.installerView = installerView;
   }
+
+  protected override IRenderable render() {
+    switch ( model.activeTab ) {
+      case BrowserTab.PICKER:
+        return pickerView.Render();
+      case BrowserTab.INSTALLER:
+        return installerView.Render();
+      default:
+        Environment.Exit(5);
+        return null;
+    }
+  }
+
 }

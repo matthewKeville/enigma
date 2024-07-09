@@ -4,4 +4,8 @@ namespace Enums {
     BROWSER,
     HELP
   }
+  public enum BrowserTab {
+    INSTALLER,
+    PICKER
+  }
 }
