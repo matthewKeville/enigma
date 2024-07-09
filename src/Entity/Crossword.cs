@@ -3,6 +3,7 @@ using Enums;
 namespace Entity {
 
   public class Crossword {
+
     public int Id { get; set;}
     public CrosswordType Type { get; set; }
     public String Title { get; set; }

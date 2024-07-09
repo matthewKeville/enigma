@@ -23,6 +23,7 @@ namespace UI.Command {
         Command.DEL_WORD,
         Command.CONFIRM,
         Command.TOGGLE_HELP,
+        Command.INSTALL,
         Command.EXIT,
     };
 
@@ -53,6 +54,7 @@ namespace UI.Command {
     DEL_WORD,
     CONFIRM,
     TOGGLE_HELP,
+    INSTALL,
     EXIT
 
   }

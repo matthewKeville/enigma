@@ -1,4 +1,5 @@
 using Context;
+using Services.CrosswordInstaller;
 using Spectre.Console;
 using Spectre.Console.Rendering;
 using UI.Model.Browser;
@@ -32,6 +33,7 @@ namespace UI.View.Spectre.Browser {
       puzzleTable.NoBorder();
       puzzleTable.AddColumn("Cursor");
       puzzleTable.AddColumn("Date");
+      puzzleTable.AddColumn("Status");
 
       lock(InstallerModel.flag) {
 
@@ -45,10 +47,20 @@ namespace UI.View.Spectre.Browser {
               cursor = new Text(" ");
             }
 
-            //Text title = new Text(String.Format("{0:-10}  ~  {1:-10}",d.DayOfWeek.ToString(),d.ToShortDateString()));
-            Text title = new Text($"{d.DayOfWeek.ToString():-10}    {d.ToShortDateString():+20}");
+            //show the dates as the puzzle that would be retrieved from the endpoint
+            //not the actuall query parameter.
+            DateOnly displayDate = d.AddDays(model.DayDisplayDelayDays);
+            Text title = new Text($"{displayDate.DayOfWeek.ToString():-10}    {displayDate.ToShortDateString():+20}");
 
-            puzzleTable.AddRow(cursor,title);
+            Text status;
+            InstallationRequest? installInfo = model.GetInstallationRequestInfo(d);
+            if ( installInfo is null ) {
+              status = new Text("");
+            } else {
+              status = new Text(((InstallationRequest) installInfo).Status.ToString());
+            }
+
+            puzzleTable.AddRow(cursor,title,status);
           }
         );
 

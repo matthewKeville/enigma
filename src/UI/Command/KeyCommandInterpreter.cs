@@ -55,6 +55,7 @@ namespace UI.Command {
       commandMap.Add(ConsoleKey.W,Command.MOVE_WORD);
       commandMap.Add(ConsoleKey.B,Command.MOVE_BACK_WORD);
       commandMap.Add(ConsoleKey.Z,Command.CHECK_WORD);
+      commandMap.Add(ConsoleKey.N,Command.INSTALL);
     }
 
     private Command? tryGetNormalCommand(ConsoleKey key) {

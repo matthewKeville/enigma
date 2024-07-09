@@ -1,19 +1,23 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using UI.View.Spectre;
+
 using Services;
-using UI.View.Spectre.Help;
-using UI.Controller;
-using UI.Command;
-using UI.View.Spectre.Game;
-using UI.View.Spectre.Status;
 using Context;
-using UI.View.Spectre.Browser;
+
+using UI.Command;
+using UI.Controller;
 using UI.Controller.Browser;
 using UI.Controller.Game;
+
 using UI.Event;
-using Services.CrosswordFinder.Debug;
-using Services.CrosswordFinder;
+
+using UI.View.Spectre;
+using UI.View.Spectre.Help;
+using UI.View.Spectre.Game;
+using UI.View.Spectre.Status;
+using UI.View.Spectre.Browser;
+using Services.CrosswordInstaller;
+using Services.CrosswordInstaller.NYT;
 
 Trace.Listeners.Add(new TextWriterTraceListener("./logs/enigma.log"));
 Trace.AutoFlush = true;
@@ -46,9 +50,9 @@ builder.Services.AddSingleton<GridController, GridController>();
 builder.Services.AddSingleton<CluesController, CluesController>();
 
 builder.Services.AddSingleton<CrosswordService, CrosswordService>();
-builder.Services.AddSingleton<CrosswordFinderService, CrosswordFinderService>();
-builder.Services.AddSingleton<DebugFinder, DebugFinder>();
-builder.Services.AddSingleton<NYDebugCrosswordGenerator, NYDebugCrosswordGenerator>();
+builder.Services.AddSingleton<NYTCrosswordInstaller, NYTCrosswordInstaller>();
+builder.Services.AddSingleton<NYTCrosswordParser, NYTCrosswordParser>();
+builder.Services.AddSingleton<CrosswordInstallerService, CrosswordInstallerService>();
 
 builder.Services.AddSingleton<ContextAccessor>();
 builder.Services.AddSingleton<SpectreRenderer>();
@@ -61,6 +65,5 @@ IHost host = builder.Build();
 KeyCommandInterpreter interpreter = host.Services.GetRequiredService<KeyCommandInterpreter>();
 RootController controller = host.Services.GetRequiredService<RootController>();
 SpectreRenderer render = host.Services.GetRequiredService<SpectreRenderer>();
-CrosswordFinderService finder = host.Services.GetRequiredService<CrosswordFinderService>();
 
 host.Run();

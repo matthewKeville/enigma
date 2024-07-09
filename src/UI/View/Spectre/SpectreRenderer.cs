@@ -28,10 +28,18 @@ public class SpectreRenderer {
     AnsiConsole.Live(root)
       .Start(ctx =>
       {
+        int fps = 0;
+        DateTime lastCheck = DateTime.UtcNow;
         while (running) {
           lock(Rendering) {
+            if ( DateTime.UtcNow > lastCheck.AddSeconds(1) ) {
+              Trace.WriteLine($"FPS : {fps}");
+              lastCheck = DateTime.UtcNow;
+              fps = 0;
+            } 
             root.Update(rootView.Render());
             ctx.Refresh();
+            fps++;
           }
         }
       });

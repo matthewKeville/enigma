@@ -1,19 +1,26 @@
+using Services.CrosswordInstaller;
+
 namespace UI.Model.Browser {
 
   public class InstallerModel : IModel {
 
     public static String flag = "InstallModel";
 
+    public int DayDisplayDelayDays = -35; //5 weeks
+
     public int selection = 0;
     public int page = 0;
     public int datesPerPage = 30;
 
     public DateOnly earliestDate = DateOnly.Parse("03/21/2021");
+    public DateOnly latestDate = DateOnly.FromDateTime(DateTime.UtcNow);
     public List<DateOnly> blackList = new List<DateOnly>();
     public List<DateOnly> pageDates = new List<DateOnly>();
 
+    public Dictionary<DateOnly,InstallationRequest> installationRequests = new Dictionary<DateOnly,InstallationRequest>();
+
     public InstallerModel() {
-      DateOnly date = DateOnly.FromDateTime(DateTime.UtcNow);
+      DateOnly date = latestDate;
       while ( date > earliestDate && pageDates.Count() != datesPerPage ) {
         if ( !blackList.Contains(date) ) {
           pageDates.Add(date);
@@ -46,7 +53,7 @@ namespace UI.Model.Browser {
           DateOnly date = pageDates[0];
           List<DateOnly> newPageDates = new List<DateOnly>();
 
-          while ( date < DateOnly.FromDateTime(DateTime.UtcNow) && newPageDates.Count() != datesPerPage ) {
+          while ( date < latestDate && newPageDates.Count() != datesPerPage ) {
             if ( !blackList.Contains(date) ) {
               newPageDates.Add(date);
             }
@@ -85,6 +92,12 @@ namespace UI.Model.Browser {
 
     public DateOnly GetActiveDate() {
       return pageDates[selection];
+    }
+
+    public InstallationRequest? GetInstallationRequestInfo(DateOnly date) {
+      InstallationRequest? request;
+      installationRequests.TryGetValue(date,out request);
+      return request;
     }
 
 
