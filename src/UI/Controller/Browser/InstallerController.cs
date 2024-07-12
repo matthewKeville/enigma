@@ -32,23 +32,22 @@ public class InstallerController : Controller<InstallerModel> {
         model.MoveDown();
         break;
       case Command.Command.INSTALL:
+
         DateOnly requestDate = model.GetActiveDate();
+
         if ( !model.installationRequests.ContainsKey(requestDate)) {
           InstallationRequest request = new InstallationRequest(){
             Status = Enums.InstallationRequestStatus.WAITING,
             Args = new NYTInstallationRequestArgs() {
               RealDate = requestDate
+            },
+            OnSuccess = () => { 
+              eventDispatcher.DispatchEvent(new PuzzleInstalledEvent());
             }
           };
 
           model.installationRequests[requestDate] = request;
-
-          //Install puzzle is async, so the event might be processed
-          //by the picker controller before the db updates...
-          //TODO, have the event published after the installation
-          //is complete by way of a callback
           crosswordInstallerService.InstallPuzle(request);
-          eventDispatcher.DispatchEvent(new PuzzleInstalledEvent());
 
         }
         break;

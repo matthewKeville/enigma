@@ -9,10 +9,12 @@ namespace Services.CrosswordInstaller {
   }
 
   public interface InstallationRequestArgs {}
+  public delegate void OnInstallationSuccess();
 
   public class InstallationRequest() {
     public InstallationRequestStatus Status;
     public InstallationRequestArgs Args;
+    public OnInstallationSuccess OnSuccess;
   }
 
   public class CrosswordInstallerService {
@@ -29,8 +31,9 @@ namespace Services.CrosswordInstaller {
       if ( request.Args.GetType() == typeof(NYTInstallationRequestArgs)) {
           Crossword? crossword = await nytCrosswordInstaller.BuildCrossword(request);
           if ( crossword is not null ) {
-            request.Status = InstallationRequestStatus.COMPLETE;
             crosswordService.AddCrossword(crossword);
+            request.Status = InstallationRequestStatus.COMPLETE;
+            request.OnSuccess();
           } else {
             request.Status = InstallationRequestStatus.FAILED;
           }
