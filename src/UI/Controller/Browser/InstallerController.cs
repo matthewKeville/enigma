@@ -1,19 +1,26 @@
-using Context;
 using Services.CrosswordInstaller;
 using UI.Command;
+using UI.Event;
+using UI.Events;
 using UI.Model.Browser;
+using UI.View.Spectre.Browser;
 
 namespace UI.Controller.Browser {
 
 public class InstallerController : Controller<InstallerModel> {
 
-  private ContextAccessor contextAccessor;
+  private EventDispatcher eventDispatcher;
   private CrosswordInstallerService crosswordInstallerService;
+  private InstallerView  installerView;
 
-  public InstallerController(ContextAccessor ctx,CrosswordInstallerService crosswordInstallerService) {
-    this.contextAccessor = ctx;
+  public InstallerController(EventDispatcher eventDispatcher,CrosswordInstallerService crosswordInstallerService,InstallerView installerView) {
+    this.model = new InstallerModel();
+    
+    this.installerView = installerView;
+    this.installerView.SetModel(this.model);
+
+    this.eventDispatcher = eventDispatcher;
     this.crosswordInstallerService = crosswordInstallerService;
-    Register(ctx);
   }
 
   public void ProcessCommandEvent(object? sender, CommandEventArgs commandEventArgs) {
@@ -33,8 +40,16 @@ public class InstallerController : Controller<InstallerModel> {
               RealDate = requestDate
             }
           };
-          crosswordInstallerService.InstallPuzle(request);
+
           model.installationRequests[requestDate] = request;
+
+          //Install puzzle is async, so the event might be processed
+          //by the picker controller before the db updates...
+          //TODO, have the event published after the installation
+          //is complete by way of a callback
+          crosswordInstallerService.InstallPuzle(request);
+          eventDispatcher.DispatchEvent(new PuzzleInstalledEvent());
+
         }
         break;
     }

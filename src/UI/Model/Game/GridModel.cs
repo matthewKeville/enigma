@@ -5,20 +5,14 @@ namespace UI.Model.Game {
 
   public class GridModel : IModel {
 
-    public Direction Orientation;
-    public Point Entry;
-    public char[,] CharMatrix;
-    public int[,] StatusMatrix;
-    public int ColumnCount = 10;
-    public int RowCount = 10;
-
+    public int ColumnCount = 0;
+    public int RowCount = 0;
+    public Direction Orientation = Direction.Across;
+    public Point Entry = new Point(0,0);
+    public char[,] CharMatrix = new char[,]{};
+    public int[,] StatusMatrix = new int[,]{};
+    public List<WordModel> Words = new List<WordModel>();
     public int WordCheckCount;
-
-    //grid model needs to know about word boundaries,
-    //but the whole word is not necessary a grid word
-    //with the dimensions of the word, orientation and ordinal
-    //should suffice.
-    public List<WordModel> Words;
 
     public void MoveToOrdinal(int ordinal,Direction direction) {
       WordModel moveWord = Words.Find( w => w.i == ordinal && w.direction == direction );

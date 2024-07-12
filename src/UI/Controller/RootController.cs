@@ -1,26 +1,43 @@
-using Context;
 using Enums;
 using UI.Command;
 using UI.Controller.Browser;
 using UI.Controller.Game;
+using UI.Controller.Help;
+using UI.Event;
+using UI.Events;
 using UI.Model;
+using UI.View.Spectre;
 
 namespace UI.Controller {
 
 public class RootController : Controller<RootModel> {
 
-  private ContextAccessor contextAccessor;
+  private RootView rootView;
   private GameController gameController;
   private BrowserController  browserController;
+  private HelpController  helpController;
 
-  public RootController(CommandDispatcher commandDispatcher,
-      ContextAccessor ctx,GameController gameController,
-      BrowserController browserController) {
-    this.contextAccessor = ctx;
-    Register(ctx);
-    commandDispatcher.RaiseCommandEvent += ProcessCommandEvent;
+  public RootController(
+      CommandDispatcher commandDispatcher,
+      EventDispatcher eventDispatcher,
+      RootView rootView,
+      GameController gameController,
+      BrowserController browserController,
+      HelpController helpController) 
+  {
+
+    this.model = new RootModel();
+
+    this.rootView = rootView;
+    this.rootView.SetModel(this.model);
+
     this.browserController = browserController;
     this.gameController = gameController;
+    this.helpController = helpController;
+
+    eventDispatcher.RaiseEvent += ProcessEvent;
+    commandDispatcher.RaiseCommandEvent += ProcessCommandEvent;
+
   }
 
   private void ProcessCommandEvent(object? sender, CommandEventArgs commandEventArgs) {
@@ -43,6 +60,18 @@ public class RootController : Controller<RootModel> {
     }
   }
 
+  public void ProcessEvent(object? sender,EventArgs eventArgs) {
+
+    if (eventArgs.GetType() == typeof(LoadPuzzleEventArgs)) {
+      Trace.WriteLine("root controller recieved load puzzle");
+      model.activeWindow = Window.GAME;
+    }
+
+    if (eventArgs.GetType() == typeof(ExitPuzzleEventArgs)) {
+      Trace.WriteLine("root controller exit puzzle");
+      model.activeWindow = Window.BROWSER;
+    }
+  }
 
 }
 

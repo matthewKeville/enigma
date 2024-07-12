@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 
 using Services;
-using Context;
 
 using UI.Command;
 using UI.Controller;
@@ -18,6 +17,8 @@ using UI.View.Spectre.Status;
 using UI.View.Spectre.Browser;
 using Services.CrosswordInstaller;
 using Services.CrosswordInstaller.NYT;
+using UI.Controller.Help;
+using UI.Controller.Game.Status;
 
 Trace.Listeners.Add(new TextWriterTraceListener("./logs/enigma.log"));
 Trace.AutoFlush = true;
@@ -27,13 +28,11 @@ HostApplicationBuilder builder = Host.CreateEmptyApplicationBuilder(new HostAppl
 builder.Services.AddSingleton<DatabaseContext, DatabaseContext>();
 
 builder.Services.AddSingleton<RootView, RootView>();
-
 builder.Services.AddSingleton<HelpView, HelpView>();
 
 builder.Services.AddSingleton<BrowserView, BrowserView>();
 builder.Services.AddSingleton<InstallerView, InstallerView>();
 builder.Services.AddSingleton<PickerView, PickerView>();
-
 builder.Services.AddSingleton<GameView, GameView>();
 builder.Services.AddSingleton<StatusView, StatusView>();
 builder.Services.AddSingleton<ClockView, ClockView>();
@@ -41,6 +40,7 @@ builder.Services.AddSingleton<GridView, GridView>();
 builder.Services.AddSingleton<CluesView, CluesView>();
 
 builder.Services.AddSingleton<RootController, RootController>();
+builder.Services.AddSingleton<HelpController, HelpController>();
 builder.Services.AddSingleton<BrowserController, BrowserController>();
 builder.Services.AddSingleton<PickerController, PickerController>();
 builder.Services.AddSingleton<InstallerController, InstallerController>();
@@ -49,12 +49,14 @@ builder.Services.AddSingleton<GameController, GameController>();
 builder.Services.AddSingleton<GridController, GridController>();
 builder.Services.AddSingleton<CluesController, CluesController>();
 
+builder.Services.AddSingleton<StatusController, StatusController>();
+builder.Services.AddSingleton<ClockController, ClockController>();
+
 builder.Services.AddSingleton<CrosswordService, CrosswordService>();
 builder.Services.AddSingleton<NYTCrosswordInstaller, NYTCrosswordInstaller>();
 builder.Services.AddSingleton<NYTCrosswordParser, NYTCrosswordParser>();
 builder.Services.AddSingleton<CrosswordInstallerService, CrosswordInstallerService>();
 
-builder.Services.AddSingleton<ContextAccessor>();
 builder.Services.AddSingleton<SpectreRenderer>();
 builder.Services.AddSingleton<KeyCommandInterpreter>();
 builder.Services.AddSingleton<CommandDispatcher>();

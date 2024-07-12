@@ -1,4 +1,3 @@
-using Context;
 using Services.CrosswordInstaller;
 using Spectre.Console;
 using Spectre.Console.Rendering;
@@ -7,10 +6,6 @@ using UI.Model.Browser;
 namespace UI.View.Spectre.Browser {
 
   public class InstallerView : SpectreView<InstallerModel> {
-
-    public InstallerView(ContextAccessor ctx) {
-      Register(ctx);
-    }
 
     override protected IRenderable render() {
 

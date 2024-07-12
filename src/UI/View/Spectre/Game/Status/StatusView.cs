@@ -1,4 +1,3 @@
-using Context;
 using Spectre.Console;
 using UI.Model.Status;
 
@@ -8,8 +7,7 @@ public class StatusView : SpectreView<StatusModel> {
 
   private ClockView clockView;
 
-  public StatusView(ContextAccessor ctx, ClockView clockView) {
-    Register(ctx);
+  public StatusView(ClockView clockView) {
     this.clockView = clockView;
   }
 

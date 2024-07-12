@@ -1,4 +1,3 @@
-using Context;
 using Enums;
 using Spectre.Console;
 using UI.Model.Game;
@@ -11,10 +10,6 @@ public class CluesView : SpectreView<CluesModel> {
   private int columnWidth = 90;
   private int tableWidth = 200;
   private bool nowrap = true;
-
-  public CluesView(ContextAccessor ctx) {
-    Register(ctx);
-  }
 
   protected override Table render() {
 

@@ -1,4 +1,3 @@
-using Context;
 using Spectre.Console;
 using Spectre.Console.Rendering;
 using UI.Model.Game;
@@ -12,10 +11,6 @@ public class GridView : SpectreView<GridModel> {
   private const char block = '█';
   private const char cursor = '*';
   private const char line = '.';
-
-  public GridView(ContextAccessor ctx) {
-    Register(ctx);
-  }
 
   private Table buildDebugTable() {
     Table DebugTable = new Table();

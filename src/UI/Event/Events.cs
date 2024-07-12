@@ -22,4 +22,26 @@ namespace UI.Events {
     }
   }
 
+  public class LoadPuzzleEventArgs : EventArgs {
+    public int puzzleId;
+    public LoadPuzzleEventArgs(int puzzleId) {
+      Trace.WriteLine("Load Puzzle Event");
+      this.puzzleId = puzzleId;
+    }
+  }
+
+  public class ExitPuzzleEventArgs : EventArgs {
+    public int puzzleId;
+    public ExitPuzzleEventArgs(int puzzleId) {
+      this.puzzleId = puzzleId;
+      Trace.WriteLine("Exit Puzzle Event");
+    }
+  }
+
+  public class PuzzleInstalledEvent : EventArgs {
+    public PuzzleInstalledEvent() {
+      Trace.WriteLine("Puzzle Installed Event");
+    }
+  }
+
 }

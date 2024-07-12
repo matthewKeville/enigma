@@ -1,21 +1,24 @@
-using Context;
 using Enums;
 using UI.Command;
 using UI.Model.Browser;
+using UI.View.Spectre;
 
 namespace UI.Controller.Browser {
 
 public class BrowserController : Controller<BrowserModel> {
 
-  private ContextAccessor contextAccessor;
+  private BrowserView browserView;
   private PickerController pickerController;
   private InstallerController installerController;
 
-  public BrowserController(ContextAccessor ctx,PickerController pickerController,InstallerController installerController) {
-    this.contextAccessor = ctx;
+  public BrowserController(BrowserView browserView,PickerController pickerController,InstallerController installerController) {
+    this.model= new BrowserModel();
+
+    this.browserView = browserView;
+    this.browserView.SetModel(this.model);
+
     this.pickerController = pickerController;
     this.installerController = installerController;
-    Register(ctx);
   }
 
   public void ProcessCommandEvent(object? sender, CommandEventArgs commandEventArgs) {
@@ -35,6 +38,8 @@ public class BrowserController : Controller<BrowserModel> {
       break;
     }
   }
+
+
 
 }
 

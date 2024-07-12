@@ -6,10 +6,9 @@ public record ClueModel(int ordinal, String value);
 
 public class CluesModel : IModel {
 
-  public List<ClueModel> Across;
-  public List<ClueModel> Down;
-  public (int,Direction) ActiveClue;
-
+  public List<ClueModel> Across = new List<ClueModel>();
+  public List<ClueModel> Down = new List<ClueModel>();
+  public (int,Direction) ActiveClue =(0,Direction.Across);
 
   public void NextClue() {
     findNextOrdinal(1);

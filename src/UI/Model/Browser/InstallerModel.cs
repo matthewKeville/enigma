@@ -7,7 +7,6 @@ namespace UI.Model.Browser {
     public static String flag = "InstallModel";
 
     public int DayDisplayDelayDays = -35; //5 weeks
-
     public int selection = 0;
     public int page = 0;
     public int datesPerPage = 30;

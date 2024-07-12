@@ -1,4 +1,3 @@
-using Context;
 using Spectre.Console;
 using Spectre.Console.Rendering;
 using UI.Model.Browser;
@@ -6,10 +5,6 @@ using UI.Model.Browser;
 namespace UI.View.Spectre.Browser {
 
   public class PickerView : SpectreView<PickerModel> {
-
-    public PickerView(ContextAccessor ctx) {
-      Register(ctx);
-    }
 
     override protected IRenderable render() {
 

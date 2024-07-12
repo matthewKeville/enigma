@@ -1,4 +1,3 @@
-using Context;
 using Enums;
 using Spectre.Console.Rendering;
 using UI.Model.Browser;
@@ -10,8 +9,7 @@ public class BrowserView : SpectreView<BrowserModel> {
   private PickerView pickerView;
   private InstallerView installerView;
 
-  public BrowserView(ContextAccessor ctx, PickerView pickerView, InstallerView installerView) {
-    Register(ctx);
+  public BrowserView(PickerView pickerView, InstallerView installerView) {
     this.pickerView = pickerView;
     this.installerView = installerView;
   }

@@ -54,6 +54,7 @@ namespace Services {
     public void AddCrossword(Crossword crossword) {
       dbCtx.Crosswords.Add(crossword);
       dbCtx.SaveChanges();
+      Trace.WriteLine("New Crossword added to database");
     }
 
     public void UpdateCrossword(Crossword crossword) {

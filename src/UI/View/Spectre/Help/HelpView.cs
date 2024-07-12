@@ -1,4 +1,3 @@
-using Context;
 using Spectre.Console;
 using UI.Model.Help;
 
@@ -6,9 +5,7 @@ namespace UI.View.Spectre.Help {
 
   public class HelpView : SpectreView<HelpModel> {
 
-    public HelpView(ContextAccessor ctx) {
-      Register(ctx);
-    }
+    public HelpView() {}
 
     protected override Layout render() {
       Layout root = new Layout();

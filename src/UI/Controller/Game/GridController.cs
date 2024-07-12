@@ -1,25 +1,35 @@
-using Context;
+using System.Drawing;
+using Entity;
 using Enums;
+using Services;
 using UI.Command;
 using UI.Event;
 using UI.Events;
 using UI.Model.Game;
+using UI.View.Spectre.Game;
 
 namespace UI.Controller.Game {
 
 public class GridController : Controller<GridModel> {
 
-  private ContextAccessor contextAccessor;
   private EventDispatcher eventDispatcher;
+  private CrosswordService crosswordService;
+  private GridView gridView;
 
-  public GridController(ContextAccessor ctx, EventDispatcher eventDispatcher) {
-    this.contextAccessor = ctx;
-    Register(ctx);
+  public GridController(EventDispatcher eventDispatcher,CrosswordService crosswordService,GridView gridView) {
+    this.model = new GridModel();
+
+    this.gridView = gridView;
+    this.gridView.SetModel(this.model);
+
     this.eventDispatcher = eventDispatcher;
     this.eventDispatcher.RaiseEvent += ProcessEvent;
+
+    this.crosswordService = crosswordService;
+
   }
 
-  public void PerformAndNotifyGridWordChange(Action action) {
+  private void PerformAndNotifyGridWordChange(Action action) {
     WordModel prevWord = model.ActiveWord();
     action();
     if ( !prevWord.Equals(model.ActiveWord()) ) {
@@ -98,6 +108,63 @@ public class GridController : Controller<GridModel> {
       this.model.MoveToOrdinal(args.ordinal,args.direction);
 
     }
+
+    if (eventArgs.GetType() == typeof(LoadPuzzleEventArgs)) {
+
+      LoadPuzzleEventArgs args = ((LoadPuzzleEventArgs) eventArgs);
+      Crossword crossword = crosswordService.GetCrossword(args.puzzleId);
+
+      model = new GridModel();
+      model.ColumnCount = crossword.Columns;
+      model.RowCount = crossword.Rows;
+      model.Orientation = Direction.Across;
+      model.Words = new List<WordModel>();
+      foreach ( Word eword in crossword.Words ) {
+        model.Words.Add( new WordModel(){
+          x = eword.X,
+          y = eword.Y,
+          i = eword.I,
+          direction = eword.Direction,
+          answer = eword.Answer,
+          prompt = eword.Clue
+        });
+      }
+      model.WordCheckCount = crossword.WordCheckCount;
+      model.CharMatrix = new char[crossword.Columns,crossword.Rows];
+      foreach ( GridChar gc in crossword.GridChars ) {
+        model.CharMatrix[gc.X,gc.Y] = gc.C;
+      }
+      model.StatusMatrix = new int[crossword.Columns,crossword.Rows];
+      model.Entry = model.Words
+        .OrderBy( w => w.i)
+        .Take(1)
+        .Select( w => new Point(w.x,w.y)).First();
+
+      gridView.SetModel(model);
+
+    }
+
+    if (eventArgs.GetType() == typeof(ExitPuzzleEventArgs)) {
+
+      ExitPuzzleEventArgs args = ((ExitPuzzleEventArgs) eventArgs);
+      Crossword crossword = crosswordService.GetCrossword(args.puzzleId);
+
+      //convert charMatrix into character string
+      for ( int i = 0; i < model.ColumnCount; i++ ) {
+        for ( int j = 0; j < model.RowCount; j++ ) {
+          GridChar gc = crossword.GridChars
+            .Find( g => {
+              return g.X == i && g.Y == j;
+            });
+          gc.C = model.CharMatrix[i,j];
+        }
+      }
+      crossword.WordCheckCount = model.WordCheckCount;
+
+      crosswordService.UpdateCrossword(crossword);
+
+    }
+
   }
 
 }
