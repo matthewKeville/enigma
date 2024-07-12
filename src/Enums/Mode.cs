@@ -1,5 +1,5 @@
 namespace Enums {
-  enum Mode {
+  public enum Mode {
     NORMAL,
     INSERT
   }

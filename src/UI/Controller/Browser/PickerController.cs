@@ -44,7 +44,11 @@ public class PickerController : Controller<PickerModel> {
 
   public void ProcessEvent(object? sender,EventArgs eventArgs) {
     if (eventArgs.GetType() == typeof(PuzzleInstalledEvent)) {
-      Trace.WriteLine("Puzzle Install Event recieved in PickerController");
+      this.model = new PickerModel();
+      this.model.headers = crosswordService.GetCrosswordHeaders();
+      this.pickerView.SetModel(this.model);
+    }
+    if (eventArgs.GetType() == typeof(ExitPuzzleEventArgs)) {
       this.model = new PickerModel();
       this.model.headers = crosswordService.GetCrosswordHeaders();
       this.pickerView.SetModel(this.model);

@@ -12,11 +12,19 @@ namespace UI.Command {
 
   public class KeyCommandInterpreter {
 
+    // This is a quick cheat to expose mode to other view components
+    // not sure of a more elegant solution. There should only 
+    // ever be one of these anyway.
+    private static Mode mode = Mode.NORMAL;
+    public static Mode GetMode() {
+      return mode;
+    }
+
     private Dictionary<ConsoleKey,Command> commandMap;
-    private Mode mode = Mode.NORMAL;
     private Thread interpreterThread ;
     private bool running = true;
     private CommandDispatcher commandDispatcher;
+
 
     public KeyCommandInterpreter(IApplicationLifetime applicationLifetime,CommandDispatcher commandDispatcher) {
       this.commandDispatcher = commandDispatcher;
