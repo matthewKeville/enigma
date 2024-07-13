@@ -1,7 +1,6 @@
 using Entity;
 using Enums;
 using Services;
-using UI.Command;
 using UI.Event;
 using UI.Events;
 using UI.Model.Game;
@@ -36,6 +35,7 @@ public class CluesController : Controller<CluesModel> {
     }
   }
 
+  /**
   public void ProcessCommandEvent(object? sender, CommandEventArgs commandEventArgs) {
     switch ( commandEventArgs.command ) {
 
@@ -60,6 +60,7 @@ public class CluesController : Controller<CluesModel> {
         break;
     }
   }
+  */
 
   public void ProcessEvent(object? sender,EventArgs eventArgs) {
 

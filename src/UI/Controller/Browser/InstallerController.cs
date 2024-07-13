@@ -1,9 +1,10 @@
 using Services.CrosswordInstaller;
-using UI.Command;
+using UI.Commands;
 using UI.Event;
 using UI.Events;
 using UI.Model.Browser;
 using UI.View.Spectre.Browser;
+using static UI.Commands.KeySeqInterpreter;
 
 namespace UI.Controller.Browser {
 
@@ -12,6 +13,7 @@ public class InstallerController : Controller<InstallerModel> {
   private EventDispatcher eventDispatcher;
   private CrosswordInstallerService crosswordInstallerService;
   private InstallerView  installerView;
+  private KeySeqInterpreter keySeqInterpreter;
 
   public InstallerController(EventDispatcher eventDispatcher,CrosswordInstallerService crosswordInstallerService,InstallerView installerView) {
     this.model = new InstallerModel();
@@ -21,17 +23,34 @@ public class InstallerController : Controller<InstallerModel> {
 
     this.eventDispatcher = eventDispatcher;
     this.crosswordInstallerService = crosswordInstallerService;
+
+    buildKeySeqInterpreter();
   }
 
-  public void ProcessCommandEvent(object? sender, CommandEventArgs commandEventArgs) {
-    switch ( commandEventArgs.command ) {
-      case Command.Command.MOVE_UP:
+  public void ProcessKeyInput(ConsoleKey key) {
+
+    KeySeqResponse response = keySeqInterpreter.ProcessKey(key);
+    
+    if ( response.Command is not null ) {
+      ProcessCommand(response.Command);
+    } else if ( response.Propagate ) {
+      //no child
+    }
+
+  }
+
+  public void ProcessCommand(Command command) {
+    switch ( command.Type ) {
+
+      case CommandType.MOVE_UP:
         model.MoveUp();
         break;
-      case Command.Command.MOVE_DOWN:
+
+      case CommandType.MOVE_DOWN:
         model.MoveDown();
         break;
-      case Command.Command.INSTALL:
+
+      case CommandType.INSTALL:
 
         DateOnly requestDate = model.GetActiveDate();
 
@@ -52,6 +71,14 @@ public class InstallerController : Controller<InstallerModel> {
         }
         break;
     }
+  }
+
+  private void buildKeySeqInterpreter() {
+    Dictionary<List<ConsoleKey>,Command> commandMap = new Dictionary<List<ConsoleKey>,Command>();
+    commandMap[new List<ConsoleKey>(){ConsoleKey.J}] = new Command(CommandMode.NORMAL,CommandType.MOVE_DOWN);
+    commandMap[new List<ConsoleKey>(){ConsoleKey.K}] = new Command(CommandMode.NORMAL,CommandType.MOVE_UP);
+    commandMap[new List<ConsoleKey>(){ConsoleKey.N}] = new Command(CommandMode.NORMAL,CommandType.INSTALL);
+    keySeqInterpreter = new KeySeqInterpreter(commandMap);
   }
 
 }

@@ -1,4 +1,3 @@
-using UI.Command;
 using UI.Model.Help;
 using UI.View.Spectre.Help;
 
@@ -15,12 +14,14 @@ public class HelpController : Controller<HelpModel> {
     this.helpView.SetModel(model);
   }
 
+  /**
   public void ProcessCommandEvent(object? sender, CommandEventArgs commandEventArgs) {
     switch ( commandEventArgs.command ) {
       default:
         break;
       }
   }
+  */
 
 }
 

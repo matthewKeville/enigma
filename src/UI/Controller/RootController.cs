@@ -1,5 +1,5 @@
 using Enums;
-using UI.Command;
+using UI.Commands;
 using UI.Controller.Browser;
 using UI.Controller.Game;
 using UI.Controller.Help;
@@ -7,6 +7,7 @@ using UI.Event;
 using UI.Events;
 using UI.Model;
 using UI.View.Spectre;
+using static UI.Commands.KeySeqInterpreter;
 
 namespace UI.Controller {
 
@@ -16,9 +17,10 @@ public class RootController : Controller<RootModel> {
   private GameController gameController;
   private BrowserController  browserController;
   private HelpController  helpController;
+  private KeySeqInterpreter  keySeqInterpreter;
 
   public RootController(
-      CommandDispatcher commandDispatcher,
+      KeyDispatcher keyDispatcher,
       EventDispatcher eventDispatcher,
       RootView rootView,
       GameController gameController,
@@ -36,27 +38,44 @@ public class RootController : Controller<RootModel> {
     this.helpController = helpController;
 
     eventDispatcher.RaiseEvent += ProcessEvent;
-    commandDispatcher.RaiseCommandEvent += ProcessCommandEvent;
+    keyDispatcher.RaiseKeyInputEvent += ProcessKeyInputEvent;
+
+    buildKeySeqInterpreter();
 
   }
 
-  private void ProcessCommandEvent(object? sender, CommandEventArgs commandEventArgs) {
+  private void ProcessKeyInputEvent(object? sender, KeyInputEventArgs keyInputEventArgs) {
 
-    if (commandEventArgs.command == Command.Command.TOGGLE_HELP) {
-      model.ToggleHelp();
+    KeySeqResponse response = keySeqInterpreter.ProcessKey(keyInputEventArgs.key);
+
+    if ( response.Command is not null ) {
+      ProcessCommand(response.Command);
+    } else if ( response.Propagate ) {
+      PropagateKeys(response.Sequence);
     }
 
-    switch ( model.activeWindow ) {
+  }
 
-      case Window.GAME:
-        gameController.ProcessCommandEvent(this,commandEventArgs);
-        break;
-      case Window.BROWSER:
-        browserController.ProcessCommandEvent(this,commandEventArgs);
-        break;
-      default:
-        break;
+  public void PropagateKeys(List<ConsoleKey> keys) {
+    Trace.WriteLine("root is propagating keys");
+    foreach ( ConsoleKey key in keys ) {
+      switch ( model.activeWindow ) {
+        case Window.BROWSER:
+          browserController.ProcessKeyInput(key);
+          break;
+        //case Window.GAME:
+          //gameController.ProcessCommandEvent(this,commandEventArgs);
+          //break;
+      }
+    }
+  }
 
+  public void ProcessCommand(Command command) {
+    Trace.WriteLine("Root Controller recieved command");
+    switch ( command.Type ) {
+      case CommandType.TOGGLE_HELP:
+        model.ToggleHelp();
+        break;
     }
   }
 
@@ -71,6 +90,11 @@ public class RootController : Controller<RootModel> {
       Trace.WriteLine("root controller exit puzzle");
       model.activeWindow = Window.BROWSER;
     }
+  }
+
+  private void buildKeySeqInterpreter() {
+    Dictionary<List<ConsoleKey>,Command> commandMap = new Dictionary<List<ConsoleKey>,Command>();
+    keySeqInterpreter = new KeySeqInterpreter(commandMap);
   }
 
 }

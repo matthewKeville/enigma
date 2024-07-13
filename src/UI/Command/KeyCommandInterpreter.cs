@@ -1,3 +1,4 @@
+/**
 using Enums;
 using Microsoft.Extensions.Hosting;
 
@@ -99,10 +100,9 @@ namespace UI.Command {
       commandMap.Add(new List<ConsoleKey>(){ConsoleKey.N},Command.INSTALL);
     }
 
-    /**
-     * @Return V1 : the command mapped to the key sequnce
-     * @Return V2 : whether the key sequence is a partial match
-     */
+     //@Return V1 : the command mapped to the key sequnce
+     //@Return V2 : whether the key sequence is a partial match
+     
     private (Command?,bool) tryGetCommand(List<ConsoleKey> keys) {
 
       //exact match?
@@ -189,42 +189,6 @@ namespace UI.Command {
           keyPresses.Clear();
           return;
       }      
-  
-
-      /**
-      Command? meta = tryGetMetaCommand(key);
-
-      if ( meta.HasValue ) {
-        if ( meta == Command.NORMAL_MODE && mode == Mode.INSERT ) {
-          mode = Mode.NORMAL;
-          return;
-        } else if ( meta == Command.INSERT_MODE && mode == Mode.NORMAL ) {
-          mode = Mode.INSERT;
-          return;
-        }
-      }
-
-      Command? normal = tryGetNormalCommand(key);
-
-      if ( mode == Mode.NORMAL ) {
-        if ( normal.HasValue ) {
-          triggerCommand(normal.Value);
-          return;
-        }
-      }      
-
-      if ( mode == Mode.INSERT ) {
-        int keyNum = ((int)key);
-        if ( 65 <= keyNum && keyNum <= 90 ) {
-          triggerCommand(Command.INSERT_CHAR,key);
-        } else if ( 97 <= keyNum && keyNum <= 122 ) {
-          triggerCommand(Command.INSERT_CHAR,key);
-        } else if ( key == ConsoleKey.Backspace ) {
-          triggerCommand(Command.DEL_CHAR,key);
-        }
-        return;
-      }
-      */
 
     }
 
@@ -246,3 +210,4 @@ namespace UI.Command {
   }
 
 }
+*/

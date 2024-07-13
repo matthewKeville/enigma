@@ -1,6 +1,4 @@
-using Enums;
 using Services;
-using UI.Command;
 using UI.Controller.Game.Status;
 using UI.Event;
 using UI.Events;
@@ -42,6 +40,7 @@ public class GameController : Controller<GameModel> {
 
   }
 
+  /**
   public void ProcessCommandEvent(object? sender, CommandEventArgs commandEventArgs) {
 
     switch ( commandEventArgs.command ) {
@@ -74,6 +73,7 @@ public class GameController : Controller<GameModel> {
     }
 
   }
+  */
 
 }
 

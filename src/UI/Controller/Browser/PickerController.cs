@@ -1,9 +1,10 @@
 using Services;
-using UI.Command;
+using UI.Commands;
 using UI.Event;
 using UI.Events;
 using UI.Model.Browser;
 using UI.View.Spectre.Browser;
+using static UI.Commands.KeySeqInterpreter;
 
 namespace UI.Controller.Browser {
 
@@ -12,6 +13,7 @@ public class PickerController : Controller<PickerModel> {
   private EventDispatcher eventDispatcher;
   private CrosswordService crosswordService;
   private PickerView pickerView;
+  private KeySeqInterpreter keySeqInterpreter;
 
   public PickerController(EventDispatcher eventDispatcher,CrosswordService crosswordService,PickerView pickerView) {
     this.model = new PickerModel();
@@ -23,20 +25,33 @@ public class PickerController : Controller<PickerModel> {
     this.eventDispatcher = eventDispatcher;
     this.eventDispatcher.RaiseEvent += ProcessEvent;
     this.crosswordService = crosswordService;
+    
+    buildKeySeqInterpreter();
   }
 
-  public void ProcessCommandEvent(object? sender, CommandEventArgs commandEventArgs) {
-    switch ( commandEventArgs.command ) {
+  public void ProcessKeyInput(ConsoleKey key) {
+    Trace.WriteLine($" key is {key.ToString()}");
+    KeySeqResponse response = keySeqInterpreter.ProcessKey(key);
+    
+    if ( response.Command is not null ) {
+      ProcessCommand(response.Command);
+    } else if ( response.Propagate ) {
+      // no child
+    }
+  }
 
-      case Command.Command.MOVE_UP:
+
+  private void ProcessCommand(Command command) {
+    switch ( command.Type ) {
+      case CommandType.MOVE_UP:
         model.MoveUp();
         break;
-      case Command.Command.MOVE_DOWN:
+      case CommandType.MOVE_DOWN:
         model.MoveDown();
         break;
-
-      case Command.Command.CONFIRM:
-        eventDispatcher.DispatchEvent(new LoadPuzzleEventArgs(model.getActiveHeader.PuzzleId));
+      case CommandType.CONFIRM:
+        Trace.WriteLine("load puzzled nooped");
+        //eventDispatcher.DispatchEvent(new LoadPuzzleEventArgs(model.getActiveHeader.PuzzleId));
         break;
 
     }
@@ -53,6 +68,14 @@ public class PickerController : Controller<PickerModel> {
       this.model.headers = crosswordService.GetCrosswordHeaders();
       this.pickerView.SetModel(this.model);
     }
+  }
+
+  private void buildKeySeqInterpreter() {
+    Dictionary<List<ConsoleKey>,Command> commandMap = new Dictionary<List<ConsoleKey>,Command>();
+    commandMap[new List<ConsoleKey>(){ConsoleKey.J}] = new Command(CommandMode.NORMAL,CommandType.MOVE_DOWN);
+    commandMap[new List<ConsoleKey>(){ConsoleKey.K}] = new Command(CommandMode.NORMAL,CommandType.MOVE_UP);
+    commandMap[new List<ConsoleKey>(){ConsoleKey.Enter}] = new Command(CommandMode.NORMAL,CommandType.CONFIRM);
+    keySeqInterpreter = new KeySeqInterpreter(commandMap);
   }
 
 }

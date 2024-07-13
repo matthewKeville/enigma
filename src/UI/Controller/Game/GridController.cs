@@ -2,7 +2,6 @@ using System.Drawing;
 using Entity;
 using Enums;
 using Services;
-using UI.Command;
 using UI.Event;
 using UI.Events;
 using UI.Model.Game;
@@ -39,6 +38,7 @@ public class GridController : Controller<GridModel> {
     }
   }
 
+  /**
   public void ProcessCommandEvent(object? sender, CommandEventArgs commandEventArgs) {
 
     switch ( commandEventArgs.command ) {
@@ -98,6 +98,7 @@ public class GridController : Controller<GridModel> {
         break;
     }
   }
+  */
 
   public void ProcessEvent(object? sender,EventArgs eventArgs) {
 

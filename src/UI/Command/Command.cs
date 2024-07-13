@@ -1,40 +1,25 @@
-namespace UI.Command {
+namespace UI.Commands {
 
-  public class Commands {
+  public class Command {
+    public CommandType Type;
+    public CommandMode Mode;
+    public ConsoleKey? Key;
 
-    public static List<Command> Meta { get; }  = new List<Command>() {
-        Command.NORMAL_MODE,
-        Command.INSERT_MODE
-    };
+    public Command(CommandMode mode, CommandType type) {
+      this.Mode = mode;
+      this.Type = type;
+    }
 
-    public static List<Command> Normal { get; } = new List<Command>() {
-        Command.SWITCH_VIEW,
-        Command.MOVE_LEFT,
-        Command.MOVE_RIGHT,
-        Command.MOVE_UP,
-        Command.MOVE_DOWN,
-        Command.MOVE_WORD_START,
-        Command.MOVE_WORD_END,
-        Command.MOVE_WORD,
-        Command.MOVE_BACK_WORD,
-        Command.CHECK_WORD,
-        Command.SWAP_ORIENTATION,
-        Command.SWAP_PANE,
-        Command.DEL_WORD,
-        Command.CONFIRM,
-        Command.TOGGLE_HELP,
-        Command.INSTALL,
-        Command.EXIT,
-    };
+    public Command(CommandMode mode, CommandType type, ConsoleKey key) {
+      this.Mode = mode;
+      this.Type = type;
+      this.Key = key;
+    }
 
-    public static List<Command> Insert { get; } = new List<Command>() {
-       Command.INSERT_CHAR,
-       Command.DEL_CHAR
-    };
   }
 
-  public enum  Command {
-
+  public enum  CommandType {
+    LOAD_PUZZLE,
     NORMAL_MODE,
     INSERT_MODE,
     SWITCH_VIEW,
@@ -56,7 +41,12 @@ namespace UI.Command {
     TOGGLE_HELP,
     INSTALL,
     EXIT
+  }
 
+  public enum CommandMode {
+    META,
+    INSERT,
+    NORMAL
   }
 
 

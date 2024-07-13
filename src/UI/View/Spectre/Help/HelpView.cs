@@ -11,7 +11,7 @@ namespace UI.View.Spectre.Help {
       Layout root = new Layout();
       List<Text> texts = new List<Text>();
       foreach ( KeyMapInfo km in model.commandMappings ) {
-        texts.Add( new Text($"Key {km.key.ToString()} : {km.command.ToString()}"));
+        texts.Add( new Text($"Key {km.key.ToString()} : {km.commandType.ToString()}"));
       }
       
       Rows rows = new Rows(texts);

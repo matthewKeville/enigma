@@ -1,7 +1,5 @@
-using Enums;
 using Spectre.Console;
 using Spectre.Console.Rendering;
-using UI.Command;
 using UI.Model.Game;
 
 namespace UI.View.Spectre.Game {
@@ -21,12 +19,12 @@ public class GridView : SpectreView<GridModel> {
     DebugTable.AddColumn("Coordinate");
     DebugTable.AddColumn("Orientation");
     DebugTable.AddColumn("Checks");
-    DebugTable.AddColumn("Mode");
+    //DebugTable.AddColumn("Mode");
     DebugTable.AddRow(
         new Panel(string.Format("x,y : {0},{1}",model.Entry.X,model.Entry.Y)),
         new Panel(string.Format("{0}",model.Orientation)),
-        new Panel(string.Format("Checks {0}",model.WordCheckCount)),
-        new Panel(string.Format("Mode {0}",KeyCommandInterpreter.GetMode() == Mode.INSERT ? "Insert" : "Normal"))
+        new Panel(string.Format("Checks {0}",model.WordCheckCount))
+        //new Panel(string.Format("Mode {0}",KeyCommandInterpreter.GetMode() == Mode.INSERT ? "Insert" : "Normal"))
     );
     return DebugTable;
   }

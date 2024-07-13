@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using Services;
 
-using UI.Command;
+using UI.Commands;
 using UI.Controller;
 using UI.Controller.Browser;
 using UI.Controller.Game;
@@ -58,13 +58,13 @@ builder.Services.AddSingleton<NYTCrosswordParser, NYTCrosswordParser>();
 builder.Services.AddSingleton<CrosswordInstallerService, CrosswordInstallerService>();
 
 builder.Services.AddSingleton<SpectreRenderer>();
-builder.Services.AddSingleton<KeyCommandInterpreter>();
-builder.Services.AddSingleton<CommandDispatcher>();
+builder.Services.AddSingleton<KeyReader>();
+builder.Services.AddSingleton<KeyDispatcher>();
 builder.Services.AddSingleton<EventDispatcher>();
 
 IHost host = builder.Build();
 
-KeyCommandInterpreter interpreter = host.Services.GetRequiredService<KeyCommandInterpreter>();
+KeyReader keyReader = host.Services.GetRequiredService<KeyReader>();
 RootController controller = host.Services.GetRequiredService<RootController>();
 SpectreRenderer render = host.Services.GetRequiredService<SpectreRenderer>();
 
