@@ -63,9 +63,9 @@ public class RootController : Controller<RootModel> {
         case Window.BROWSER:
           browserController.ProcessKeyInput(key);
           break;
-        //case Window.GAME:
-          //gameController.ProcessCommandEvent(this,commandEventArgs);
-          //break;
+        case Window.GAME:
+          gameController.ProcessKeyInput(key);
+          break;
       }
     }
   }

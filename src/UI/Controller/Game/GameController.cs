@@ -1,9 +1,12 @@
+using Enums;
 using Services;
+using UI.Commands;
 using UI.Controller.Game.Status;
 using UI.Event;
 using UI.Events;
 using UI.Model.Game;
 using UI.View.Spectre.Game;
+using static UI.Commands.KeySeqInterpreter;
 
 namespace UI.Controller.Game {
 
@@ -15,6 +18,7 @@ public class GameController : Controller<GameModel> {
   private GridController gridController;
   private CluesController cluesController;
   private StatusController statusController;
+  private KeySeqInterpreter keySeqInterpreter;
 
   public GameController(EventDispatcher eventDispatcher,CrosswordService crosswordService,GameView gameView,GridController gridController,CluesController cluesController,StatusController statusController) {
     this.model = new GameModel();
@@ -29,6 +33,8 @@ public class GameController : Controller<GameModel> {
     this.crosswordService = crosswordService;
     this.eventDispatcher = eventDispatcher;
     this.eventDispatcher.RaiseEvent += ProcessEvent;
+
+    buildKeySeqInterpreter();
   }
 
   public void ProcessEvent(object? sender,EventArgs eventArgs) {
@@ -40,40 +46,55 @@ public class GameController : Controller<GameModel> {
 
   }
 
-  /**
-  public void ProcessCommandEvent(object? sender, CommandEventArgs commandEventArgs) {
+  public void ProcessKeyInput(ConsoleKey key) {
 
-    switch ( commandEventArgs.command ) {
+    KeySeqResponse response = keySeqInterpreter.ProcessKey(key);
+    
+    if ( response.Command is not null ) {
+      ProcessCommand(response.Command);
+    } else if ( response.Propagate ) {
+      PropagateKeys(response.Sequence);
+    }
 
-      case Command.Command.EXIT:
+  }
+
+  public void ProcessCommand(Command command) {
+
+    switch ( command.Type ) {
+
+      case CommandType.EXIT:
         Trace.WriteLine($" exiting crossword id : {model.crosswordId}");
         eventDispatcher.DispatchEvent(new ExitPuzzleEventArgs(model.crosswordId));
         return;
 
-      case Command.Command.SWAP_PANE:
+      case CommandType.SWAP_PANE:
         model.SwapPane();
         Trace.WriteLine("Swapping Pane");
-        break;
-      default:
-        break;
-
-    }
-
-    switch ( model.activePane) {
-
-      case Pane.GRID:
-        gridController.ProcessCommandEvent(this,commandEventArgs);
-        break;
-      case Pane.CLUES:
-        cluesController.ProcessCommandEvent(this,commandEventArgs);
-        break;
-      default:
         break;
 
     }
 
   }
-  */
+
+  private void PropagateKeys(List<ConsoleKey> keys) {
+    foreach ( ConsoleKey key in keys) {
+      switch ( model.activePane) {
+        case Pane.GRID:
+          gridController.ProcessKeyInput(key);
+          break;
+        case Pane.CLUES:
+          cluesController.ProcessKeyInput(key);
+          break;
+        }
+    }
+  }
+
+  private void buildKeySeqInterpreter() {
+    Dictionary<List<ConsoleKey>,Command> commandMap = new Dictionary<List<ConsoleKey>,Command>();
+    commandMap[new List<ConsoleKey>(){ConsoleKey.Tab}] = new Command(CommandMode.NORMAL,CommandType.SWAP_PANE);
+    commandMap[new List<ConsoleKey>(){ConsoleKey.Q}] = new Command(CommandMode.NORMAL,CommandType.EXIT);
+    keySeqInterpreter = new KeySeqInterpreter(commandMap);
+  }
 
 }
 

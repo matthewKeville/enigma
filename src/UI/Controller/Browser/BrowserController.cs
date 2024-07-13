@@ -39,7 +39,7 @@ public class BrowserController : Controller<BrowserModel> {
 
   private void ProcessCommand(Command command) {
     switch ( command.Type ) {
-      case CommandType.SWAP_PANE:
+      case CommandType.SWITCH_VIEW:
         model.SwitchTab();
         break;
     }
@@ -60,7 +60,7 @@ public class BrowserController : Controller<BrowserModel> {
 
   private void buildKeySeqInterpreter() {
     Dictionary<List<ConsoleKey>,Command> commandMap = new Dictionary<List<ConsoleKey>,Command>();
-    commandMap[new List<ConsoleKey>(){ConsoleKey.Tab}] = new Command(CommandMode.NORMAL,CommandType.SWAP_PANE);
+    commandMap[new List<ConsoleKey>(){ConsoleKey.Tab}] = new Command(CommandMode.NORMAL,CommandType.SWITCH_VIEW);
     keySeqInterpreter = new KeySeqInterpreter(commandMap);
   }
 

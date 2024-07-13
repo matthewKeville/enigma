@@ -51,7 +51,7 @@ public class PickerController : Controller<PickerModel> {
         break;
       case CommandType.CONFIRM:
         Trace.WriteLine("load puzzled nooped");
-        //eventDispatcher.DispatchEvent(new LoadPuzzleEventArgs(model.getActiveHeader.PuzzleId));
+        eventDispatcher.DispatchEvent(new LoadPuzzleEventArgs(model.getActiveHeader.PuzzleId));
         break;
 
     }
