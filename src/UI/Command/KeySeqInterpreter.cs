@@ -25,7 +25,16 @@ namespace UI.Commands {
       }
   }
 
+  /** Not sure if this implementation is any good,
+   * the key problem is that we want to have instances of the KeySeqInterpreter
+   * per UI element, so as to seperate the bindings. However, the current use
+   * of this is a chain of KeySeqInterpreter, and we want that chain to lock
+   * on insert mode. That is a KSI higher in the chain, shouldn't issue normal
+   * commands while the insert mode is set from a child element.
+   */
   public class KeySeqInterpreter {
+
+    public static CommandMode InterpretMode = CommandMode.NORMAL;
 
     // command    : command to execute
     // propagate  : propagate the keys
@@ -55,34 +64,57 @@ namespace UI.Commands {
       return result;
     }
 
-    private Mode mode = Mode.NORMAL;
     private List<ConsoleKey> keyPresses = new List<ConsoleKey>();
-    private Dictionary<List<ConsoleKey>,Command> CommandMap;
+    private Dictionary<List<ConsoleKey>,Command> normalCommandMap;
+    private Dictionary<List<ConsoleKey>,Command> insertCommandMap;
+    // if true, insert mode can be activated 
+    private static ConsoleKey INSERT_MODE_KEY = ConsoleKey.I;
+    private static ConsoleKey NORMAL_MODE_KEY = ConsoleKey.Escape;
 
-    public KeySeqInterpreter(Dictionary<List<ConsoleKey>,Command> CommandMap) 
+    //modal 
+    public KeySeqInterpreter(
+        Dictionary<List<ConsoleKey>,Command> normalCommandMap,
+        Dictionary<List<ConsoleKey>,Command> insertCommandMap
+      ) 
     {
-      //this.CommandMap = CommandMap;
-      this.CommandMap = new Dictionary<List<ConsoleKey>, Command>(CommandMap,new KeySequenceEqual());
+      this.normalCommandMap = new Dictionary<List<ConsoleKey>, Command>(normalCommandMap,new KeySequenceEqual());
+      this.normalCommandMap[new List<ConsoleKey>(){INSERT_MODE_KEY}] = new Command(CommandMode.META,CommandType.INSERT_MODE);
+
+      this.insertCommandMap = new Dictionary<List<ConsoleKey>, Command>(insertCommandMap,new KeySequenceEqual());
+      this.insertCommandMap[new List<ConsoleKey>(){NORMAL_MODE_KEY}] = new Command(CommandMode.META,CommandType.NORMAL_MODE);
+    }
+
+    //non modal
+    public KeySeqInterpreter(
+        Dictionary<List<ConsoleKey>,Command> normalCommandMap
+      ) 
+    {
+      this.normalCommandMap = new Dictionary<List<ConsoleKey>, Command>(normalCommandMap,new KeySequenceEqual());
+      this.insertCommandMap = new(new KeySequenceEqual());
     }
 
     /**
      * @Return V1 : the command mapped to the key sequnce
      * @Return V2 : whether the key sequence is a partial match
+     * Matching, Partial or  Full depends on parity between InterpretMode
+     * and the Command's Mode
      */
     private (Command?,bool) tryGetCommand(List<ConsoleKey> keys) {
 
-      if ( CommandMap.Count() == 0 ) {
+       Dictionary<List<ConsoleKey>,Command> commandMap;
+       commandMap = InterpretMode == CommandMode.NORMAL ? normalCommandMap : insertCommandMap;
+
+      if ( commandMap.Count() == 0 ) {
         return (null,false);
       }
 
       //exact match?
-      if ( CommandMap.ContainsKey(keys) ) {
-        Command command = CommandMap[keys];
-        return (command,true);
+      if ( commandMap.ContainsKey(keys) ) {
+        return (commandMap[keys],true);
       } 
 
       //partial match?
-      foreach ( List<ConsoleKey> keyList in CommandMap.Keys ) {
+      foreach ( List<ConsoleKey> keyList in commandMap.Keys ) {
         if ( keyList.Count >= keys.Count ) {
           bool pmatch = true;
           int k = 0;
@@ -101,38 +133,8 @@ namespace UI.Commands {
 
     }
 
+
     public KeySeqResponse ProcessKey(ConsoleKey key) {
-
-      //insert mode (special)
-
-      if ( mode == Mode.INSERT ) {
-        int keyNum = ((int)key);
-        if ( 65 <= keyNum && keyNum <= 90 ) {
-
-          return new KeySeqResponse(
-              new Command(CommandMode.INSERT,CommandType.INSERT_CHAR,key),
-              false,
-              null
-          );
-
-        } else if ( 97 <= keyNum && keyNum <= 122 ) {
-
-          return new KeySeqResponse(
-              new Command(CommandMode.INSERT,CommandType.INSERT_CHAR,key),
-              false,
-              null
-          );
-
-        } else if ( key == ConsoleKey.Backspace ) {
-
-          return new KeySeqResponse(
-              new Command(CommandMode.INSERT,CommandType.DEL_CHAR,key),
-              false,
-              null
-          );
-
-        }
-      }
 
       keyPresses.Add(key);
 
@@ -157,29 +159,19 @@ namespace UI.Commands {
       Trace.WriteLine($" key sequence match : {KeySequenceToString(keyPresses)}");
       Command command = (Command) possibleCommand;
 
-      //meta ( mode switch )
+      // Process Meta Command
+
       if ( command.Mode == CommandMode.META ) {
-
-        if ( command.Type == CommandType.NORMAL_MODE && mode == Mode.INSERT ) {
-          mode = Mode.NORMAL;
-          keyPresses.Clear();
-          return KeySeqResponse.Noop();
-        } else if ( command.Type == CommandType.INSERT_MODE && mode == Mode.NORMAL ) {
-          mode = Mode.INSERT;
-          keyPresses.Clear();
-          return KeySeqResponse.Noop();
-        }
-
+        Trace.WriteLine("hit a meta command");
+        InterpretMode = command.Type == CommandType.NORMAL_MODE ? CommandMode.NORMAL : CommandMode.INSERT;
+        keyPresses.Clear();
+        return KeySeqResponse.Noop();
       }
 
-      //normal
-      if ( mode == Mode.NORMAL && command.Mode == CommandMode.NORMAL) {
-          keyPresses.Clear();
-          return new KeySeqResponse(command,false,null);
-      } 
+      // Return non-Meta command
 
-      Trace.WriteLine(" unexpected outcome in KeySeqInterpreter ");
-      return KeySeqResponse.Noop();
+      keyPresses.Clear();
+      return new KeySeqResponse(command,false,null);
 
     }
 

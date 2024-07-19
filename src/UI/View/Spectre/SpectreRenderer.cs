@@ -8,7 +8,10 @@ public class SpectreRenderer {
   private RootView rootView;
   private bool running = true;
   private Thread renderThread;
+
   public const String Rendering = "no";
+  public static int Fps;
+  private int fps;
 
   public SpectreRenderer(IApplicationLifetime applicationLifetime,RootView rootView) {
     applicationLifetime.ApplicationStopping.Register(Stop);
@@ -28,13 +31,13 @@ public class SpectreRenderer {
     AnsiConsole.Live(root)
       .Start(ctx =>
       {
-        int fps = 0;
+        fps = 0;
         DateTime lastCheck = DateTime.UtcNow;
         while (running) {
           lock(Rendering) {
             if ( DateTime.UtcNow > lastCheck.AddSeconds(1) ) {
-              Trace.WriteLine($"FPS : {fps}");
               lastCheck = DateTime.UtcNow;
+              Fps = fps;
               fps = 0;
             } 
             root.Update(rootView.Render());

@@ -59,9 +59,9 @@ public class BrowserController : Controller<BrowserModel> {
   }
 
   private void buildKeySeqInterpreter() {
-    Dictionary<List<ConsoleKey>,Command> commandMap = new Dictionary<List<ConsoleKey>,Command>();
-    commandMap[new List<ConsoleKey>(){ConsoleKey.Tab}] = new Command(CommandMode.NORMAL,CommandType.SWITCH_VIEW);
-    keySeqInterpreter = new KeySeqInterpreter(commandMap);
+    Dictionary<List<ConsoleKey>,Command> normalCommandMap = new Dictionary<List<ConsoleKey>,Command>();
+    normalCommandMap[new List<ConsoleKey>(){ConsoleKey.Tab}] = new Command(CommandMode.NORMAL,CommandType.SWITCH_VIEW);
+    keySeqInterpreter = new KeySeqInterpreter(normalCommandMap);
   }
 
 

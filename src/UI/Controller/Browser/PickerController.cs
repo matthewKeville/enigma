@@ -71,11 +71,11 @@ public class PickerController : Controller<PickerModel> {
   }
 
   private void buildKeySeqInterpreter() {
-    Dictionary<List<ConsoleKey>,Command> commandMap = new Dictionary<List<ConsoleKey>,Command>();
-    commandMap[new List<ConsoleKey>(){ConsoleKey.J}] = new Command(CommandMode.NORMAL,CommandType.MOVE_DOWN);
-    commandMap[new List<ConsoleKey>(){ConsoleKey.K}] = new Command(CommandMode.NORMAL,CommandType.MOVE_UP);
-    commandMap[new List<ConsoleKey>(){ConsoleKey.Enter}] = new Command(CommandMode.NORMAL,CommandType.CONFIRM);
-    keySeqInterpreter = new KeySeqInterpreter(commandMap);
+    Dictionary<List<ConsoleKey>,Command> normalCommandMap = new Dictionary<List<ConsoleKey>,Command>();
+    normalCommandMap[new List<ConsoleKey>(){ConsoleKey.J}] = new Command(CommandMode.NORMAL,CommandType.MOVE_DOWN);
+    normalCommandMap[new List<ConsoleKey>(){ConsoleKey.K}] = new Command(CommandMode.NORMAL,CommandType.MOVE_UP);
+    normalCommandMap[new List<ConsoleKey>(){ConsoleKey.Enter}] = new Command(CommandMode.NORMAL,CommandType.CONFIRM);
+    keySeqInterpreter = new KeySeqInterpreter(normalCommandMap);
   }
 
 }

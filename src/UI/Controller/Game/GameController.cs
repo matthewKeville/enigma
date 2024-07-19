@@ -90,10 +90,10 @@ public class GameController : Controller<GameModel> {
   }
 
   private void buildKeySeqInterpreter() {
-    Dictionary<List<ConsoleKey>,Command> commandMap = new Dictionary<List<ConsoleKey>,Command>();
-    commandMap[new List<ConsoleKey>(){ConsoleKey.Tab}] = new Command(CommandMode.NORMAL,CommandType.SWAP_PANE);
-    commandMap[new List<ConsoleKey>(){ConsoleKey.Q}] = new Command(CommandMode.NORMAL,CommandType.EXIT);
-    keySeqInterpreter = new KeySeqInterpreter(commandMap);
+    Dictionary<List<ConsoleKey>,Command> normalCommandMap = new Dictionary<List<ConsoleKey>,Command>();
+    normalCommandMap[new List<ConsoleKey>(){ConsoleKey.Tab}] = new Command(CommandMode.NORMAL,CommandType.SWAP_PANE);
+    normalCommandMap[new List<ConsoleKey>(){ConsoleKey.Q}] = new Command(CommandMode.NORMAL,CommandType.EXIT);
+    keySeqInterpreter = new KeySeqInterpreter(normalCommandMap);
   }
 
 }

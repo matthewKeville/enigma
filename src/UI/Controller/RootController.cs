@@ -93,8 +93,8 @@ public class RootController : Controller<RootModel> {
   }
 
   private void buildKeySeqInterpreter() {
-    Dictionary<List<ConsoleKey>,Command> commandMap = new Dictionary<List<ConsoleKey>,Command>();
-    keySeqInterpreter = new KeySeqInterpreter(commandMap);
+    Dictionary<List<ConsoleKey>,Command> normalCommandMap = new Dictionary<List<ConsoleKey>,Command>();
+    keySeqInterpreter = new KeySeqInterpreter(normalCommandMap);
   }
 
 }

@@ -188,30 +188,28 @@ public class GridController : Controller<GridModel> {
 
 
   private void buildKeySeqInterpreter() {
-    Dictionary<List<ConsoleKey>,Command> commandMap = new Dictionary<List<ConsoleKey>,Command>();
+
+    Dictionary<List<ConsoleKey>,Command> insertCommandMap = CommandUtils.InsertAlphaMap();
+    Dictionary<List<ConsoleKey>,Command> normalCommandMap = new ();
 
     //normal (movement)
-    commandMap[new List<ConsoleKey>(){ConsoleKey.L}] = new Command(CommandMode.NORMAL,CommandType.MOVE_RIGHT);
-    commandMap[new List<ConsoleKey>(){ConsoleKey.H}] = new Command(CommandMode.NORMAL,CommandType.MOVE_LEFT);
-    commandMap[new List<ConsoleKey>(){ConsoleKey.J}] = new Command(CommandMode.NORMAL,CommandType.MOVE_DOWN);
-    commandMap[new List<ConsoleKey>(){ConsoleKey.K}] = new Command(CommandMode.NORMAL,CommandType.MOVE_UP);
-    commandMap[new List<ConsoleKey>(){ConsoleKey.D4}] = new Command(CommandMode.NORMAL,CommandType.MOVE_WORD_END);
-    commandMap[new List<ConsoleKey>(){ConsoleKey.D6}] = new Command(CommandMode.NORMAL,CommandType.MOVE_WORD_START);
-    commandMap[new List<ConsoleKey>(){ConsoleKey.W}] = new Command(CommandMode.NORMAL,CommandType.MOVE_WORD);
-    commandMap[new List<ConsoleKey>(){ConsoleKey.B}] = new Command(CommandMode.NORMAL,CommandType.MOVE_BACK_WORD);
+    normalCommandMap[new List<ConsoleKey>(){ConsoleKey.L}] = new Command(CommandMode.NORMAL,CommandType.MOVE_RIGHT);
+    normalCommandMap[new List<ConsoleKey>(){ConsoleKey.H}] = new Command(CommandMode.NORMAL,CommandType.MOVE_LEFT);
+    normalCommandMap[new List<ConsoleKey>(){ConsoleKey.J}] = new Command(CommandMode.NORMAL,CommandType.MOVE_DOWN);
+    normalCommandMap[new List<ConsoleKey>(){ConsoleKey.K}] = new Command(CommandMode.NORMAL,CommandType.MOVE_UP);
+    normalCommandMap[new List<ConsoleKey>(){ConsoleKey.D4}] = new Command(CommandMode.NORMAL,CommandType.MOVE_WORD_END);
+    normalCommandMap[new List<ConsoleKey>(){ConsoleKey.D6}] = new Command(CommandMode.NORMAL,CommandType.MOVE_WORD_START);
+    normalCommandMap[new List<ConsoleKey>(){ConsoleKey.W}] = new Command(CommandMode.NORMAL,CommandType.MOVE_WORD);
+    normalCommandMap[new List<ConsoleKey>(){ConsoleKey.B}] = new Command(CommandMode.NORMAL,CommandType.MOVE_BACK_WORD);
 
     //normal (edit)
-    commandMap[new List<ConsoleKey>(){ConsoleKey.D,ConsoleKey.W}] = new Command(CommandMode.NORMAL,CommandType.DEL_WORD);
+    normalCommandMap[new List<ConsoleKey>(){ConsoleKey.D,ConsoleKey.W}] = new Command(CommandMode.NORMAL,CommandType.DEL_WORD);
 
     //normal (etc)
-    commandMap[new List<ConsoleKey>(){ConsoleKey.Spacebar}] = new Command(CommandMode.NORMAL,CommandType.SWAP_ORIENTATION);
-    commandMap[new List<ConsoleKey>(){ConsoleKey.Z}] = new Command(CommandMode.NORMAL,CommandType.CHECK_WORD);
+    normalCommandMap[new List<ConsoleKey>(){ConsoleKey.Spacebar}] = new Command(CommandMode.NORMAL,CommandType.SWAP_ORIENTATION);
+    normalCommandMap[new List<ConsoleKey>(){ConsoleKey.Z}] = new Command(CommandMode.NORMAL,CommandType.CHECK_WORD);
 
-    //meta 
-    commandMap[new List<ConsoleKey>(){ConsoleKey.I}] = new Command(CommandMode.META,CommandType.INSERT_MODE);
-    commandMap[new List<ConsoleKey>(){ConsoleKey.Escape}] = new Command(CommandMode.META,CommandType.NORMAL_MODE);
-
-    keySeqInterpreter = new KeySeqInterpreter(commandMap);
+    keySeqInterpreter = new KeySeqInterpreter(normalCommandMap,insertCommandMap);
   }
 
 }
