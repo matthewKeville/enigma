@@ -16,6 +16,12 @@ namespace UI.Commands {
       this.Key = key;
     }
 
+    public Command(Command command) {
+      this.Mode = command.Mode;
+      this.Type = command.Type;
+      this.Key = command.Key;
+    }
+
   }
 
   public enum  CommandType {
@@ -30,13 +36,18 @@ namespace UI.Commands {
     MOVE_WORD_START,
     MOVE_WORD_END,
     MOVE_WORD,
+    MOVE_ANSWER,
+    MOVE_BACK_ANSWER,
+    FIND_CHAR,
     CHECK_WORD,
     MOVE_BACK_WORD,
     INSERT_CHAR,
+    REPLACE_CHAR,
     DEL_CHAR,
     SWAP_ORIENTATION,
     SWAP_PANE,
     DEL_WORD,
+    CHANGE_WORD,
     CONFIRM,
     TOGGLE_HELP,
     INSTALL,

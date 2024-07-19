@@ -12,16 +12,22 @@ namespace UI.Commands {
       return commandMap;
     }
 
-    private Command? tryGetInsertCommand(ConsoleKey key)  {
-      int keyNum = ((int)key);
-      if ( 65 <= keyNum && keyNum <= 90 ) {
-          return new Command(CommandMode.INSERT,CommandType.INSERT_CHAR,key);
-      } else if ( 97 <= keyNum && keyNum <= 122 ) {
-          return new Command(CommandMode.INSERT,CommandType.INSERT_CHAR,key);
-      } else if ( key == ConsoleKey.Backspace ) {
-          return new Command(CommandMode.INSERT,CommandType.DEL_CHAR,key);
+    public static Dictionary<List<ConsoleKey>,Command> ReplaceAlphaMap() {
+      Dictionary<List<ConsoleKey>,Command> commandMap = new Dictionary<List<ConsoleKey>,Command>();
+      for ( int i = 65; i <= 90; i++ ) {
+        ConsoleKey key = (ConsoleKey) i;
+        commandMap[new List<ConsoleKey>(){ConsoleKey.R,key}] = new Command(CommandMode.NORMAL,CommandType.REPLACE_CHAR,key);
       }
-      return null;
+      return commandMap;
+    }
+
+    public static Dictionary<List<ConsoleKey>,Command> FindAlphaMap() {
+      Dictionary<List<ConsoleKey>,Command> commandMap = new Dictionary<List<ConsoleKey>,Command>();
+      for ( int i = 65; i <= 90; i++ ) {
+        ConsoleKey key = (ConsoleKey) i;
+        commandMap[new List<ConsoleKey>(){ConsoleKey.F,key}] = new Command(CommandMode.NORMAL,CommandType.FIND_CHAR,key);
+      }
+      return commandMap;
     }
 
   }

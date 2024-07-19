@@ -95,16 +95,20 @@ namespace UI.Model.Game {
     }
 
 
-    public void InsertKey(ConsoleKey key) {
+    public void InsertKey(ConsoleKey key,bool advance = true) {
       CharMatrix[Entry.X,Entry.Y] = (char) key;
       StatusMatrix[Entry.X,Entry.Y] = 0;
-      MoveEntry(Orientation == Direction.Across ? Move.RIGHT : Move.DOWN);
+      if ( advance ) {
+        MoveEntry(Orientation == Direction.Across ? Move.RIGHT : Move.DOWN);
+      }
     }
 
-    public void DeleteKey() {
+    public void DeleteKey(bool advance = true) {
       CharMatrix[Entry.X,Entry.Y] = ' ';
       StatusMatrix[Entry.X,Entry.Y] = 0;
-      MoveEntry(Orientation == Direction.Across ? Move.LEFT : Move.UP);
+      if ( advance ) {
+        MoveEntry(Orientation == Direction.Across ? Move.LEFT : Move.UP);
+      }
     }
 
     public void DeleteWord() {
@@ -121,6 +125,51 @@ namespace UI.Model.Game {
         }
       }
 
+    }
+
+    //try to move to the character within the current word
+    public void FindChar(ConsoleKey key, bool forward = true) {
+      if ( forward ) {
+        FindCharForward(key);
+      }
+      FindCharBackward(key);
+    }
+
+    //try to move to the character within the current word
+    //disregard the current character if it's a match
+    private void FindCharForward(ConsoleKey key) {
+
+      WordModel word = ActiveWord();
+
+      int ix = Entry.X;
+      int iy = Entry.Y;
+
+      if ( Orientation == Direction.Across ) {
+        ix++;
+        while ( ix < word.x + word.answer.Count() ) {
+          if ( CharMatrix[ix,iy] == (char) key ) {
+            Trace.WriteLine($"found char {(char) key}");
+            Entry = new Point(ix,iy);
+            return;
+          }
+          ix++;
+        }
+      } else {
+        iy++;
+        while ( iy < word.y + word.answer.Count() ) {
+          if ( CharMatrix[ix,iy] == (char) key ) {
+            Trace.WriteLine($"found char {(char) key}");
+            Entry = new Point(ix,iy);
+            return;
+          }
+          iy++;
+        }
+      }
+      Trace.WriteLine($"char not found {(char) key}");
+    }
+
+    private void FindCharBackward(ConsoleKey key) {
+      //TODO
     }
 
     public void MoveToWordStart() {
@@ -156,6 +205,93 @@ namespace UI.Model.Game {
       if ( nextWord is not null ) {
         Entry = new Point(nextWord.x,nextWord.y);
       }
+    }
+
+    //like MoveWord, but only move to words that
+    //the user has added characters to
+    public void MoveAnswer() {
+
+      WordModel word = ActiveWord();
+
+      WordModel? nextWord = Words
+        .FindAll(w => w.direction == Orientation)
+        .OrderBy( w => w.i )
+        .Where( w => { 
+
+          //does the answer space have any characters?
+           
+          int ix = w.x;
+          int iy = w.y;
+
+          if ( Orientation == Direction.Across ) {
+            while ( ix < w.x + w.answer.Count() ) {
+              if ( CharMatrix[ix,iy] != ' ' ) {
+                return true;
+              }
+              ix++;
+            }
+          } else {
+            while ( iy < w.y + w.answer.Count() ) {
+              if ( CharMatrix[ix,iy] != ' ' ) {
+                return true;
+              }
+              iy++;
+            }
+          }
+          
+          return false;
+
+        } )
+        .FirstOrDefault( w => { return w.i > word.i; });
+
+      if ( nextWord is not null ) {
+        Entry = new Point(nextWord.x,nextWord.y);
+      } 
+    }
+
+    //like MoveWord, but only move to words that
+    //the user has added characters to
+    public void MoveBackAnswer() {
+
+      WordModel word = ActiveWord();
+
+      WordModel? nextWord = Words
+        .FindAll(w => w.direction == Orientation)
+        .OrderBy( w => w.i )
+        .Reverse()
+        .Where( w => { 
+
+          //does the answer space have any characters?
+           
+          int ix = w.x;
+          int iy = w.y;
+
+          if ( Orientation == Direction.Across ) {
+            while ( ix < w.x + w.answer.Count() ) {
+              if ( CharMatrix[ix,iy] != ' ' ) {
+                return true;
+              }
+              ix++;
+            }
+          } else {
+            while ( iy < w.y + w.answer.Count() ) {
+              if ( CharMatrix[ix,iy] != ' ' ) {
+                return true;
+              }
+              iy++;
+            }
+          }
+          
+          return false;
+
+        } )
+        .FirstOrDefault( w => { return w.i < word.i; });
+
+      if ( nextWord is not null ) {
+        Entry = new Point(nextWord.x,nextWord.y);
+      } else {
+      }
+
     }
 
     public void CheckWord() {

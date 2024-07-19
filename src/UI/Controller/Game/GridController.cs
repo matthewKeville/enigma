@@ -146,16 +146,33 @@ public class GridController : Controller<GridModel> {
       case CommandType.MOVE_WORD_START:
           model.MoveToWordStart();
         break;
+
       case CommandType.MOVE_WORD_END:
           model.MoveToWordEnd();
         break;
 
+      case CommandType.FIND_CHAR:
+          model.FindChar((ConsoleKey)command.Key);
+        break;
+
+      //TODO : FIND_BACK_CHAR
+
       case CommandType.MOVE_WORD:
         PerformAndNotifyGridWordChange( () => { model.MoveWord();} );
         break;
+
       case CommandType.MOVE_BACK_WORD:
         PerformAndNotifyGridWordChange( () => { model.MoveBackWord();} );
         break;
+
+      case CommandType.MOVE_ANSWER:
+        PerformAndNotifyGridWordChange( () => { model.MoveAnswer();} );
+        break;
+
+      case CommandType.MOVE_BACK_ANSWER:
+        PerformAndNotifyGridWordChange( () => { model.MoveBackAnswer();} );
+        break;
+
 
       case CommandType.CHECK_WORD:
         model.CheckWord();
@@ -164,6 +181,16 @@ public class GridController : Controller<GridModel> {
 
       case CommandType.DEL_WORD:
         model.DeleteWord();
+        break;
+
+      case CommandType.CHANGE_WORD:
+        model.DeleteWord();
+        KeySeqInterpreter.InterpretMode = CommandMode.INSERT;
+        break;
+
+      case CommandType.REPLACE_CHAR:
+        model.DeleteKey(false);
+        model.InsertKey((ConsoleKey)command.Key,false);
         break;
 
       case CommandType.SWAP_ORIENTATION:
@@ -179,7 +206,6 @@ public class GridController : Controller<GridModel> {
         model.InsertKey((ConsoleKey)command.Key);
         break;
 
-      // PLS REVIEW (internal command)
       case CommandType.DEL_CHAR:
         model.DeleteKey();
         break;
@@ -192,6 +218,7 @@ public class GridController : Controller<GridModel> {
     Dictionary<List<ConsoleKey>,Command> insertCommandMap = CommandUtils.InsertAlphaMap();
     Dictionary<List<ConsoleKey>,Command> normalCommandMap = new ();
 
+
     //normal (movement)
     normalCommandMap[new List<ConsoleKey>(){ConsoleKey.L}] = new Command(CommandMode.NORMAL,CommandType.MOVE_RIGHT);
     normalCommandMap[new List<ConsoleKey>(){ConsoleKey.H}] = new Command(CommandMode.NORMAL,CommandType.MOVE_LEFT);
@@ -200,10 +227,24 @@ public class GridController : Controller<GridModel> {
     normalCommandMap[new List<ConsoleKey>(){ConsoleKey.D4}] = new Command(CommandMode.NORMAL,CommandType.MOVE_WORD_END);
     normalCommandMap[new List<ConsoleKey>(){ConsoleKey.D6}] = new Command(CommandMode.NORMAL,CommandType.MOVE_WORD_START);
     normalCommandMap[new List<ConsoleKey>(){ConsoleKey.W}] = new Command(CommandMode.NORMAL,CommandType.MOVE_WORD);
+    normalCommandMap[new List<ConsoleKey>(){ConsoleKey.G,ConsoleKey.W}] = new Command(CommandMode.NORMAL,CommandType.MOVE_ANSWER);
+    normalCommandMap[new List<ConsoleKey>(){ConsoleKey.G,ConsoleKey.B}] = new Command(CommandMode.NORMAL,CommandType.MOVE_BACK_ANSWER);
     normalCommandMap[new List<ConsoleKey>(){ConsoleKey.B}] = new Command(CommandMode.NORMAL,CommandType.MOVE_BACK_WORD);
+
 
     //normal (edit)
     normalCommandMap[new List<ConsoleKey>(){ConsoleKey.D,ConsoleKey.W}] = new Command(CommandMode.NORMAL,CommandType.DEL_WORD);
+    normalCommandMap[new List<ConsoleKey>(){ConsoleKey.C,ConsoleKey.W}] = new Command(CommandMode.NORMAL,CommandType.CHANGE_WORD);
+
+    //normal (replace)
+    foreach ( KeyValuePair<List<ConsoleKey>,Command> pair in CommandUtils.ReplaceAlphaMap() ) {
+      normalCommandMap[new List<ConsoleKey>(pair.Key)] = new Command(pair.Value);
+    }
+
+    //normal (find char)
+    foreach ( KeyValuePair<List<ConsoleKey>,Command> pair in CommandUtils.FindAlphaMap() ) {
+      normalCommandMap[new List<ConsoleKey>(pair.Key)] = new Command(pair.Value);
+    }
 
     //normal (etc)
     normalCommandMap[new List<ConsoleKey>(){ConsoleKey.Spacebar}] = new Command(CommandMode.NORMAL,CommandType.SWAP_ORIENTATION);
