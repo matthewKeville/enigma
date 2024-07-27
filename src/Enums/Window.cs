@@ -1,6 +1,7 @@
 namespace Enums {
   public enum Window {
     GAME,
+    COMPLETE,
     BROWSER,
     HELP
   }

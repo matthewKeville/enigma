@@ -6,6 +6,7 @@ namespace UI.Model.Game {
 
     public int crosswordId = 0;
     public Pane activePane = Pane.GRID;
+    public Window activeWindow = Window.GAME;
 
     public void SwapPane() {
       if (activePane == Pane.CLUES) {

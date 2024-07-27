@@ -35,7 +35,6 @@ public class StatusController : Controller<StatusModel> {
 
   public void ProcessEvent(object? sender,EventArgs eventArgs) {
 
-      Trace.WriteLine(" status controller load puzzle");
     if (eventArgs.GetType() == typeof(LoadPuzzleEventArgs)) {
       LoadPuzzleEventArgs args = ((LoadPuzzleEventArgs) eventArgs);
       Crossword crossword = crosswordService.GetCrossword(args.puzzleId);

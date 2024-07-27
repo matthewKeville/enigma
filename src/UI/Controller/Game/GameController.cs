@@ -1,6 +1,7 @@
 using Enums;
 using Services;
 using UI.Commands;
+using UI.Controller.Complete;
 using UI.Controller.Game.Status;
 using UI.Event;
 using UI.Events;
@@ -18,9 +19,10 @@ public class GameController : Controller<GameModel> {
   private GridController gridController;
   private CluesController cluesController;
   private StatusController statusController;
+  private CompleteController completeController;
   private KeySeqInterpreter keySeqInterpreter;
 
-  public GameController(EventDispatcher eventDispatcher,CrosswordService crosswordService,GameView gameView,GridController gridController,CluesController cluesController,StatusController statusController) {
+  public GameController(EventDispatcher eventDispatcher,CrosswordService crosswordService,GameView gameView,GridController gridController,CluesController cluesController,StatusController statusController,CompleteController completeController) {
     this.model = new GameModel();
 
     this.gameView = gameView;
@@ -29,6 +31,7 @@ public class GameController : Controller<GameModel> {
     this.gridController = gridController;
     this.cluesController = cluesController;
     this.statusController = statusController;
+    this.completeController = completeController;
 
     this.crosswordService = crosswordService;
     this.eventDispatcher = eventDispatcher;
@@ -42,6 +45,11 @@ public class GameController : Controller<GameModel> {
     if (eventArgs.GetType() == typeof(LoadPuzzleEventArgs)) {
       Trace.WriteLine("gc cid " + ((LoadPuzzleEventArgs) eventArgs).puzzleId);
       this.model.crosswordId = ((LoadPuzzleEventArgs)eventArgs).puzzleId;
+      model.activeWindow = Window.GAME;
+    }
+
+    if (eventArgs.GetType() == typeof(PuzzleCompleteArgs)) {
+      model.activeWindow = Window.COMPLETE;
     }
 
   }

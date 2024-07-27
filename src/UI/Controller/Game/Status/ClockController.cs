@@ -55,6 +55,16 @@ public class ClockController : Controller<ClockModel> {
 
     }
 
+    if (eventArgs.GetType() == typeof(PuzzleCompleteArgs)) {
+
+      PuzzleCompleteArgs args = ((PuzzleCompleteArgs) eventArgs);
+      Crossword crossword = crosswordService.GetCrossword(args.puzzleId);
+
+      crossword.Elapsed += DateTime.UtcNow - model.LastResumed;
+      crossword.FinishDate = DateTime.UtcNow;
+      crosswordService.UpdateCrossword(crossword);
+    }
+
   }
 }
 

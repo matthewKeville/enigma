@@ -49,6 +49,7 @@ public class GridController : Controller<GridModel> {
       Crossword crossword = crosswordService.GetCrossword(args.puzzleId);
 
       model = new GridModel();
+      model.crosswordId = args.puzzleId;
       model.ColumnCount = crossword.Columns;
       model.RowCount = crossword.Rows;
       model.Orientation = Direction.Across;
@@ -123,6 +124,12 @@ public class GridController : Controller<GridModel> {
     }
   }
 
+  private void CheckForCompletion() {
+    if (model.IsComplete()) {
+      eventDispatcher.DispatchEvent(new PuzzleCompleteArgs(model.crosswordId));
+    }
+  }
+
   public void ProcessCommand(Command command ) {
 
     switch ( command.Type ) {
@@ -191,6 +198,7 @@ public class GridController : Controller<GridModel> {
       case CommandType.REPLACE_CHAR:
         model.DeleteKey(false);
         model.InsertKey((ConsoleKey)command.Key,false);
+        CheckForCompletion();
         break;
 
       case CommandType.SWAP_ORIENTATION:
@@ -204,11 +212,18 @@ public class GridController : Controller<GridModel> {
           Environment.Exit(1);
         } 
         model.InsertKey((ConsoleKey)command.Key);
+        CheckForCompletion();
         break;
 
+      // this can be fired from normal or insert mode, interpretation changes
       case CommandType.DEL_CHAR:
-        model.DeleteKey();
+        if ( command.Mode == CommandMode.INSERT ) {
+          model.DeleteKey(true);
+        } else {
+          model.DeleteKey(false);
+        }
         break;
+
     }
   }
 
@@ -233,6 +248,7 @@ public class GridController : Controller<GridModel> {
 
 
     //normal (edit)
+    normalCommandMap[new List<ConsoleKey>(){ConsoleKey.X}] = new Command(CommandMode.NORMAL,CommandType.DEL_CHAR);
     normalCommandMap[new List<ConsoleKey>(){ConsoleKey.D,ConsoleKey.W}] = new Command(CommandMode.NORMAL,CommandType.DEL_WORD);
     normalCommandMap[new List<ConsoleKey>(){ConsoleKey.C,ConsoleKey.W}] = new Command(CommandMode.NORMAL,CommandType.CHANGE_WORD);
 

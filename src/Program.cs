@@ -19,6 +19,8 @@ using Services.CrosswordInstaller;
 using Services.CrosswordInstaller.NYT;
 using UI.Controller.Help;
 using UI.Controller.Game.Status;
+using UI.View.Spectre.Game.Complete;
+using UI.Controller.Complete;
 
 Trace.Listeners.Add(new TextWriterTraceListener("./logs/enigma.log"));
 Trace.AutoFlush = true;
@@ -38,6 +40,7 @@ builder.Services.AddSingleton<StatusView, StatusView>();
 builder.Services.AddSingleton<ClockView, ClockView>();
 builder.Services.AddSingleton<GridView, GridView>();
 builder.Services.AddSingleton<CluesView, CluesView>();
+builder.Services.AddSingleton<CompleteView, CompleteView>();
 
 builder.Services.AddSingleton<RootController, RootController>();
 builder.Services.AddSingleton<HelpController, HelpController>();
@@ -48,6 +51,7 @@ builder.Services.AddSingleton<InstallerController, InstallerController>();
 builder.Services.AddSingleton<GameController, GameController>();
 builder.Services.AddSingleton<GridController, GridController>();
 builder.Services.AddSingleton<CluesController, CluesController>();
+builder.Services.AddSingleton<CompleteController, CompleteController>();
 
 builder.Services.AddSingleton<StatusController, StatusController>();
 builder.Services.AddSingleton<ClockController, ClockController>();

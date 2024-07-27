@@ -5,6 +5,7 @@ namespace UI.Model.Game {
 
   public class GridModel : IModel {
 
+    public int crosswordId;
     public int ColumnCount = 0;
     public int RowCount = 0;
     public Direction Orientation = Direction.Across;
@@ -321,6 +322,37 @@ namespace UI.Model.Game {
 
         z++;
       }
+    }
+
+    public bool IsComplete() {
+
+      foreach ( WordModel word in Words ) {
+
+        int z = 0;
+        int ix = word.x;
+        int iy = word.y;
+
+        while ( z < word.answer.Count() ) {
+
+          if ( word.answer[z] != CharMatrix[ix,iy] ) {
+            Trace.WriteLine($"puzzle incomplete, atelast {word.direction.ToString()} {word.i},{word.x},{word.y} is wrong");
+            Trace.WriteLine($" expected {word.answer[z]} , but found {CharMatrix[ix,iy]}");
+            Trace.WriteLine($" on answer {word.answer}");
+            return false;
+          }
+
+          if ( word.direction == Direction.Across ) {
+            ix++;
+          } else {
+            iy++;
+          }
+          z++;
+
+        }
+      }
+
+      return true;
+
     }
 
 }

@@ -38,6 +38,14 @@ namespace UI.Events {
     }
   }
 
+  public class PuzzleCompleteArgs : EventArgs {
+    public int puzzleId;
+    public PuzzleCompleteArgs(int puzzleId) {
+      this.puzzleId = puzzleId;
+      Trace.WriteLine("Puzzle Complete Event");
+    }
+  }
+
   public class PuzzleInstalledEvent : EventArgs {
     public PuzzleInstalledEvent() {
       Trace.WriteLine("Puzzle Installed Event");
