@@ -6,6 +6,7 @@ public class DatabaseContext : DbContext {
   public DbSet<Crossword> Crosswords { get; set; }
   public DbSet<Word> Words { get; set; }
   public DbSet<GridChar> GridChars { get; set; }
+
   public String DbPath { get; set; }
 
   public DatabaseContext() {
@@ -15,7 +16,6 @@ public class DatabaseContext : DbContext {
   }
 
   protected override void OnConfiguring(DbContextOptionsBuilder options) {
-    //options.UseSqlite($"Data Source={DbPath}");
     options.UseSqlite($"Data Source=enigma.db");
   }
 

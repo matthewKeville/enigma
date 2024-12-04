@@ -15,6 +15,7 @@ namespace Entity {
     public int Columns { get; set; }
     public int WordCheckCount { get; set; } = 0;
 
+    //NYT Parser
     public List<Word> Words { get; } = new List<Word>();
     public List<GridChar> GridChars { get; } = new List<GridChar>();
 
@@ -30,7 +31,6 @@ namespace Entity {
     public String Clue { get; set; } 
 
     public int CrosswordId { get; set; }
-    public Crossword crossword { get; set; }
 
   }
 
@@ -41,7 +41,6 @@ namespace Entity {
     public char C { get; set; }
 
     public int CrosswordId { get; set; }
-    public Crossword crossword { get; set; }
 
   }
 }
