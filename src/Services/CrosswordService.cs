@@ -1,6 +1,5 @@
 using Entity;
 using Microsoft.EntityFrameworkCore;
-using UI.Model.Browser;
 
 namespace Services {
   public class CrosswordService {
