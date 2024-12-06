@@ -6,6 +6,7 @@ namespace UI.Game
     using Enums;
     using Event;
     using Terminal.Gui;
+    using UI.KeyMapping;
     using UI.Model.Game;
     using static Event.StartPuzzleEventArgs;
 
@@ -40,68 +41,8 @@ namespace UI.Game
             );
 
             KeyBindings.Clear();
+            BuildKeyMaps();
 
-            List<(List<Key>,UICommand)> normalKeyMaps = new () {
-              (new List<Key>() { Key.I },new UICommand(UICommandType.ENTER_INSERT_MODE)),
-
-              (new List<Key>() { Key.Space },new UICommand(UICommandType.SWAP_ORIENTATION)),
-
-              (new List<Key>() { Key.K },new UICommand(UICommandType.MOVE_UP)),
-              (new List<Key>() { Key.J },new UICommand(UICommandType.MOVE_DOWN)),
-              (new List<Key>() { Key.H },new UICommand(UICommandType.MOVE_LEFT)),
-              (new List<Key>() { Key.L },new UICommand(UICommandType.MOVE_RIGHT)),
-
-              (new List<Key>() { Key.X },new UICommand(UICommandType.DELTE_CHAR)),
-
-            };
-
-            //tolerate ambigous case for r? input
-            foreach ( int x  in Enumerable.Range(0,26)) {
-              normalKeyMaps.Add( 
-                (new List<Key>() { Key.R, new Key((char)(x+65)) } ,
-                  new UICommand(
-                    UICommandType.REPLACE_CHAR,
-                    new ReplaceCharArgs((char)(x+65))
-                  )
-                )
-              );
-              normalKeyMaps.Add( 
-                (new List<Key>() { Key.R, new Key((char)(x+97)) } ,
-                  new UICommand(
-                    UICommandType.REPLACE_CHAR,
-                    new ReplaceCharArgs((char)(x+65))
-                  )
-                )
-              );
-            }
-
-            _normalKeySequenceInterpreter = new KeySequenceInterpreter(normalKeyMaps);
-
-            List<(List<Key>,UICommand)> insertKeyMaps = new () {
-              (new List<Key>() { Key.Esc },new UICommand(UICommandType.ENTER_NORMAL_MODE)),
-            };
-
-            //tolerate ambigous case for insert input
-            foreach ( int x  in Enumerable.Range(0,26)) {
-              insertKeyMaps.Add( 
-                (new List<Key>() { new Key((char)(x+65)) } ,
-                  new UICommand(
-                    UICommandType.INSERT_CHAR,
-                    new InsertCharArgs((char)(x+65))
-                  )
-                )
-              );
-              insertKeyMaps.Add( 
-                (new List<Key>() { new Key((char)(x+97)) } ,
-                  new UICommand(
-                    UICommandType.INSERT_CHAR,
-                    new InsertCharArgs((char)(x+65))
-                  )
-                )
-              );
-            }
-
-            _insertKeySequenceInterpreter = new KeySequenceInterpreter(insertKeyMaps);
         }
 
         public override bool OnKeyDown(Key key)
@@ -142,13 +83,35 @@ namespace UI.Game
             case UICommandType.MOVE_RIGHT:
               _gridModel.MoveRight();
               break;
+            case UICommandType.MOVE_NEXT_CLUE:
+              _gridModel.MoveNextClue();
+              break;
+            case UICommandType.MOVE_PREV_CLUE:
+              _gridModel.MovePrevClue();
+              break;
 
             case UICommandType.REPLACE_CHAR:
               ReplaceCharArgs replaceCharArgs = (ReplaceCharArgs) command.Args!;
               _gridModel.ReplaceChar(replaceCharArgs.C);
               break;
-            case UICommandType.DELTE_CHAR:
+            case UICommandType.DELETE_CHAR:
               _gridModel.DeleteChar();
+              break;
+            case UICommandType.DELETE_WORD:
+              _gridModel.DeleteWord();
+              break;
+            case UICommandType.DELETE_INNER_WORD:
+              _gridModel.DeleteInnerWord();
+              break;
+            //Not loving this, perhaps the mode change should be captured in
+            //the model...
+            case UICommandType.CHANGE_WORD:
+              _gridModel.DeleteWord();
+              _isInsertMode = true;
+              break;
+            case UICommandType.CHANGE_INNER_WORD:
+              _gridModel.DeleteInnerWord();
+              _isInsertMode = true;
               break;
 
             //////////////////////////////////////////
@@ -174,79 +137,15 @@ namespace UI.Game
           SetNeedsDisplay();
           return true;
 
-          /**
-            //context
-            switch (key.KeyCode)
-            {
-                //prevent further key processing, with early return
-                case KeyCode.I:
-                    _isInsertMode = true;
-                    return true;
-                case KeyCode.Esc:
-                    _isInsertMode = false;
-                    return true;
-                default:
-                    break;
-            }
-
-            if (!_isInsertMode)
-            {
-
-                switch (key.KeyCode)
-                {
-
-                    //movement
-                    case KeyCode.J:
-                        _gridModel.MoveDown();
-                        break;
-                    case KeyCode.K:
-                        _gridModel.MoveUp();
-                        break;
-                    case KeyCode.H:
-                        _gridModel.MoveLeft();
-                        break;
-                    case KeyCode.L:
-                        _gridModel.MoveRight();
-                        break;
-
-                    //editing
-                    case KeyCode.X:
-                        _gridModel.DeleteChar();
-                        break;
-
-                    //orientation
-                    case KeyCode.Space:
-                        _gridModel.SwapOrientation();
-                        break;
-
-                    //quit
-                    case KeyCode.Q:
-                        _eventBus.PostEvent(new EndPuzzleEventArgs());
-                        break;
-
-                    default:
-                        return false;
-
-                }
-
-            }
-            else
-            {
-                char insertChar = ((char)key.KeyCode);
-                _gridModel.InsertChar(insertChar);
-            }
-            **/
-
-
         }
 
         public override void OnDrawContent(Rectangle contentArea)
         {
 
             base.OnDrawContent(contentArea);
-            var ctx = Driver;
 
             List<GridCharModel> active = _gridModel.ActiveWordChars();
+            Driver.FillRect(contentArea,' ');
 
             foreach (GridCharModel gcm in _gridModel.GridCharModels)
             {
@@ -304,7 +203,7 @@ namespace UI.Game
 
                 Move(gcm.X, gcm.Y);
                 Driver.SetAttribute(attr);
-                ctx.AddRune(rune);
+                Driver.AddRune(rune);
 
             }
 
@@ -312,7 +211,10 @@ namespace UI.Game
 
         private void Init(int crosswordId)
         {
-            _gridModel = new GridModel(_dbContext.GridChars.Where(gc => gc.CrosswordId == crosswordId).ToList());
+            _gridModel = new GridModel(
+                _dbContext.GridChars.Where(gc => gc.CrosswordId == crosswordId).ToList(),
+                _dbContext.Words.Where(w => w.CrosswordId == crosswordId).ToList()
+            );
             SetNeedsDisplay();
         }
 
@@ -320,6 +222,85 @@ namespace UI.Game
         {
             Init(args.CrosswordId);
         }
+
+        private void BuildKeyMaps() {
+
+          //normal
+
+          List<(List<Key>,UICommand)> normalKeyMaps = new () {
+
+            (new List<Key>() { Key.I },new UICommand(UICommandType.ENTER_INSERT_MODE)),
+
+            (new List<Key>() { Key.Space },new UICommand(UICommandType.SWAP_ORIENTATION)),
+
+
+            (new List<Key>() { Key.K },new UICommand(UICommandType.MOVE_UP)),
+            (new List<Key>() { Key.J },new UICommand(UICommandType.MOVE_DOWN)),
+            (new List<Key>() { Key.H },new UICommand(UICommandType.MOVE_LEFT)),
+            (new List<Key>() { Key.L },new UICommand(UICommandType.MOVE_RIGHT)),
+
+            (new List<Key>() { Key.W },new UICommand(UICommandType.MOVE_NEXT_CLUE)),
+            (new List<Key>() { Key.B },new UICommand(UICommandType.MOVE_PREV_CLUE)),
+
+            (new List<Key>() { Key.X },new UICommand(UICommandType.DELETE_CHAR)),
+            (new List<Key>() { Key.D, Key.W },new UICommand(UICommandType.DELETE_WORD)),
+            (new List<Key>() { Key.D, Key.I, Key.W },new UICommand(UICommandType.DELETE_INNER_WORD)),
+            (new List<Key>() { Key.C, Key.W},new UICommand(UICommandType.CHANGE_WORD)),
+            (new List<Key>() { Key.C, Key.I, Key.W },new UICommand(UICommandType.CHANGE_INNER_WORD)),
+
+          };
+
+          //tolerate ambigous case for r? input
+          foreach ( int x  in Enumerable.Range(0,26)) {
+            normalKeyMaps.Add( 
+              (new List<Key>() { Key.R, new Key((char)(x+65)) } ,
+                new UICommand(
+                  UICommandType.REPLACE_CHAR,
+                  new ReplaceCharArgs((char)(x+65))
+                )
+              )
+            );
+            normalKeyMaps.Add( 
+              (new List<Key>() { Key.R, new Key((char)(x+97)) } ,
+                new UICommand(
+                  UICommandType.REPLACE_CHAR,
+                  new ReplaceCharArgs((char)(x+65))
+                )
+              )
+            );
+          }
+
+          _normalKeySequenceInterpreter = new KeySequenceInterpreter(normalKeyMaps);
+
+          //insert
+
+          List<(List<Key>,UICommand)> insertKeyMaps = new () {
+            (new List<Key>() { Key.Esc },new UICommand(UICommandType.ENTER_NORMAL_MODE)),
+          };
+
+          //tolerate ambigous case for insert input
+          foreach ( int x  in Enumerable.Range(0,26)) {
+            insertKeyMaps.Add( 
+              (new List<Key>() { new Key((char)(x+65)) } ,
+                new UICommand(
+                  UICommandType.INSERT_CHAR,
+                  new InsertCharArgs((char)(x+65))
+                )
+              )
+            );
+            insertKeyMaps.Add( 
+              (new List<Key>() { new Key((char)(x+97)) } ,
+                new UICommand(
+                  UICommandType.INSERT_CHAR,
+                  new InsertCharArgs((char)(x+65))
+                )
+              )
+            );
+          }
+
+          _insertKeySequenceInterpreter = new KeySequenceInterpreter(insertKeyMaps);
+        }
+
     }
 
 }
