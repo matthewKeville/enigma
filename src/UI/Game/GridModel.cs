@@ -114,6 +114,11 @@ namespace UI.Model.Game {
       return getWordChars(Selection,Orientation);
     }
 
+    public List<GridCharModel> CrossWordChars() {
+      Direction cross = Orientation == Direction.Across ? Direction.Down : Direction.Across;
+      return getWordChars(Selection,cross);
+    }
+
     public bool MoveUp() {
       if ( !Selection.Up?.IsBlock ?? false ) {
         Selection = Selection.Up!;
@@ -266,12 +271,17 @@ namespace UI.Model.Game {
       Selection = wordChars.First();
     }
 
-    public GridClueModel? GetActiveClue() {
+    public (GridClueModel?,GridClueModel?) GetActiveClues() {
 
-      List<GridCharModel> wordChars = getWordChars(Selection,Orientation);
-      GridCharModel start = wordChars.First();
-      GridClueModel? clue = GridClueModels.Where( cm => cm.X == start.X && cm.Y == start.Y).FirstOrDefault();
-      return clue;
+      List<GridCharModel> acrossWordChars = getWordChars(Selection,Direction.Across);
+      GridCharModel acrossStart = acrossWordChars.First();
+      GridClueModel? acrossClue = GridClueModels.Where( cm => cm.X == acrossStart.X && cm.Y == acrossStart.Y).FirstOrDefault();
+
+      List<GridCharModel> downWordChars = getWordChars(Selection,Direction.Down);
+      GridCharModel downStart = acrossWordChars.First();
+      GridClueModel? downClue = GridClueModels.Where( cm => cm.X == downStart.X && cm.Y == downStart.Y).FirstOrDefault();
+
+      return (acrossClue,downClue);
 
     }
 
@@ -323,7 +333,9 @@ namespace UI.Model.Game {
     //prev = true, will move to the previous clue
     private void MoveClue(bool prev) {
 
-      GridClueModel? clue = GetActiveClue();
+      (GridClueModel? acrossClue,GridClueModel? downClue) = GetActiveClues();
+      GridClueModel? clue = Orientation == Direction.Across ? acrossClue : downClue;
+
       if ( clue == null ) {
         Trace.WriteLine("no clue found");
         return;

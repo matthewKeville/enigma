@@ -56,7 +56,8 @@ namespace UI.Game
             return true;
           } 
 
-          GridClueModel? activeClueStart = _gridModel.GetActiveClue();
+          var activeCluesStart = _gridModel.GetActiveClues();
+          var orientationStart = _gridModel.Orientation;
 
           switch ( command.Type ) {
 
@@ -153,8 +154,16 @@ namespace UI.Game
               break;
           }
 
-          if (_gridModel.GetActiveClue() is not null && activeClueStart != _gridModel.GetActiveClue()) {
-            _eventBus.PostEvent(new FocusClueChangeEventArgs(_gridModel.GetActiveClue()!.I));
+          var activeCluesEnd = _gridModel.GetActiveClues();
+          if (activeCluesStart != activeCluesEnd ) { 
+            Trace.WriteLine("Active clues have changed");
+              _eventBus.PostEvent(new FocusClueChangeEventArgs((activeCluesEnd.Item1.I,activeCluesEnd.Item2.I)));
+          }
+
+          var orientationEnd = _gridModel.Orientation;
+          if (orientationEnd != orientationStart ) { 
+            Trace.WriteLine("Orientation has changed");
+              _eventBus.PostEvent(new OrientationChangeEventArgs(orientationEnd));
           }
 
           SetNeedsDisplay();
@@ -167,7 +176,6 @@ namespace UI.Game
 
             base.OnDrawContent(contentArea);
 
-            List<GridCharModel> active = _gridModel.ActiveWordChars();
             Driver.FillRect(contentArea,' ');
 
             foreach (GridCharModel gcm in _gridModel.GridCharModels)
@@ -188,12 +196,17 @@ namespace UI.Game
 
                   if ( _gridModel.Selection.Equals(gcm) ) {
                     rune = new Rune('*');
-                    attr = new Terminal.Gui.Attribute(Terminal.Gui.Color.Yellow,Terminal.Gui.Color.Blue);
+                    attr = new Terminal.Gui.Attribute(Terminal.Gui.Color.BrightYellow,Terminal.Gui.Color.Blue);
                   }
 
                   else if ( _gridModel.ActiveWordChars().Contains(gcm) ) {
                     rune = _gridModel.Orientation == Direction.Across ? new Rune('-') : new Rune('|');
                     attr = new Terminal.Gui.Attribute(Terminal.Gui.Color.BrightMagenta,Terminal.Gui.Color.Blue);
+                  } 
+
+                  else if ( _gridModel.CrossWordChars().Contains(gcm) ) {
+                    rune = _gridModel.Orientation == Direction.Across ? new Rune('|') : new Rune('-');
+                    attr = new Terminal.Gui.Attribute(Terminal.Gui.Color.Black,Terminal.Gui.Color.Blue);
                   } 
 
                   else {
@@ -207,11 +220,15 @@ namespace UI.Game
                   rune = new Rune(gcm.C);
 
                   if ( _gridModel.Selection.Equals(gcm) ) {
-                    attr = new Terminal.Gui.Attribute(Terminal.Gui.Color.Yellow,Terminal.Gui.Color.Blue);
+                    attr = new Terminal.Gui.Attribute(Terminal.Gui.Color.BrightYellow,Terminal.Gui.Color.Blue);
                   }
 
                   else if ( _gridModel.ActiveWordChars().Contains(gcm) ) {
                     attr = new Terminal.Gui.Attribute(Terminal.Gui.Color.BrightMagenta,Terminal.Gui.Color.Blue);
+                  } 
+
+                  else if ( _gridModel.CrossWordChars().Contains(gcm) ) {
+                    attr = new Terminal.Gui.Attribute(Terminal.Gui.Color.Black,Terminal.Gui.Color.Blue);
                   } 
 
                   else {
@@ -270,8 +287,10 @@ namespace UI.Game
             // we can enable the preferred mapping
             // (new List<Key>() { Key.D4.WithShift },new UICommand(UICommandType.MOVE_CLUE_END)),
             // (new List<Key>() { Key.D6.WithShift },new UICommand(UICommandType.MOVE_CLUE_START)),
-            (new List<Key>() { Key.D4},new UICommand(UICommandType.MOVE_CLUE_END)),
-            (new List<Key>() { Key.D6},new UICommand(UICommandType.MOVE_CLUE_START)),
+            // these now conflict <D><D>gg
+            // (new List<Key>() { Key.D4},new UICommand(UICommandType.MOVE_CLUE_END)),
+            // (new List<Key>() { Key.D6},new UICommand(UICommandType.MOVE_CLUE_START)),
+          
 
             (new List<Key>() { Key.X },new UICommand(UICommandType.DELETE_CHAR)),
             (new List<Key>() { Key.D, Key.W },new UICommand(UICommandType.DELETE_WORD)),
