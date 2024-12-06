@@ -33,9 +33,12 @@ public class CluesView : Window
       };
       _acrossTableView.FullRowSelect = true;
       _acrossTableView.MinCellWidth = 8;
-      _acrossTableView.Style.AlwaysShowHeaders = true;
+      _acrossTableView.Style.ShowHeaders = false;
+      _acrossTableView.Style.ShowHorizontalHeaderOverline = false;
+      _acrossTableView.Style.ShowHorizontalHeaderUnderline = false;
+      _acrossTableView.Style.ShowVerticalCellLines = false;
       //seems to be broken?
-      _acrossTableView.Style.ShowHorizontalBottomline = false;
+      //_acrossTableView.Style.ShowHorizontalBottomline = true;
 
       _downTableView = new TableView() {
         X = 0,
@@ -45,9 +48,12 @@ public class CluesView : Window
       };
       _downTableView.FullRowSelect = true;
       _downTableView.MinCellWidth = 8;
-      _downTableView.Style.AlwaysShowHeaders = true;
+      _downTableView.Style.ShowHeaders = false;
+      _downTableView.Style.ShowHorizontalHeaderOverline = false;
+      _downTableView.Style.ShowHorizontalHeaderUnderline = false;
+      _downTableView.Style.ShowVerticalCellLines = false;
       //seems to be broken?
-      _downTableView.Style.ShowHorizontalBottomline = true;
+      //_downTableView.Style.ShowHorizontalBottomline = true;
 
       Add(_acrossTableView);
       Add(_downTableView);

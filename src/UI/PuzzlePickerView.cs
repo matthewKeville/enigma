@@ -45,9 +45,8 @@ public class PuzzlePickerView : Window
           if (args.KeyCode == KeyCode.Enter) {
             int r = tableView.SelectedRow;
             String rowString = $"{tableView.Table[r,0]} {tableView.Table[r,1]}";
-            int option = MessageBox.Query(30,5,"Start Puzzle ",rowString,"ok","cancel");
+            int option = MessageBox.Query(30,5,"Start Puzzle ?",rowString,"ok","cancel");
             if ( option == 0 ) {
-              MessageBox.Query(30,5,"System","Starting Puzzle","OK");
               int puzzleId = headers[r].PuzzleId;
               _eventBus.PostEvent(new StartPuzzleEventArgs(puzzleId));
             } 

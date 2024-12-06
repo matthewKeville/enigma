@@ -26,6 +26,8 @@ public class RootView : Window
         }
       });
 
+      BorderStyle = LineStyle.None;
+
       showBrowser();
 
     }

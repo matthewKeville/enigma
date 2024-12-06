@@ -1,7 +1,115 @@
 using Entity;
 using Enums;
+using Terminal.Gui;
 
 namespace UI.Model.Game {
+
+  public enum UICommandType {
+
+    //Normal Mode Commands
+    ENTER_NORMAL_MODE,
+
+    SWAP_ORIENTATION,
+
+    MOVE_UP,
+    MOVE_DOWN,
+    MOVE_LEFT,
+    MOVE_RIGHT,
+
+    REPLACE_CHAR,
+    DELTE_CHAR,
+
+    //Insert Mode Commands
+
+    ENTER_INSERT_MODE,
+
+    INSERT_CHAR,
+
+  }
+
+  public interface UICommandArgs {}
+  public class ReplaceCharArgs : UICommandArgs {
+    public char C;
+    public ReplaceCharArgs(char c) {
+      this.C = c;
+    }
+  }
+  public class InsertCharArgs : UICommandArgs {
+    public char C;
+    public InsertCharArgs(char c) {
+      this.C = c;
+    }
+  }
+
+  public class UICommand {
+    public UICommandType Type;
+    public UICommandArgs? Args;
+    public UICommand(UICommandType type){
+      this.Type = type;
+    }
+    public UICommand(UICommandType type,UICommandArgs args){
+      this.Type = type;
+      this.Args = args;
+    }
+  }
+
+  public class KeySequenceInterpreter {
+    private List<Key> _keyBuffer = new ();
+    public List<(List<Key>,UICommand)> keyMaps;
+
+    private void dumpSequence( List<Key> sequence ) {
+      String msg = "";
+      sequence.ForEach( key => {
+        msg += key.ToString() + " , ";
+      });
+      Debug.WriteLine(msg);
+    }
+
+    public KeySequenceInterpreter(List<(List<Key>,UICommand)> keyMaps) {
+      this.keyMaps = keyMaps;
+      this.keyMaps.ForEach( km => dumpSequence(km.Item1));
+    }
+
+    public UICommand? ProcessKey(Key key) {
+
+      _keyBuffer.Add(key);
+
+      List<(List<Key>,UICommand)> partialMatches = keyMaps
+        .FindAll( km => { return km.Item1.Count() >= _keyBuffer.Count(); } )
+        .FindAll( km => {
+          for ( int i = 0; i < _keyBuffer.Count(); i++ ) {
+            if ( !km.Item1[i].Equals(_keyBuffer[i])) {
+              return false;
+            }
+          }
+          return true;
+        });
+
+      if (partialMatches.Count() == 0) {
+
+        Debug.WriteLine("no partial matches");
+
+        _keyBuffer.Clear();
+        return null;
+      }
+
+      //exact match?
+      List<(List<Key>,UICommand)> exactMatches = partialMatches
+        .FindAll( km => { return km.Item1.Count() == _keyBuffer.Count(); });
+
+      if (exactMatches.Any()) {
+
+        Debug.WriteLine("hit keysequence matches " + exactMatches.Count());
+        exactMatches.ForEach( m => dumpSequence(m.Item1));
+
+        _keyBuffer.Clear();
+        return exactMatches[0].Item2;
+      }
+
+      return null;
+
+    }
+  }
 
   public class GridWordModel {
     public int x;
@@ -39,6 +147,17 @@ namespace UI.Model.Game {
       this.IsBlock = isBlock;
     }
 
+    public override bool Equals(Object? obj) {
+      if (obj is null) {
+        return false;
+      }
+      if (obj is not GridCharModel) {
+        return false;
+      }
+      GridCharModel other = (GridCharModel) obj;
+      return other.X == X && other.Y == Y && other.C == C;
+    }
+
   }
 
   public class GridModel {
@@ -52,7 +171,6 @@ namespace UI.Model.Game {
     public Direction Orientation = Direction.Across;
 
     public int WordCheckCount;
-    public List<GridWordModel> Words = new List<GridWordModel>();
 
     public GridModel(List<GridChar> gridChars) {
 
@@ -73,8 +191,50 @@ namespace UI.Model.Game {
 
     }
 
+    private List<GridCharModel> getWordChars(GridCharModel gcm,Direction direction) {
+
+      var wordChars = new List<GridCharModel> { gcm };
+
+      if ( direction == Direction.Across ) {
+
+        var cur = gcm;
+        while ( cur.Left != null && !cur.Left.IsBlock ) {
+          cur = cur.Left;
+          wordChars.Add(cur);
+        }
+        cur = gcm;
+        while ( cur.Right != null && !cur.Right.IsBlock ) {
+          cur = cur.Right;
+          wordChars.Add(cur!);
+        }
+
+      } else {
+
+        var cur = gcm;
+        while ( cur.Up != null && !cur.Up.IsBlock ) {
+          cur = cur.Up;
+          wordChars.Add(cur);
+        }
+        cur = gcm;
+        while ( cur.Down != null && !cur.Down.IsBlock ) {
+          cur = cur.Down;
+          wordChars.Add(cur!);
+        }
+
+      }
+
+      return wordChars;
+
+    }
+
+    public List<GridCharModel> ActiveWordChars() {
+      return getWordChars(Selection,Orientation);
+    }
+
+
+    //Manip
+
     public bool MoveUp() {
-      Trace.WriteLine("Hit move up");
       if ( !Selection.Up?.IsBlock ?? false ) {
         Selection = Selection.Up;
         return true;
@@ -83,7 +243,6 @@ namespace UI.Model.Game {
     }
 
     public bool MoveDown() {
-      Trace.WriteLine("Hit move down");
       if ( !Selection.Down?.IsBlock ?? false ) {
         Selection = Selection.Down;
         return true;
@@ -117,7 +276,20 @@ namespace UI.Model.Game {
 
     public void InsertChar(char c){
       Selection.C = c;
+      if ( Orientation == Direction.Across ) {
+        if ( !(Selection.Right?.IsBlock ?? true) ) {
+          Selection = Selection.Right;
+        }
+      } else {
+        if ( !(Selection.Down?.IsBlock ?? true)) {
+          Selection = Selection.Down;
+        }
+      }
       //todo advance key ...
+    }
+
+    public void ReplaceChar(char c){
+      Selection.C = c;
     }
 
     public void DeleteChar(){

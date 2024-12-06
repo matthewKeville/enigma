@@ -17,9 +17,6 @@ using Terminal.Gui;
         _gridView = gridView;
         _eventBus = eventBus;
 
-        Title = $"Game :  ({Application.QuitKey} to quit)";
-        var label = new Label { Text = " welcome to the puzzle " };
-
         gridView.X = 0;
         gridView.Width = Dim.Percent(50);
 
