@@ -24,7 +24,7 @@ namespace Services.CrosswordInstaller.NYT
               gridChars.Add(new GridChar(){
                   X=columnIndex,
                   Y=rowIndex,
-                  C=actual != '#' ? ' ' : '\0'
+                  C=actual != '#' ? ' ' : '\0' //null byte encodes block
                 });
             
               columnIndex++;
