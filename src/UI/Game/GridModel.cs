@@ -1,6 +1,5 @@
 using Entity;
 using Enums;
-using Terminal.Gui;
 
 namespace UI.Model.Game {
 
@@ -88,14 +87,12 @@ namespace UI.Model.Game {
     public GridModel(List<GridChar> gridChars,List<Word> words) {
 
       //Clue Models
-
       GridClueModels = new ();
       foreach ( Word word in words ) {
         GridClueModels.Add(new GridClueModel(word.X,word.Y,word.I,word.Direction,word.Answer.Count()));
       }
 
       //Char Models
-
       GridCharModels = new ();
       foreach ( GridChar gc in  gridChars ) {
         var gcm = new GridCharModel(gc.X,gc.Y,gc.C,gc.C == '\0');
@@ -110,83 +107,8 @@ namespace UI.Model.Game {
       }
 
       Selection = GridCharModels.First();
-
     }
 
-    //Return the list of GridCharModels that represent the "word" answer to
-    //the clue in order.
-    private List<GridCharModel> getWordChars(GridCharModel gcm,Direction direction) {
-
-      var wordChars = new List<GridCharModel> {};
-
-      if ( direction == Direction.Across ) {
-
-        var cur = gcm;
-        while ( cur.Left != null && !cur.Left.IsBlock ) {
-          cur = cur.Left;
-          wordChars.Insert(0,cur);
-        }
-
-        wordChars.Add(gcm);
-        cur = gcm;
-
-        while ( cur.Right != null && !cur.Right.IsBlock ) {
-          cur = cur.Right;
-          wordChars.Add(cur!);
-        }
-
-      } else {
-
-        var cur = gcm;
-        while ( cur.Up != null && !cur.Up.IsBlock ) {
-          cur = cur.Up;
-          wordChars.Insert(0,cur);
-        }
-
-        wordChars.Add(gcm);
-        cur = gcm;
-
-        while ( cur.Down != null && !cur.Down.IsBlock ) {
-          cur = cur.Down;
-          wordChars.Add(cur!);
-        }
-
-      }
-
-      return wordChars;
-
-    }
-
-    //Move the Selection to the starting character of the next clue
-    //prev = true, will move to the previous clue
-    private void MoveClue(bool prev) {
-
-      List<GridCharModel> wordChars = getWordChars(Selection,Orientation);
-      GridCharModel start = wordChars.First();
-
-      GridClueModel? clue = GridClueModels.Where( cm => cm.X == start.X && cm.Y == start.Y).FirstOrDefault();
-      if ( clue == null ) {
-        Trace.WriteLine("no clue found");
-        return;
-      }
-
-      // a bit hacky here...
-      GridClueModel? targetClue = GridClueModels
-        .Where( cm => cm.Direction == Orientation )
-        .Where( cm => prev ? cm.I < clue.I : cm.I > clue.I )
-        .OrderBy( cm => cm.I * (prev ? -1 : 1) )
-        .FirstOrDefault();
-
-      if ( targetClue != null ) {
-        Trace.WriteLine($"clue found {targetClue.X},{targetClue.Y}");
-        GridCharModel targetCharModel = GridCharModels
-          .Where( gcm => gcm.X == targetClue.X && gcm.Y == targetClue.Y )
-          .First();
-        Selection = targetCharModel;
-      } else {
-        Trace.WriteLine("clue not found");
-      }
-    }
 
     public List<GridCharModel> ActiveWordChars() {
       return getWordChars(Selection,Orientation);
@@ -224,14 +146,72 @@ namespace UI.Model.Game {
       return false;
     }
 
+    //try to move the clue at the ordinal
+    public void MoveClue(int i) {
+      GridClueModel? clueModel = GridClueModels
+        .Where( gcm => gcm.Direction == Orientation )
+        .Where( gcm => gcm.I == i )
+        .FirstOrDefault();
+      if ( clueModel is null ) {
+        Trace.WriteLine($"no clue found for ordinal {i}");
+        return;
+      }
+
+      GridCharModel? clueStartCharModel = GridCharModels
+        .Find( gcm => gcm.X == clueModel.X && gcm.Y == clueModel.Y );
+      if ( clueStartCharModel is null ) {
+        Trace.WriteLine($"coudln't find start GridCharModel for clue {i}");
+        return;
+      } 
+      Selection = clueStartCharModel;
+
+    }
+
     public void MoveNextClue() {
       MoveClue(false);
     }
+
     public void MovePrevClue() {
       MoveClue(true);
     }
 
+    public void MoveClueEnd() {
+      MoveInClue(true);
+    }
 
+    public void MoveClueStart() {
+      MoveInClue(false);
+    }
+
+    //Move to the next character c in the current word,
+    //if it exists
+    public void FindChar(char c) {
+      var wordChars = getWordChars(Selection,Orientation);
+      int index = wordChars.IndexOf(Selection)+1;
+      while ( index < wordChars.Count ) {
+        GridCharModel gcm = wordChars[index];
+        if ( gcm.C == c ) {
+          Selection = gcm;
+          return;
+        }
+        index++;
+      }
+    }
+    //Move to the prev character c in the current word,
+    //if it exists
+    public void FindReverseChar(char c) {
+      var wordChars = getWordChars(Selection,Orientation);
+      wordChars.ForEach( wc => wc.Dump());
+      int index = wordChars.IndexOf(Selection)-1;
+      while ( index >= 0 ) {
+        GridCharModel gcm = wordChars[index];
+        if ( gcm.C == c ) {
+          Selection = gcm;
+          return;
+        }
+        index--;
+      }
+    }
 
     public void SwapOrientation(){
       if ( Orientation == Direction.Across ) {
@@ -286,17 +266,92 @@ namespace UI.Model.Game {
       Selection = wordChars.First();
     }
 
+    public GridClueModel? GetActiveClue() {
 
-    /**
-    public void MoveToOrdinal(int ordinal,Direction direction) {
-    public void DeleteWord() {
-    private void FindCharForward(ConsoleKey key) {
-    private void FindCharBackward(ConsoleKey key) {
-    public void MoveToWordStart() {
-    public void MoveToWordEnd() {
-    public void CheckWord() {
-    public bool IsComplete() {
-    */
+      List<GridCharModel> wordChars = getWordChars(Selection,Orientation);
+      GridCharModel start = wordChars.First();
+      GridClueModel? clue = GridClueModels.Where( cm => cm.X == start.X && cm.Y == start.Y).FirstOrDefault();
+      return clue;
+
+    }
+
+    //Return the list of GridCharModels that represent the "word" answer to
+    //the clue in order.
+    private List<GridCharModel> getWordChars(GridCharModel gcm,Direction direction) {
+
+      var wordChars = new List<GridCharModel> {};
+
+      if ( direction == Direction.Across ) {
+
+        var cur = gcm;
+        while ( cur.Left != null && !cur.Left.IsBlock ) {
+          cur = cur.Left;
+          wordChars.Insert(0,cur);
+        }
+
+        wordChars.Add(gcm);
+        cur = gcm;
+
+        while ( cur.Right != null && !cur.Right.IsBlock ) {
+          cur = cur.Right;
+          wordChars.Add(cur!);
+        }
+
+      } else {
+
+        var cur = gcm;
+        while ( cur.Up != null && !cur.Up.IsBlock ) {
+          cur = cur.Up;
+          wordChars.Insert(0,cur);
+        }
+
+        wordChars.Add(gcm);
+        cur = gcm;
+
+        while ( cur.Down != null && !cur.Down.IsBlock ) {
+          cur = cur.Down;
+          wordChars.Add(cur!);
+        }
+
+      }
+
+      return wordChars;
+
+    }
+
+    //Move the Selection to the starting character of the next clue
+    //prev = true, will move to the previous clue
+    private void MoveClue(bool prev) {
+
+      GridClueModel? clue = GetActiveClue();
+      if ( clue == null ) {
+        Trace.WriteLine("no clue found");
+        return;
+      }
+
+      // a bit hacky here...
+      GridClueModel? targetClue = GridClueModels
+        .Where( cm => cm.Direction == Orientation )
+        .Where( cm => prev ? cm.I < clue.I : cm.I > clue.I )
+        .OrderBy( cm => cm.I * (prev ? -1 : 1) )
+        .FirstOrDefault();
+
+      if ( targetClue != null ) {
+        Trace.WriteLine($"clue found {targetClue.X},{targetClue.Y}");
+        GridCharModel targetCharModel = GridCharModels
+          .Where( gcm => gcm.X == targetClue.X && gcm.Y == targetClue.Y )
+          .First();
+        Selection = targetCharModel;
+      } else {
+        Trace.WriteLine("clue not found");
+      }
+    }
+
+    //Move the Selection to the start or end of the current clue
+    private void MoveInClue(bool end) {
+      List<GridCharModel> wordChars = getWordChars(Selection,Orientation);
+      Selection = end ? wordChars.Last() : wordChars.First();
+    }
 
 }
 }

@@ -53,9 +53,10 @@ namespace UI.Game
             _normalKeySequenceInterpreter.ProcessKey(key) ;
 
           if ( command is null ) {
-            Trace.WriteLine("no command");
             return true;
           } 
+
+          GridClueModel? activeClueStart = _gridModel.GetActiveClue();
 
           switch ( command.Type ) {
 
@@ -88,6 +89,24 @@ namespace UI.Game
               break;
             case UICommandType.MOVE_PREV_CLUE:
               _gridModel.MovePrevClue();
+              break;
+            case UICommandType.MOVE_CLUE_END:
+              _gridModel.MoveClueEnd();
+              break;
+            case UICommandType.MOVE_CLUE_START:
+              _gridModel.MoveClueStart();
+              break;
+            case UICommandType.MOVE_CLUE:
+              MoveClueArgs moveClueArgs = (MoveClueArgs) command.Args!;
+              _gridModel.MoveClue(moveClueArgs.I);
+              break;
+            case UICommandType.FIND_CHAR:
+              FindCharArgs findCharArgs = (FindCharArgs) command.Args!;
+              _gridModel.FindChar(findCharArgs.C);
+              break;
+            case UICommandType.FIND_REV_CHAR:
+              FindCharArgs findRevCharArgs = (FindCharArgs) command.Args!;
+              _gridModel.FindReverseChar(findRevCharArgs.C);
               break;
 
             case UICommandType.REPLACE_CHAR:
@@ -132,6 +151,10 @@ namespace UI.Game
             default:
               Trace.WriteLine("Unhandled command type : " + command.Type.ToString());
               break;
+          }
+
+          if (_gridModel.GetActiveClue() is not null && activeClueStart != _gridModel.GetActiveClue()) {
+            _eventBus.PostEvent(new FocusClueChangeEventArgs(_gridModel.GetActiveClue()!.I));
           }
 
           SetNeedsDisplay();
@@ -242,6 +265,14 @@ namespace UI.Game
             (new List<Key>() { Key.W },new UICommand(UICommandType.MOVE_NEXT_CLUE)),
             (new List<Key>() { Key.B },new UICommand(UICommandType.MOVE_PREV_CLUE)),
 
+            // C# Console.Driver limitation, perhaps down the line, the application can
+            // request the use of curses driver, and depending on the underlying implementation
+            // we can enable the preferred mapping
+            // (new List<Key>() { Key.D4.WithShift },new UICommand(UICommandType.MOVE_CLUE_END)),
+            // (new List<Key>() { Key.D6.WithShift },new UICommand(UICommandType.MOVE_CLUE_START)),
+            (new List<Key>() { Key.D4},new UICommand(UICommandType.MOVE_CLUE_END)),
+            (new List<Key>() { Key.D6},new UICommand(UICommandType.MOVE_CLUE_START)),
+
             (new List<Key>() { Key.X },new UICommand(UICommandType.DELETE_CHAR)),
             (new List<Key>() { Key.D, Key.W },new UICommand(UICommandType.DELETE_WORD)),
             (new List<Key>() { Key.D, Key.I, Key.W },new UICommand(UICommandType.DELETE_INNER_WORD)),
@@ -250,8 +281,9 @@ namespace UI.Game
 
           };
 
-          //tolerate ambigous case for r? input
+          //r<key>
           foreach ( int x  in Enumerable.Range(0,26)) {
+            //tolerate ambigous case for r? input
             normalKeyMaps.Add( 
               (new List<Key>() { Key.R, new Key((char)(x+65)) } ,
                 new UICommand(
@@ -269,6 +301,79 @@ namespace UI.Game
               )
             );
           }
+
+          //f<key>
+          foreach ( int x  in Enumerable.Range(0,26)) {
+            //tolerate ambigous case for f? input
+            normalKeyMaps.Add( 
+              (new List<Key>() { Key.F, new Key((char)(x+65)) } ,
+                new UICommand(
+                  UICommandType.FIND_CHAR,
+                  new FindCharArgs((char)(x+65))
+                )
+              )
+            );
+            normalKeyMaps.Add( 
+              (new List<Key>() { Key.F, new Key((char)(x+97)) } ,
+                new UICommand(
+                  UICommandType.FIND_CHAR,
+                  new FindCharArgs((char)(x+65))
+                )
+              )
+            );
+          }
+
+          //F<key>
+          foreach ( int x  in Enumerable.Range(0,26)) {
+            //tolerate ambigous case for f? input
+            normalKeyMaps.Add( 
+              (new List<Key>() { Key.F.WithShift, new Key((char)(x+65)) } ,
+                new UICommand(
+                  UICommandType.FIND_REV_CHAR,
+                  new FindCharArgs((char)(x+65))
+                )
+              )
+            );
+            normalKeyMaps.Add( 
+              (new List<Key>() { Key.F.WithShift, new Key((char)(x+97)) } ,
+                new UICommand(
+                  UICommandType.FIND_REV_CHAR,
+                  new FindCharArgs((char)(x+65))
+                )
+              )
+            );
+          }
+
+          // gg<num> or gg<num1><num2>
+          foreach ( int x  in Enumerable.Range(0,9)) {
+            foreach ( int y  in Enumerable.Range(0,9)) {
+                
+              List<Key> seq = new ();
+              if ( x != 0 ) {
+                seq.Add( new Key((char)(48+x)) );
+              }
+              seq.Add( new Key((char)(48+y)) );
+              seq.Add( Key.G );
+              seq.Add( Key.G );
+
+              normalKeyMaps.Add( 
+                (seq,
+                  new UICommand(
+                    UICommandType.MOVE_CLUE,
+                    new MoveClueArgs(Int32.Parse($"{x}{y}"))
+                  )
+                )
+              );
+            }
+          }
+            // normalKeyMaps.Add( 
+            //   (new List<Key>() { Key.R, new Key((char)(x+97)) } ,
+            //     new UICommand(
+            //       UICommandType.REPLACE_CHAR,
+            //       new ReplaceCharArgs((char)(x+65))
+            //     )
+            //   )
+            // );
 
           _normalKeySequenceInterpreter = new KeySequenceInterpreter(normalKeyMaps);
 

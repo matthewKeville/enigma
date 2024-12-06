@@ -12,8 +12,15 @@ public enum UICommandType {
     MOVE_DOWN,
     MOVE_LEFT,
     MOVE_RIGHT,
+
+    MOVE_CLUE,
     MOVE_NEXT_CLUE,
     MOVE_PREV_CLUE,
+    MOVE_CLUE_START,
+    MOVE_CLUE_END,
+
+    FIND_CHAR,
+    FIND_REV_CHAR,
 
     REPLACE_CHAR,
     DELETE_CHAR,
@@ -32,16 +39,32 @@ public enum UICommandType {
   }
 
   public interface UICommandArgs {}
+
   public class ReplaceCharArgs : UICommandArgs {
     public char C;
     public ReplaceCharArgs(char c) {
       this.C = c;
     }
   }
+
   public class InsertCharArgs : UICommandArgs {
     public char C;
     public InsertCharArgs(char c) {
       this.C = c;
+    }
+  }
+
+  public class FindCharArgs : UICommandArgs {
+    public char C;
+    public FindCharArgs(char c) {
+      this.C = c;
+    }
+  }
+
+  public class MoveClueArgs : UICommandArgs {
+    public int I;
+    public MoveClueArgs(int i) {
+      this.I = i;
     }
   }
 
@@ -91,8 +114,8 @@ public enum UICommandType {
 
       if (partialMatches.Count() == 0) {
 
-        //Debug.WriteLine("no partial matches");
-
+        Debug.WriteLine("no command matches");
+        dumpSequence(_keyBuffer);
         _keyBuffer.Clear();
         return null;
       }
