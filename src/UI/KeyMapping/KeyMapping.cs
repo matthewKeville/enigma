@@ -3,6 +3,10 @@ using Terminal.Gui;
 namespace UI.KeyMapping {
 public enum UICommandType {
 
+    //////////////////////////////////////////
+    //GridView Commands
+    //////////////////////////////////////////
+
     //Normal Mode Commands
     ENTER_NORMAL_MODE,
 
@@ -35,6 +39,12 @@ public enum UICommandType {
     ENTER_INSERT_MODE,
 
     INSERT_CHAR,
+
+    //////////////////////////////////////////
+    //CluesView Commands
+    //////////////////////////////////////////
+
+    TOGGLE_CLUES_SPLIT_VIEW
 
   }
 
@@ -97,7 +107,7 @@ public enum UICommandType {
       this.keyMaps.ForEach( km => dumpSequence(km.Item1));
     }
 
-    public UICommand? ProcessKey(Key key) {
+    public (bool partialMatch, UICommand? command) ProcessKey(Key key) {
 
       _keyBuffer.Add(key);
 
@@ -117,7 +127,7 @@ public enum UICommandType {
         Debug.WriteLine("no command matches");
         dumpSequence(_keyBuffer);
         _keyBuffer.Clear();
-        return null;
+        return (false,null);
       }
 
       //exact match?
@@ -130,10 +140,10 @@ public enum UICommandType {
         //exactMatches.ForEach( m => dumpSequence(m.Item1));
 
         _keyBuffer.Clear();
-        return exactMatches[0].Item2;
+        return (true,exactMatches[0].Item2);
       }
 
-      return null;
+      return (true,null);
 
     }
   }

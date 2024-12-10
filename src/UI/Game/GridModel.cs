@@ -278,7 +278,7 @@ namespace UI.Model.Game {
       GridClueModel? acrossClue = GridClueModels.Where( cm => cm.X == acrossStart.X && cm.Y == acrossStart.Y).FirstOrDefault();
 
       List<GridCharModel> downWordChars = getWordChars(Selection,Direction.Down);
-      GridCharModel downStart = acrossWordChars.First();
+      GridCharModel downStart = downWordChars.First();
       GridClueModel? downClue = GridClueModels.Where( cm => cm.X == downStart.X && cm.Y == downStart.Y).FirstOrDefault();
 
       return (acrossClue,downClue);

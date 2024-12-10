@@ -7,6 +7,7 @@ using Event;
 using Terminal.Gui;
 using UI.Game;
 using UI;
+using UI.Game.Clues;
 
 HostApplicationBuilder builder = Host.CreateEmptyApplicationBuilder(new HostApplicationBuilderSettings());
 builder.Services.AddSingleton<DatabaseContext, DatabaseContext>();
@@ -22,7 +23,10 @@ builder.Services.AddSingleton<PuzzleInstallerView, PuzzleInstallerView>();
 builder.Services.AddSingleton<PuzzlePickerView, PuzzlePickerView>();
 builder.Services.AddSingleton<GameView, GameView>();
 builder.Services.AddSingleton<GridView, GridView>();
+
 builder.Services.AddSingleton<CluesView, CluesView>();
+builder.Services.AddSingleton<CluesSingleView, CluesSingleView>();
+builder.Services.AddSingleton<CluesSplitView, CluesSplitView>();
 
 IHost host = builder.Build();
 host.Start();

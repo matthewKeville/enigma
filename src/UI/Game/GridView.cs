@@ -8,13 +8,12 @@ namespace UI.Game
     using Terminal.Gui;
     using UI.KeyMapping;
     using UI.Model.Game;
-    using static Event.StartPuzzleEventArgs;
 
     public class GridView : Window
     {
         private DatabaseContext _dbContext;
         private EventBus _eventBus;
-        private GridModel _gridModel;
+        private GridModel? _gridModel;
         private bool _isInsertMode = false;
         private KeySequenceInterpreter _normalKeySequenceInterpreter;
         private KeySequenceInterpreter _insertKeySequenceInterpreter;
@@ -41,18 +40,23 @@ namespace UI.Game
             );
 
             KeyBindings.Clear();
-            BuildKeyMaps();
+
+            _normalKeySequenceInterpreter = new KeySequenceInterpreter(BuildNormalKeyMaps());
+            _insertKeySequenceInterpreter = new KeySequenceInterpreter(BuildInsertKeyMaps());
 
         }
 
         public override bool OnKeyDown(Key key)
         {
 
-          UICommand? command = _isInsertMode ? 
+          (bool partialMatch,UICommand? command) = _isInsertMode ? 
             _insertKeySequenceInterpreter.ProcessKey(key) :
             _normalKeySequenceInterpreter.ProcessKey(key) ;
 
-          if ( command is null ) {
+          if ( !partialMatch ) {
+            return false;
+          }
+          if ( partialMatch && command is null) {
             return true;
           } 
 
@@ -155,8 +159,11 @@ namespace UI.Game
           }
 
           var activeCluesEnd = _gridModel.GetActiveClues();
+
           if (activeCluesStart != activeCluesEnd ) { 
             Trace.WriteLine("Active clues have changed");
+            Trace.WriteLine($"Across Clue {activeCluesEnd.Item1.X} {activeCluesEnd.Item1.Y} {activeCluesEnd.Item1.I}");
+            Trace.WriteLine($"Down Clue {activeCluesEnd.Item2.X} {activeCluesEnd.Item2.Y} {activeCluesEnd.Item2.I}");
               _eventBus.PostEvent(new FocusClueChangeEventArgs((activeCluesEnd.Item1.I,activeCluesEnd.Item2.I)));
           }
 
@@ -263,10 +270,7 @@ namespace UI.Game
             Init(args.CrosswordId);
         }
 
-        private void BuildKeyMaps() {
-
-          //normal
-
+        private List<(List<Key>,UICommand)> BuildNormalKeyMaps() {
           List<(List<Key>,UICommand)> normalKeyMaps = new () {
 
             (new List<Key>() { Key.I },new UICommand(UICommandType.ENTER_INSERT_MODE)),
@@ -385,18 +389,12 @@ namespace UI.Game
               );
             }
           }
-            // normalKeyMaps.Add( 
-            //   (new List<Key>() { Key.R, new Key((char)(x+97)) } ,
-            //     new UICommand(
-            //       UICommandType.REPLACE_CHAR,
-            //       new ReplaceCharArgs((char)(x+65))
-            //     )
-            //   )
-            // );
 
-          _normalKeySequenceInterpreter = new KeySequenceInterpreter(normalKeyMaps);
+          return normalKeyMaps;
 
-          //insert
+        }
+
+        private List<(List<Key>,UICommand)> BuildInsertKeyMaps() {
 
           List<(List<Key>,UICommand)> insertKeyMaps = new () {
             (new List<Key>() { Key.Esc },new UICommand(UICommandType.ENTER_NORMAL_MODE)),
@@ -422,7 +420,7 @@ namespace UI.Game
             );
           }
 
-          _insertKeySequenceInterpreter = new KeySequenceInterpreter(insertKeyMaps);
+          return insertKeyMaps;
         }
 
     }
