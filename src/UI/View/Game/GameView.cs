@@ -1,10 +1,10 @@
-namespace UI.Game
+namespace UI.View.Game
 {
 
 
     using Event;
     using Terminal.Gui;
-    using UI.Game.Clues;
+    using UI.View.Game.Clues;
 
     public class GameView : Window
     {
@@ -55,8 +55,9 @@ namespace UI.Game
                     MessageBox.Query(30, 5, "System", "Ending Puzzle", "OK");
                     _eventBus.PostEvent(new EndPuzzleEventArgs());
                 }
-                if (args.KeyCode == KeyCode.Tab) {
-                  cluesView.ToggleLayout();
+                if (args.KeyCode == KeyCode.Tab)
+                {
+                    cluesView.ToggleLayout();
                 }
             };
 

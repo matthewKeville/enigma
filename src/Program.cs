@@ -5,9 +5,11 @@ using Services.CrosswordInstaller;
 using Services.CrosswordInstaller.NYT;
 using Event;
 using Terminal.Gui;
-using UI.Game;
-using UI;
-using UI.Game.Clues;
+using UI.View.Browser;
+using UI.View;
+using UI.View.Game;
+using UI.View.Game.Clues;
+using UI.Theme;
 
 HostApplicationBuilder builder = Host.CreateEmptyApplicationBuilder(new HostApplicationBuilderSettings());
 builder.Services.AddSingleton<DatabaseContext, DatabaseContext>();
@@ -17,13 +19,17 @@ builder.Services.AddSingleton<NYTCrosswordParser, NYTCrosswordParser>();
 builder.Services.AddSingleton<CrosswordInstallerService, CrosswordInstallerService>();
 
 builder.Services.AddSingleton<EventBus, EventBus>();
+
+builder.Services.AddSingleton<Theme, Theme>();
+
 builder.Services.AddSingleton<RootView, RootView>();
+
 builder.Services.AddSingleton<BrowserView, BrowserView>();
 builder.Services.AddSingleton<PuzzleInstallerView, PuzzleInstallerView>();
 builder.Services.AddSingleton<PuzzlePickerView, PuzzlePickerView>();
+
 builder.Services.AddSingleton<GameView, GameView>();
 builder.Services.AddSingleton<GridView, GridView>();
-
 builder.Services.AddSingleton<CluesView, CluesView>();
 builder.Services.AddSingleton<CluesSingleView, CluesSingleView>();
 builder.Services.AddSingleton<CluesSplitView, CluesSplitView>();

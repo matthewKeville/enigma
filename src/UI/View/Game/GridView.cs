@@ -1,4 +1,4 @@
-namespace UI.Game
+namespace UI.View.Game
 {
 
     using System.Drawing;
@@ -7,7 +7,6 @@ namespace UI.Game
     using Event;
     using Terminal.Gui;
     using UI.KeyMapping;
-    using UI.Model.Game;
 
     public class GridView : Window
     {
