@@ -160,7 +160,7 @@ namespace UI.View.Game
             _acrossTableView.Style = tableStyle;
             _acrossTableView.Style.RowColorGetter = rowColorGetter;
             //need to set this, for when there is more space alotted than rows
-            _acrossTableView.ColorScheme = new ColorScheme(new Attribute(_theme.InactiveClueFG, _theme.InactiveClueBG));
+            _acrossTableView.ColorScheme = new ColorScheme(new Attribute(_theme.CluesTableBackgroundBG));
 
             Add(_acrossTableView);
 
@@ -184,7 +184,7 @@ namespace UI.View.Game
             _downTableView.Style = tableStyle;
             _downTableView.Style.RowColorGetter = rowColorGetter;
             //need to set this, for when there is more space alotted than rows
-            _downTableView.ColorScheme = new ColorScheme(new Attribute(_theme.InactiveClueFG, _theme.InactiveClueBG));
+            _downTableView.ColorScheme = new ColorScheme(new Attribute(_theme.CluesTableBackgroundBG));
             Add(_downTableView);
 
         }

@@ -23,26 +23,11 @@ namespace UI.View.Game
             _eventBus = eventBus;
 
             _gridView.X = 0;
-            _gridView.Width = Dim.Percent(50);
+            _gridView.Width = Dim.Percent(40);
 
-            _cluesView.X = Pos.Percent(50);
-            _cluesView.Width = Dim.Percent(50);
+            _cluesView.X = Pos.Percent(40);
+            _cluesView.Width = Dim.Percent(60);
             _cluesView.CanFocus = false;
-
-            /**
-            _cluesSingleView = cluesSingleView;
-            _cluesSplitView = cluesSplitView;
-
-            _cluesSingleView.X = Pos.Percent(50);
-            _cluesSingleView.Width = Dim.Percent(50);
-            _cluesSingleView.CanFocus = false;
-
-            _cluesSplitView.X = Pos.Percent(50);
-            _cluesSplitView.Width = Dim.Percent(50);
-            _cluesSplitView.CanFocus = false;
-            _cluesView = _cluesSingleView;
-            Add(_cluesView);
-            */
 
 
             Add(gridView);

@@ -5,6 +5,7 @@ namespace UI.View.Game
     using System.Text;
     using Enums;
     using Event;
+    using Settings.Theme;
     using Terminal.Gui;
     using UI.KeyMapping;
 
@@ -16,8 +17,9 @@ namespace UI.View.Game
         private bool _isInsertMode = false;
         private KeySequenceInterpreter _normalKeySequenceInterpreter;
         private KeySequenceInterpreter _insertKeySequenceInterpreter;
+        private Theme _theme;
 
-        public GridView(DatabaseContext dbContext, EventBus eventBus)
+        public GridView(DatabaseContext dbContext, EventBus eventBus,Theme  theme)
         {
             _dbContext = dbContext;
             _eventBus = eventBus;
@@ -37,11 +39,14 @@ namespace UI.View.Game
                 }
             }
             );
+            _theme = theme;
 
             KeyBindings.Clear();
 
             _normalKeySequenceInterpreter = new KeySequenceInterpreter(BuildNormalKeyMaps());
             _insertKeySequenceInterpreter = new KeySequenceInterpreter(BuildInsertKeyMaps());
+
+            setupView();
 
         }
 
@@ -181,12 +186,10 @@ namespace UI.View.Game
         {
 
             base.OnDrawContent(contentArea);
-
             Driver.FillRect(contentArea,' ');
 
             foreach (GridCharModel gcm in _gridModel.GridCharModels)
             {
-
        
                 Rune rune;
                 Attribute attr;
@@ -194,30 +197,34 @@ namespace UI.View.Game
                 //block
                 if (gcm.IsBlock) {
 
-                  rune = new Rune('#');
-                  attr = new Terminal.Gui.Attribute(Terminal.Gui.Color.White,Terminal.Gui.Color.Blue);
+                  rune = new Rune(_theme.BlockChar);
+                  attr = new Terminal.Gui.Attribute(_theme.BlockFG,_theme.BlockBG);
 
                 //emtpy
                 } else if ( gcm.C == ' ' ) {
 
                   if ( _gridModel.Selection.Equals(gcm) ) {
-                    rune = new Rune('*');
-                    attr = new Terminal.Gui.Attribute(Terminal.Gui.Color.BrightYellow,Terminal.Gui.Color.Blue);
+                    rune = new Rune(_theme.CursorEmptyHighlightChar);
+                    attr = new Terminal.Gui.Attribute(_theme.CursorEmptyHighlightFG,_theme.CursorEmptyHighlightBG);
                   }
 
                   else if ( _gridModel.ActiveWordChars().Contains(gcm) ) {
-                    rune = _gridModel.Orientation == Direction.Across ? new Rune('-') : new Rune('|');
-                    attr = new Terminal.Gui.Attribute(Terminal.Gui.Color.BrightMagenta,Terminal.Gui.Color.Blue);
+                    rune = _gridModel.Orientation == Direction.Across 
+                      ? new Rune(_theme.ActiveEmptyHighlightAcrossChar)
+                      : new Rune(_theme.ActiveEmptyHighlightDownChar);
+                    attr = new Terminal.Gui.Attribute(_theme.ActiveEmptyHighlightFG,_theme.ActiveEmptyHighlightBG);
                   } 
 
                   else if ( _gridModel.CrossWordChars().Contains(gcm) ) {
-                    rune = _gridModel.Orientation == Direction.Across ? new Rune('|') : new Rune('-');
-                    attr = new Terminal.Gui.Attribute(Terminal.Gui.Color.Black,Terminal.Gui.Color.Blue);
+                    rune = _gridModel.Orientation == Direction.Across 
+                      ? new Rune(_theme.CrossEmptyHighlightDownChar)
+                      : new Rune(_theme.CrossEmptyHighlightAcrossChar);
+                    attr = new Terminal.Gui.Attribute(_theme.CrossEmptyHighlightFG,_theme.CrossEmptyHighlightBG);
                   } 
 
                   else {
-                    rune = new Rune('·');
-                    attr = new Terminal.Gui.Attribute(Terminal.Gui.Color.White,Terminal.Gui.Color.Blue);
+                    rune = new Rune(_theme.CellEmptyChar);
+                    attr = new Terminal.Gui.Attribute(_theme.CellFG,_theme.CellBG);
                   }
 
                 //filled
@@ -226,19 +233,19 @@ namespace UI.View.Game
                   rune = new Rune(gcm.C);
 
                   if ( _gridModel.Selection.Equals(gcm) ) {
-                    attr = new Terminal.Gui.Attribute(Terminal.Gui.Color.BrightYellow,Terminal.Gui.Color.Blue);
+                    attr = new Terminal.Gui.Attribute(_theme.CursorHighlightFG,_theme.CursorHighlightBG);
                   }
 
                   else if ( _gridModel.ActiveWordChars().Contains(gcm) ) {
-                    attr = new Terminal.Gui.Attribute(Terminal.Gui.Color.BrightMagenta,Terminal.Gui.Color.Blue);
+                    attr = new Terminal.Gui.Attribute(_theme.ActiveHighlightFG,_theme.ActiveHighlightBG);
                   } 
 
                   else if ( _gridModel.CrossWordChars().Contains(gcm) ) {
-                    attr = new Terminal.Gui.Attribute(Terminal.Gui.Color.Black,Terminal.Gui.Color.Blue);
+                    attr = new Terminal.Gui.Attribute(_theme.CrossHighlightFG,_theme.CrossHighlightBG);
                   } 
 
                   else {
-                    attr = new Terminal.Gui.Attribute(Terminal.Gui.Color.White,Terminal.Gui.Color.Blue);
+                    attr = new Terminal.Gui.Attribute(_theme.CellFG,_theme.CellBG);
                   }
 
                 }
@@ -420,6 +427,10 @@ namespace UI.View.Game
           }
 
           return insertKeyMaps;
+        }
+
+        private void setupView() {
+          this.ColorScheme = new ColorScheme(new Attribute(_theme.GridBackgroundBG));
         }
 
     }

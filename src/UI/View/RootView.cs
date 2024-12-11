@@ -5,6 +5,7 @@ namespace UI.View
     using Terminal.Gui;
     using UI.View.Browser;
     using UI.View.Game;
+    using Settings.Theme;
 
     public class RootView : Window
     {
@@ -14,7 +15,6 @@ namespace UI.View
 
         public RootView(BrowserView browserView, GameView gameView, EventBus eventBus)
         {
-
             _browserView = browserView;
             _gameView = gameView;
             _eventBus = eventBus;
@@ -36,6 +36,7 @@ namespace UI.View
             showBrowser();
 
         }
+
 
         private void showGame()
         {

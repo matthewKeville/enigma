@@ -14,9 +14,6 @@ namespace UI.View.Game.Clues
             _cluesSingleView = cluesSingleView;
             _cluesSplitView = cluesSplitView;
 
-
-            // _activeView = _cluesSingleView;
-            // Add(_cluesSingleView);
             _activeView = _cluesSplitView;
             Add(_cluesSplitView);
         }

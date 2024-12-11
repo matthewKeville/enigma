@@ -49,7 +49,15 @@ Application.KeyDown += (sender,key) => {
   }
 };
 
-Application.Run(host.Services.GetService<RootView>());
-Application.Shutdown ();
+//Application.Force16Colors = true;
+ConfigurationManager.Themes.Theme = "Light";
+ConfigurationManager.Apply();
 
+Window root = host.Services.GetService<RootView>();
+Application.Run(root);
+
+//Application.Run(host.Services.GetService<RootView>());
+//Application.Run(host.Services.GetService<RootView>());
+//Application.Top.ColorScheme = Theme.GlobalColorScheme;
+Application.Shutdown ();
 
