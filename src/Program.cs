@@ -9,7 +9,7 @@ using UI.View.Browser;
 using UI.View;
 using UI.View.Game;
 using UI.View.Game.Clues;
-using UI.Theme;
+using Settings.Theme;
 
 HostApplicationBuilder builder = Host.CreateEmptyApplicationBuilder(new HostApplicationBuilderSettings());
 builder.Services.AddSingleton<DatabaseContext, DatabaseContext>();

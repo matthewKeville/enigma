@@ -1,6 +1,6 @@
 using Terminal.Gui;
 
-namespace UI.Theme {
+namespace Settings.Theme {
 
   public class Theme {
 

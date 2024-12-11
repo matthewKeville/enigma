@@ -7,7 +7,7 @@ namespace UI.View.Game
     using Enums;
     using Event;
     using Terminal.Gui;
-    using UI.Theme;
+    using Settings.Theme;
 
     public class CluesSplitView : Window
     {

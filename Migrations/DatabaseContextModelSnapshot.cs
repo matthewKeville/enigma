@@ -118,24 +118,20 @@ namespace crossword.Migrations
 
             modelBuilder.Entity("Entity.GridChar", b =>
                 {
-                    b.HasOne("Entity.Crossword", "crossword")
+                    b.HasOne("Entity.Crossword", null)
                         .WithMany("GridChars")
                         .HasForeignKey("CrosswordId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("crossword");
                 });
 
             modelBuilder.Entity("Entity.Word", b =>
                 {
-                    b.HasOne("Entity.Crossword", "crossword")
+                    b.HasOne("Entity.Crossword", null)
                         .WithMany("Words")
                         .HasForeignKey("CrosswordId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("crossword");
                 });
 
             modelBuilder.Entity("Entity.Crossword", b =>
