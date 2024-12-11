@@ -2,4 +2,3 @@ bin/
 obj/
 logs/
 enigma.db
-Migrations/
