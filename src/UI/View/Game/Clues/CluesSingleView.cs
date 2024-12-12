@@ -9,7 +9,7 @@ namespace UI.View.Game
     using Settings.Theme;
     using System.Drawing;
 
-    public class CluesSingleView : Window
+    public class CluesSingleView : Toplevel
     {
         private DatabaseContext _dbContext;
         private EventBus _eventBus;

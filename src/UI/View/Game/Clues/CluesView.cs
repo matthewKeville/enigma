@@ -3,7 +3,7 @@ namespace UI.View.Game.Clues
 
     using Terminal.Gui;
 
-    public class CluesView : Window
+    public class CluesView : Toplevel
     {
         private CluesSplitView _cluesSplitView;
         private CluesSingleView _cluesSingleView;

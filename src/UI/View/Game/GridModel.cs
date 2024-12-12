@@ -296,7 +296,25 @@ namespace UI.View.Game
 
         public void DeleteChar()
         {
+          DeleteChar(false);
+        }
+
+        public void DeleteChar(bool moveBackChar)
+        {
             Selection.C = ' ';
+            if (moveBackChar)  {
+              if ( Orientation == Direction.Across ) {
+                if (!Selection.Left?.IsBlock ?? false)
+                {
+                    Selection = Selection.Left!;
+                }
+              } else {
+                if (!Selection.Up?.IsBlock ?? false)
+                {
+                    Selection = Selection.Up!;
+                }
+              }
+            }
         }
 
         // Delete the characters from the current Selection to

@@ -53,11 +53,7 @@ Application.KeyDown += (sender,key) => {
 ConfigurationManager.Themes.Theme = "Light";
 ConfigurationManager.Apply();
 
-Window root = host.Services.GetService<RootView>();
+Toplevel root = host.Services.GetService<RootView>()!;
 Application.Run(root);
-
-//Application.Run(host.Services.GetService<RootView>());
-//Application.Run(host.Services.GetService<RootView>());
-//Application.Top.ColorScheme = Theme.GlobalColorScheme;
 Application.Shutdown ();
 

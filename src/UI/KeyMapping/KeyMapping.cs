@@ -37,8 +37,8 @@ public enum UICommandType {
     //Insert Mode Commands
 
     ENTER_INSERT_MODE,
-
     INSERT_CHAR,
+    DELETE_CHAR_INS,
 
     //////////////////////////////////////////
     //CluesView Commands

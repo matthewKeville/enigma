@@ -9,7 +9,7 @@ namespace UI.View.Game
     using Terminal.Gui;
     using UI.KeyMapping;
 
-    public class GridView : Window
+    public class GridView : Toplevel
     {
         private DatabaseContext _dbContext;
         private EventBus _eventBus;
@@ -156,6 +156,10 @@ namespace UI.View.Game
               _gridModel.InsertChar(insertCharArgs.C);
               break;
 
+            case UICommandType.DELETE_CHAR_INS:
+              _gridModel.DeleteChar(true);
+              break;
+
 
             default:
               Trace.WriteLine("Unhandled command type : " + command.Type.ToString());
@@ -253,6 +257,8 @@ namespace UI.View.Game
                 ////////
                 //Rune
                 ////////
+                // int xOff = 2;
+                // int yOff = 2;
 
                 Move(gcm.X, gcm.Y);
                 Driver.SetAttribute(attr);
@@ -402,8 +408,11 @@ namespace UI.View.Game
 
         private List<(List<Key>,UICommand)> BuildInsertKeyMaps() {
 
+          //Terminal.Gui.Key
+
           List<(List<Key>,UICommand)> insertKeyMaps = new () {
             (new List<Key>() { Key.Esc },new UICommand(UICommandType.ENTER_NORMAL_MODE)),
+            //Grrr I want to do <C-]> but it's not supported by Console.ReadKey ... Key
           };
 
           //tolerate ambigous case for insert input
@@ -425,6 +434,10 @@ namespace UI.View.Game
               )
             );
           }
+
+          insertKeyMaps.Add( 
+            (new List<Key>() { Key.Backspace } , new UICommand(UICommandType.DELETE_CHAR_INS))
+          );
 
           return insertKeyMaps;
         }

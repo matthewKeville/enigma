@@ -4,13 +4,12 @@ namespace UI.View.Browser
     using System.Data;
     using Terminal.Gui;
 
-    public class PuzzleInstallerView : Window
+    public class PuzzleInstallerView : Toplevel
     {
 
         public PuzzleInstallerView()
         {
 
-            Title = $"Puzzle Installer :  ({Application.QuitKey} to quit)";
             var label = new Label { Text = " Install a puzzle " };
 
             var dt = new DataTable();

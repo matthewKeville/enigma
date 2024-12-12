@@ -9,7 +9,7 @@ namespace UI.View.Game
     using Settings.Theme;
     using System.Drawing;
 
-    public class CluesSplitView : Window
+    public class CluesSplitView : Toplevel
     {
         private DatabaseContext _dbContext;
         private EventBus _eventBus;

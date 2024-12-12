@@ -6,7 +6,7 @@ namespace UI.View.Browser
     using Services;
     using Terminal.Gui;
 
-    public class PuzzlePickerView : Window
+    public class PuzzlePickerView : Toplevel
     {
 
         private CrosswordService _crosswordService;
@@ -17,7 +17,6 @@ namespace UI.View.Browser
             _crosswordService = crosswordService;
             _eventBus = eventBus;
 
-            Title = $"Puzzle Picker :  ({Application.QuitKey} to quit)";
             var label = new Label { Text = " Select a Puzzle " };
 
             var dt = new DataTable();
@@ -70,7 +69,6 @@ namespace UI.View.Browser
                 }
 
             };
-
 
             // Add the views to the Window
             Add(tableView);

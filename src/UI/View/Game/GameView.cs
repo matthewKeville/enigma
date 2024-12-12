@@ -6,7 +6,7 @@ namespace UI.View.Game
     using Terminal.Gui;
     using UI.View.Game.Clues;
 
-    public class GameView : Window
+    public class GameView : Toplevel
     {
 
         private CluesView _cluesView;
@@ -24,11 +24,11 @@ namespace UI.View.Game
 
             _gridView.X = 0;
             _gridView.Width = Dim.Percent(40);
+            _gridView.Visible = true;
 
             _cluesView.X = Pos.Percent(40);
             _cluesView.Width = Dim.Percent(60);
-            _cluesView.CanFocus = false;
-
+            _cluesView.Visible = true;
 
             Add(gridView);
             Add(cluesView);
