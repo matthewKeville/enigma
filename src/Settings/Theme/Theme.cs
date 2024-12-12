@@ -6,8 +6,6 @@ namespace Settings.Theme {
 
     //16 Color
 
-    //Clues
-
     public static ColorScheme GlobalColorScheme = new ColorScheme(
         new Terminal.Gui.Attribute(Color.White,Color.Green),
         new Terminal.Gui.Attribute(Color.White,Color.Green),
@@ -15,6 +13,10 @@ namespace Settings.Theme {
         new Terminal.Gui.Attribute(Color.White,Color.Green),
         new Terminal.Gui.Attribute(Color.White,Color.Green)
     );
+
+    ////////////////////////////////////////////////////////////
+    //Clues
+    ////////////////////////////////////////////////////////////
 
     public Color CluesBackgroundBG = ColorName.White;
     public Color CluesTableBackgroundBG = ColorName.White;
@@ -31,10 +33,11 @@ namespace Settings.Theme {
     public Color InactiveClueFG = ColorName.Gray;
     public Color InactiveClueBG = ColorName.White;
 
+    ////////////////////////////////////////////////////////////
     //Grid
+    ////////////////////////////////////////////////////////////
 
     public Color GridBackgroundBG = ColorName.Red;
-
 
     //Unfocused  Cell Styling
 
@@ -74,11 +77,6 @@ namespace Settings.Theme {
     public Color CrossEmptyHighlightBG = ColorName.White;
     public char CrossEmptyHighlightAcrossChar = '-';
     public char CrossEmptyHighlightDownChar = '|';
-
-    public Theme() {
-      //load theme from json
-      //or default...
-    }
 
   }
 }

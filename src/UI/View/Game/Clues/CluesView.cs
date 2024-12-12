@@ -14,7 +14,11 @@ namespace UI.View.Game.Clues
             _cluesSingleView = cluesSingleView;
             _cluesSplitView = cluesSplitView;
 
-            _activeView = _cluesSplitView;
+            _cluesSingleView.Visible = true;
+            _cluesSplitView.Visible = false;
+            _activeView = _cluesSingleView;
+
+            Add(_cluesSingleView);
             Add(_cluesSplitView);
         }
 
@@ -22,15 +26,15 @@ namespace UI.View.Game.Clues
         {
             if (_activeView == _cluesSingleView)
             {
-                Remove(_cluesSingleView);
-                Add(_cluesSplitView);
                 _activeView = _cluesSplitView;
+                _cluesSplitView.Visible = true;
+                _cluesSingleView.Visible = false;
             }
             else
             {
-                Remove(_cluesSplitView);
-                Add(_cluesSingleView);
                 _activeView = _cluesSingleView;
+                _cluesSingleView.Visible = true;
+                _cluesSplitView.Visible = false;
             }
         }
     }
