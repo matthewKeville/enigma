@@ -2,6 +2,7 @@ using Entity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Services {
+
   public class CrosswordService {
 
     private DatabaseContext dbCtx;
@@ -42,18 +43,9 @@ namespace Services {
         .ToList();
     }
 
-    public bool HasNYTCrossword(DateTime published) {
-      return dbCtx.Crosswords.Any( 
-          c => 
-            c.Type == Enums.CrosswordType.NYTIMES 
-            && c.Published == published
-          );
-    }
-
     public void AddCrossword(Crossword crossword) {
       dbCtx.Crosswords.Add(crossword);
       dbCtx.SaveChanges();
-      Trace.WriteLine("New Crossword added to database");
     }
 
     public void UpdateCrossword(Crossword crossword) {

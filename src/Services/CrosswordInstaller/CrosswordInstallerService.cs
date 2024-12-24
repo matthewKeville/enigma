@@ -4,40 +4,37 @@ using Services.CrosswordInstaller.NYT;
 
 namespace Services.CrosswordInstaller {
 
-  public class NYTInstallationRequestArgs : InstallationRequestArgs {
-    public DateOnly RealDate;     //the date set in the API request
-  }
+  public abstract class InstallationRequest {}
 
-  public interface InstallationRequestArgs {}
-  public delegate void OnInstallationSuccess();
-
-  public class InstallationRequest() {
-    public InstallationRequestStatus Status;
-    public InstallationRequestArgs Args;
-    public OnInstallationSuccess OnSuccess;
+  public class NYTInstallationRequest : InstallationRequest {
+    public DateOnly Date;
   }
 
   public class CrosswordInstallerService {
 
-    private CrosswordService crosswordService;
-    private NYTCrosswordInstaller nytCrosswordInstaller;
+    private DatabaseContext _dbCtx;
+    private NYTCrosswordFetcher _nytFetcher;
 
-    public CrosswordInstallerService(CrosswordService crosswordService,NYTCrosswordInstaller nytCrosswordInstaller) {
-      this.nytCrosswordInstaller = nytCrosswordInstaller;
-      this.crosswordService = crosswordService;
+    public CrosswordInstallerService(DatabaseContext dbCtx,NYTCrosswordFetcher nytFetcher) {
+      this._dbCtx = dbCtx;
+      this._nytFetcher = nytFetcher;
     }
 
-    public async Task InstallPuzle(InstallationRequest request) {
-      if ( request.Args.GetType() == typeof(NYTInstallationRequestArgs)) {
-          Crossword? crossword = await nytCrosswordInstaller.BuildCrossword(request);
+    public void Install(InstallationRequest request) {
+
+      Trace.WriteLine("processing installation request");
+
+      if ( request is NYTInstallationRequest ) {
+          NYTInstallationRequest nytRequest = (NYTInstallationRequest) request;
+          Crossword? crossword = _nytFetcher.Fetch(nytRequest.Date).GetAwaiter().GetResult();
           if ( crossword is not null ) {
-            crosswordService.AddCrossword(crossword);
-            request.Status = InstallationRequestStatus.COMPLETE;
-            request.OnSuccess();
-          } else {
-            request.Status = InstallationRequestStatus.FAILED;
+            _dbCtx.Crosswords.Add(crossword);
+            _dbCtx.SaveChanges();
           }
+      } else {
+        //pass
       }
+
     }
   }
 }

@@ -4,18 +4,27 @@ using Enums;
 namespace Services.CrosswordInstaller.NYT
 {
 
+    public struct NYTCrosswordData {
+      public int rows;
+      public int columns;
+      public List<String> solution;
+      public List<String> acrossClues;
+      public List<String> downClues;
+      public DateOnly published;
+    }
+
     public class NYTCrosswordParser 
     {
 
-        public Crossword Parse(int rows, int columns,List<String> solution,List<String> acrossClues, List<String> downClues) {
+        public Crossword ParseData(NYTCrosswordData data) {
 
           // Grid Chars
 
           List<GridChar> gridChars = new List<GridChar>();
-          char[,] answerMatrix = new char[columns, rows];
+          char[,] answerMatrix = new char[data.columns, data.rows];
 
           int rowIndex = 0;
-          foreach ( String rowString in solution ) {
+          foreach ( String rowString in data.solution ) {
             int columnIndex = 0;
             foreach ( char c in rowString ) {
 
@@ -38,9 +47,9 @@ namespace Services.CrosswordInstaller.NYT
 
           int ordinal = 1;
 
-          for (int j = 0; j < rows; j++)
+          for (int j = 0; j < data.rows; j++)
           {
-              for (int i = 0; i < columns; i++)
+              for (int i = 0; i < data.columns; i++)
               {
 
                   if (answerMatrix[i, j] == '#')
@@ -51,19 +60,19 @@ namespace Services.CrosswordInstaller.NYT
                   bool wordHit = false;
 
                   //is word across clue?
-                  if ((i != columns) && (i == 0 || answerMatrix[i - 1, j] == '#'))
+                  if ((i != data.columns) && (i == 0 || answerMatrix[i - 1, j] == '#'))
                   {
 
                       //match clue to ordinal and position
-                      if (acrossClues.Count() == 0)
+                      if (data.acrossClues.Count() == 0)
                       {
                           // Trace.WriteLine("Critical error, no clues left");
                           // Trace.WriteLine($" i,j {i},{j} : is {answerMatrix[i, j]}, prev is {answerMatrix[i - 1, j]}");
                           Environment.Exit(0);
                       }
 
-                      String clue = acrossClues[0];
-                      acrossClues.RemoveAt(0);
+                      String clue = data.acrossClues[0];
+                      data.acrossClues.RemoveAt(0);
                       // Trace.WriteLine(
                       //     string.Format("{0} across is {1} at r,c {2},{3}", ordinal, clue, i, j)
                       // );
@@ -71,7 +80,7 @@ namespace Services.CrosswordInstaller.NYT
                       //mine answer
                       int wend = i;
                       String answer = "";
-                      while (wend != columns && answerMatrix[wend, j] != '#')
+                      while (wend != data.columns && answerMatrix[wend, j] != '#')
                       {
                           answer += answerMatrix[wend, j];
                           wend++;
@@ -89,9 +98,9 @@ namespace Services.CrosswordInstaller.NYT
                   }
 
                   //is word down clue?
-                  if ((j != rows) && (j == 0 || answerMatrix[i, j - 1] == '#'))
+                  if ((j != data.rows) && (j == 0 || answerMatrix[i, j - 1] == '#'))
                   {
-                      if (downClues.Count() == 0)
+                      if (data.downClues.Count() == 0)
                       {
                           // Trace.WriteLine("Critical error, no clues left");
                           // Trace.WriteLine($" i,j {i},{j} : is {answerMatrix[i, j]}, prev is {answerMatrix[i - 1, j]}");
@@ -99,8 +108,8 @@ namespace Services.CrosswordInstaller.NYT
                       }
 
                       //match clue to ordinal and position
-                      String clue = downClues[0];
-                      downClues.RemoveAt(0);
+                      String clue = data.downClues[0];
+                      data.downClues.RemoveAt(0);
                       // Trace.WriteLine(
                       //     string.Format("{0} down is {1} at r,c {2},{3}", ordinal, clue, i, j)
                       // );
@@ -108,7 +117,7 @@ namespace Services.CrosswordInstaller.NYT
                       //mine answer
                       int wend = j;
                       String answer = "";
-                      while (wend != rows && answerMatrix[i, wend] != '#')
+                      while (wend != data.rows && answerMatrix[i, wend] != '#')
                       {
                           answer += answerMatrix[i, wend];
                           wend++;
@@ -138,8 +147,8 @@ namespace Services.CrosswordInstaller.NYT
           //Collect
 
           Crossword crossword = new Crossword() {
-            Rows = rows,
-            Columns = columns,
+            Rows = data.rows,
+            Columns = data.columns,
           };
           crossword.Type = CrosswordType.NYTIMES;
           crossword.Words.AddRange(Words);
