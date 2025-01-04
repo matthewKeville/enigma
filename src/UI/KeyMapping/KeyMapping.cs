@@ -92,6 +92,8 @@ public enum UICommandType {
 
   public class KeySequenceInterpreter {
     private List<Key> _keyBuffer = new ();
+    private float _autoFlushTimeMS = 2000;
+    private DateTime _lastProcessTime = DateTime.UtcNow;
     public List<(List<Key>,UICommand)> keyMaps;
 
     private void dumpSequence( List<Key> sequence ) {
@@ -107,7 +109,24 @@ public enum UICommandType {
       this.keyMaps.ForEach( km => dumpSequence(km.Item1));
     }
 
+    public KeySequenceInterpreter(List<(List<Key>,UICommand)> keyMaps, float flushTime) {
+      this.keyMaps = keyMaps;
+      this.keyMaps.ForEach( km => dumpSequence(km.Item1));
+      this._autoFlushTimeMS = flushTime;
+    }
+
     public (bool partialMatch, UICommand? command) ProcessKey(Key key) {
+
+      // dump expired keys
+
+      if ( DateTime.UtcNow > _lastProcessTime.AddMilliseconds(_autoFlushTimeMS) ) {
+        Trace.WriteLine($"flush time exceeded, clearing key buffer : {_keyBuffer.Count()} keys flushed");
+        _keyBuffer.Clear();
+      }
+
+      _lastProcessTime = DateTime.UtcNow;
+
+      // try match key sequence
 
       _keyBuffer.Add(key);
 
@@ -123,7 +142,6 @@ public enum UICommandType {
         });
 
       if (partialMatches.Count() == 0) {
-
         Debug.WriteLine("no command matches");
         dumpSequence(_keyBuffer);
         _keyBuffer.Clear();
