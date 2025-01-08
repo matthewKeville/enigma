@@ -93,10 +93,10 @@ namespace UI.View.Game
             };
 
             _acrossTableView = new TableView() {
-              X = 0,
-              Y = 2,
+              X = 1,
+              Y = 3,
               Width = Dim.Fill(),
-              Height = Dim.Fill()
+              Height = Dim.Fill() - 1
             };
             _acrossTableView.FullRowSelect = true;
             _acrossTableView.MinCellWidth = 2;
@@ -106,23 +106,23 @@ namespace UI.View.Game
             _acrossTableView.ColorScheme = new ColorScheme(new Attribute(_theme.InactiveClueFG, _theme.InactiveClueBG));
 
             _downTableView = new TableView() {
-              X = 0,
-              Y = 2,
-              Width = Dim.Fill(),
-              Height = Dim.Fill()
+              X = _acrossTableView.X,
+              Y =  _acrossTableView.Y,
+              Width = _acrossTableView.Width,
+              Height = _acrossTableView.Height
             };
-            _downTableView.FullRowSelect = true;
-            _downTableView.MinCellWidth = 2;
-            _downTableView.MaxCellWidth = 2;
-            _downTableView.Style = tableStyle;
-            _downTableView.Style.RowColorGetter = rowColorGetter;
+            _downTableView.FullRowSelect = _acrossTableView.FullRowSelect;
+            _downTableView.MinCellWidth = _acrossTableView.MinCellWidth;
+            _downTableView.MaxCellWidth = _acrossTableView.MaxCellWidth;
+            _downTableView.Style = _acrossTableView.Style;
             _downTableView.ColorScheme = new ColorScheme(new Attribute(_theme.InactiveClueFG, _theme.InactiveClueBG));
 
             _tableLabel = new Label();
-            _tableLabel.X = 0;
-            _tableLabel.Y = 0;
+            _tableLabel.X = 1;
+            _tableLabel.Y = 1;
             _tableLabel.Width = Dim.Fill();
             _tableLabel.ColorScheme = new ColorScheme(new Attribute(_theme.CluesHeaderFG,_theme.CluesHeaderBG));
+            _tableLabel.Text = "Across";
 
             Add(_tableLabel);
             Add(_acrossTableView);

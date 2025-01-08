@@ -92,16 +92,29 @@ namespace UI.View.Game
 
             _acrossLabel = new Label();
             _acrossLabel.Text = "Across";
-            _acrossLabel.X = 0;
-            _acrossLabel.Y = 0;
+            _acrossLabel.X = 1;
+            _acrossLabel.Y = 1;
             _acrossLabel.Width = Dim.Fill();
             _acrossLabel.ColorScheme = new ColorScheme(new Attribute(_theme.CluesHeaderFG,_theme.CluesHeaderBG));
 
+            _downLabel = new Label();
+            _downLabel.Text = "Down";
+            _downLabel.X = 1;
+            _downLabel.Y = Pos.Percent(50) + 1;
+            _downLabel.Width = Dim.Fill();
+            _downLabel.ColorScheme = new ColorScheme(new Attribute(_theme.CluesHeaderFG,_theme.CluesHeaderBG));
+
+            _downTableView = new TableView() { };
+            _downTableView.X = 1;
+            _downTableView.Y = Pos.Bottom(_downLabel) + 1;
+            _downTableView.Width = Dim.Fill();
+            _downTableView.Height = Dim.Fill() - 1;
+
             _acrossTableView = new TableView() { };
-            _acrossTableView.X = 0;
+            _acrossTableView.X = 1;
             _acrossTableView.Y = Pos.Bottom(_acrossLabel) + 1;
             _acrossTableView.Width = Dim.Fill();
-            _acrossTableView.Height = Dim.Percent(45);
+            _acrossTableView.Height = Dim.Height(_downTableView);
 
             _acrossTableView.FullRowSelect = true;
             _acrossTableView.MinCellWidth = 2;
@@ -109,19 +122,6 @@ namespace UI.View.Game
             _acrossTableView.Style = tableStyle;
             _acrossTableView.Style.RowColorGetter = rowColorGetter;
             _acrossTableView.ColorScheme = new ColorScheme(new Attribute(_theme.CluesTableBackgroundBG));
-
-            _downLabel = new Label();
-            _downLabel.Text = "Down";
-            _downLabel.X = 0;
-            _downLabel.Y = Pos.Percent(50);
-            _downLabel.Width = Dim.Percent(45);
-            _downLabel.ColorScheme = new ColorScheme(new Attribute(_theme.CluesHeaderFG,_theme.CluesHeaderBG));
-
-            _downTableView = new TableView() { };
-            _downTableView.X = 0;
-            _downTableView.Y = Pos.Bottom(_downLabel) + 1;
-            _downTableView.Width = Dim.Fill();
-            _downTableView.Height = Dim.Fill();
 
             _downTableView.FullRowSelect = true;
             _downTableView.MinCellWidth = 2;
