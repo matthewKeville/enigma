@@ -23,11 +23,12 @@ namespace UI.View.Game
             _eventBus = eventBus;
 
             _gridView.X = 0;
-            _gridView.Width = Dim.Percent(40);
+            //_gridView.Width = Dim.Percent(40);
             _gridView.Visible = true;
 
-            _cluesView.X = Pos.Percent(40);
-            _cluesView.Width = Dim.Percent(60);
+            _cluesView.X = Pos.Right(_gridView);
+            //_cluesView.Width = Dim.Percent(60);
+            _cluesView.Width = Dim.Fill();
             _cluesView.Visible = true;
 
             Add(gridView);

@@ -3,6 +3,7 @@ namespace UI.View.Game
 
     using System.Drawing;
     using System.Text;
+    using Entity;
     using Enums;
     using Event;
     using Settings.Theme;
@@ -14,10 +15,14 @@ namespace UI.View.Game
         private DatabaseContext _dbContext;
         private EventBus _eventBus;
         private GridModel? _gridModel;
+        private Crossword? _crossword;
         private bool _isInsertMode = false;
         private KeySequenceInterpreter _normalKeySequenceInterpreter;
         private KeySequenceInterpreter _insertKeySequenceInterpreter;
         private Theme _theme;
+
+        private int gridOffX = 3;
+        private int gridOffY = 3;
 
         public GridView(DatabaseContext dbContext, EventBus eventBus,Theme  theme)
         {
@@ -257,10 +262,8 @@ namespace UI.View.Game
                 ////////
                 //Rune
                 ////////
-                // int xOff = 2;
-                // int yOff = 2;
 
-                Move(gcm.X, gcm.Y);
+                Move(gcm.X + gridOffX, gcm.Y + gridOffY);
                 Driver.SetAttribute(attr);
                 Driver.AddRune(rune);
 
@@ -274,6 +277,9 @@ namespace UI.View.Game
                 _dbContext.GridChars.Where(gc => gc.CrosswordId == crosswordId).ToList(),
                 _dbContext.Words.Where(w => w.CrosswordId == crosswordId).ToList()
             );
+            _crossword = _dbContext.Crosswords.Where( c => c.Id == crosswordId ).FirstOrDefault();
+            Width = _crossword.Columns + (gridOffX * 2);
+            Height = _crossword.Rows + (gridOffY * 2);
             SetNeedsDisplay();
         }
 
