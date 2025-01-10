@@ -10,10 +10,6 @@ namespace Event {
     }
   }
 
-  public class EndPuzzleEventArgs : EventArgs {
-
-  }
-
   public class FocusClueChangeEventArgs : EventArgs {
     public (int AcrossOrdinal,int DownOrdinal) ActiveClues;
     public FocusClueChangeEventArgs((int acrossOrdinal,int downOrdinal) activeClues) {
@@ -26,5 +22,8 @@ namespace Event {
     public OrientationChangeEventArgs(Direction orientation) {
       Orientation = orientation;
     }
+  }
+
+  public class ToggleLayoutEventArgs : EventArgs {
   }
 }

@@ -1,5 +1,6 @@
 using Entity;
 using Microsoft.EntityFrameworkCore;
+using Settings;
 
 public class DatabaseContext : DbContext {
 
@@ -9,14 +10,13 @@ public class DatabaseContext : DbContext {
 
   public String DbPath { get; set; }
 
-  public DatabaseContext() {
-    var folder = Environment.SpecialFolder.LocalApplicationData;
-    var path = Environment.GetFolderPath(folder);
-    DbPath = System.IO.Path.Join(path, "enigma.db");
+  public DatabaseContext(AppSettings settings) {
+    DbPath = settings.DbPath;
   }
 
   protected override void OnConfiguring(DbContextOptionsBuilder options) {
-    options.UseSqlite($"Data Source=enigma.db");
+    options.UseSqlite($"Data Source=" + DbPath);
   }
+
 
 }

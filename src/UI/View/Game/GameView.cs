@@ -34,18 +34,13 @@ namespace UI.View.Game
             Add(gridView);
             Add(cluesView);
 
-            KeyDown += (sender, args) =>
+            _eventBus.Register(this, (args) =>
             {
-                if (args.KeyCode == KeyCode.F8)
-                {
-                    MessageBox.Query(30, 5, "System", "Ending Puzzle", "OK");
-                    _eventBus.PostEvent(new EndPuzzleEventArgs());
-                }
-                if (args.KeyCode == KeyCode.Tab)
+                if (args is ToggleLayoutEventArgs)
                 {
                     cluesView.ToggleLayout();
                 }
-            };
+            });
 
         }
     }

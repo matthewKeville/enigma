@@ -9,7 +9,6 @@ public enum UICommandType {
 
     //Normal Mode Commands
     ENTER_NORMAL_MODE,
-
     SWAP_ORIENTATION,
 
     MOVE_UP,
@@ -40,11 +39,10 @@ public enum UICommandType {
     INSERT_CHAR,
     DELETE_CHAR_INS,
 
-    //////////////////////////////////////////
-    //CluesView Commands
-    //////////////////////////////////////////
+    //
 
-    TOGGLE_CLUES_SPLIT_VIEW
+    TOGGLE_CLUES_VIEW,
+    EXIT_PUZZLE
 
   }
 

@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <!-- build props -->
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
@@ -7,6 +8,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <!-- packages -->
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.6">
@@ -19,8 +21,24 @@
     <PackageReference Include="Tomlyn" Version="0.17.0" />
   </ItemGroup>
 
+  <!-- global usings -->
   <ItemGroup>
     <Using Include="System.Diagnostics" />
+  </ItemGroup>
+
+  <!-- dev / release app settings -->
+  <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <!-- used when invoked by dotnet run (Debug build in intermediate language) -->
+    <Content Include="appsettings-local.json" TargetPath="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
+    <!-- used when dotnet pubslish -->
+    <Content Include="appsettings-release.json" TargetPath="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

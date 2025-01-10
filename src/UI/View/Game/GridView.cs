@@ -147,6 +147,16 @@ namespace UI.View.Game
               _isInsertMode = true;
               break;
 
+            case UICommandType.TOGGLE_CLUES_VIEW:
+              _eventBus.PostEvent(new ToggleLayoutEventArgs());
+              break;
+
+            case UICommandType.EXIT_PUZZLE:
+              MessageBox.Query(30, 5, "System", "Ending Puzzle", "OK");
+              //todo save puzzle
+              Application.Shutdown();
+              break;
+
             //////////////////////////////////////////
             //Insert
             //////////////////////////////////////////
@@ -164,6 +174,7 @@ namespace UI.View.Game
             case UICommandType.DELETE_CHAR_INS:
               _gridModel.DeleteChar(true);
               break;
+
 
 
             default:
@@ -319,6 +330,9 @@ namespace UI.View.Game
             (new List<Key>() { Key.D, Key.I, Key.W },new UICommand(UICommandType.DELETE_INNER_WORD)),
             (new List<Key>() { Key.C, Key.W},new UICommand(UICommandType.CHANGE_WORD)),
             (new List<Key>() { Key.C, Key.I, Key.W },new UICommand(UICommandType.CHANGE_INNER_WORD)),
+
+            (new List<Key>() { Key.Tab },new UICommand(UICommandType.TOGGLE_CLUES_VIEW)),
+            (new List<Key>() { Key.Z, Key.Z },new UICommand(UICommandType.EXIT_PUZZLE)),
 
           };
 

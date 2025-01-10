@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Services;
 using Services.CrosswordInstaller;
@@ -8,25 +9,17 @@ using Terminal.Gui;
 using UI.View.Game;
 using UI.View.Game.Clues;
 using Settings.Theme;
+using Microsoft.Extensions.Configuration;
+using Settings;
 
 HostApplicationBuilder builder = Host.CreateEmptyApplicationBuilder(new HostApplicationBuilderSettings());
-builder.Services.AddSingleton<DatabaseContext, DatabaseContext>();
-builder.Services.AddSingleton<CrosswordService, CrosswordService>();
-builder.Services.AddSingleton<NYTCrosswordFetcher, NYTCrosswordFetcher>();
-builder.Services.AddSingleton<NYTCrosswordParser, NYTCrosswordParser>();
-builder.Services.AddSingleton<CrosswordInstallerService, CrosswordInstallerService>();
-
-builder.Services.AddSingleton<EventBus, EventBus>();
-
-builder.Services.AddSingleton<Theme, Theme>();
-
-builder.Services.AddSingleton<GameView, GameView>();
-builder.Services.AddSingleton<GridView, GridView>();
-builder.Services.AddSingleton<CluesView, CluesView>();
-builder.Services.AddSingleton<CluesSingleView, CluesSingleView>();
-builder.Services.AddSingleton<CluesSplitView, CluesSplitView>();
-
+AddServices(builder.Services);
+AddConfigs(builder.Configuration);
 IHost host = builder.Build();
+
+DatabaseContext dbContext = host.Services.GetRequiredService<DatabaseContext>();
+UpdateOrCreateDB(dbContext);
+
 host.Start();
 
 Trace.Listeners.Add(new TextWriterTraceListener("./logs/enigma.log"));
@@ -280,12 +273,35 @@ void startGame(int puzzleId) {
   };
 
   //Application.Force16Colors = true;
-  ConfigurationManager.Themes.Theme = "Light";
-  ConfigurationManager.Apply();
+  Terminal.Gui.ConfigurationManager.Themes.Theme = "Light";
+  Terminal.Gui.ConfigurationManager.Apply();
 
   Application.Run(gameView);
-
   Application.Shutdown ();
 }
 
+void AddServices(IServiceCollection services) {
+  builder.Services.AddSingleton<DatabaseContext, DatabaseContext>();
+  builder.Services.AddSingleton<CrosswordService, CrosswordService>();
+  builder.Services.AddSingleton<NYTCrosswordFetcher, NYTCrosswordFetcher>();
+  builder.Services.AddSingleton<NYTCrosswordParser, NYTCrosswordParser>();
+  builder.Services.AddSingleton<CrosswordInstallerService, CrosswordInstallerService>();
+  builder.Services.AddSingleton<EventBus, EventBus>();
+  builder.Services.AddSingleton<Theme, Theme>();
+  builder.Services.AddSingleton<GameView, GameView>();
+  builder.Services.AddSingleton<GridView, GridView>();
+  builder.Services.AddSingleton<CluesView, CluesView>();
+  builder.Services.AddSingleton<CluesSingleView, CluesSingleView>();
+  builder.Services.AddSingleton<CluesSplitView, CluesSplitView>();
+  builder.Services.AddSingleton<AppSettings, AppSettings>();
+}
+
+void AddConfigs(IConfigurationBuilder builder) {
+  builder.AddJsonFile("appsettings.json");
+  builder.AddEnvironmentVariables();
+}
+
+void UpdateOrCreateDB(DatabaseContext dbContext) {
+  dbContext.Database.Migrate();
+}
 
