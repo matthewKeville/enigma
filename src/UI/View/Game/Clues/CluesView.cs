@@ -2,7 +2,6 @@ namespace UI.View.Game.Clues
 {
     using Event;
     using Terminal.Gui;
-    using UI.KeyMapping;
 
     public class CluesView : Toplevel
     {
@@ -26,10 +25,9 @@ namespace UI.View.Game.Clues
             _eventBus = eventBus;
             _eventBus.Register(this, (args) =>
             {
-                if (args is UICommand && ((UICommand) args).Type == UICommandType.TOGGLE_CLUES_VIEW)
-                {
-                    ToggleLayout();
-                }
+              if ( args is ClueViewChangeEventArgs) {
+                ToggleLayout();
+              }
             });
 
         }

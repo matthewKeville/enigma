@@ -1,28 +1,8 @@
 using Entity;
 using Enums;
 
-namespace UI.View.Game
+namespace UI.Model
 {
-
-    public class GridWordModel
-    {
-        public int x;
-        public int y;
-        public int i;
-        public Direction direction;
-        public String answer = "";
-        public String prompt = "";
-
-        public GridWordModel(int x, int y, int i, Direction direction, String answer, String prompt)
-        {
-            this.x = x;
-            this.y = y;
-            this.i = i;
-            this.direction = direction;
-            this.answer = answer;
-            this.prompt = prompt;
-        }
-    }
 
     public class GridCharModel
     {
@@ -72,13 +52,18 @@ namespace UI.View.Game
         public int I;
         public Direction Direction;
         public int Size;
-        public GridClueModel(int x, int y, int i, Direction direction, int size)
+        public String Answer;
+        public String Clue;
+
+        public GridClueModel(int x, int y, int i, Direction direction, int size, String answer, String clue)
         {
             this.X = x;
             this.Y = y;
             this.I = i;
             this.Direction = direction;
             this.Size = size;
+            this.Answer = answer;
+            this.Clue = clue;
         }
     }
 
@@ -96,14 +81,14 @@ namespace UI.View.Game
 
         public int WordCheckCount;
 
-        public GridModel(List<GridChar> gridChars, List<Word> words)
+        public GridModel(List<GridChar> gridChars, List<Word> words, int rowCount, int columnCount)
         {
 
             //Clue Models
             GridClueModels = new();
             foreach (Word word in words)
             {
-                GridClueModels.Add(new GridClueModel(word.X, word.Y, word.I, word.Direction, word.Answer.Count()));
+                GridClueModels.Add(new GridClueModel(word.X, word.Y, word.I, word.Direction, word.Answer.Count(), word.Answer, word.Clue));
             }
 
             //Char Models
@@ -123,6 +108,9 @@ namespace UI.View.Game
             }
 
             Selection = GridCharModels.First();
+
+            ColumnCount = columnCount;
+            RowCount = rowCount;
         }
 
 

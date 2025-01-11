@@ -100,9 +100,11 @@ switch ( command ) {
     try {
       int puzzleId = Int32.Parse(args[1]);
       startGame(puzzleId);
+      Application.Shutdown();
     } catch (Exception exception) {
       Console.Error.WriteLine("invalid argument");
       Console.Error.WriteLine("puzzleId is an int");
+      Console.Error.WriteLine(exception.ToString());
     }
     break;
   default:
@@ -111,30 +113,6 @@ switch ( command ) {
     break;
 
 }
-
-/**
-if ( args.Count() < 2 ) {
-  Console.Error.WriteLine("you must supply a puzzle id");
-  return;
-}
-
-try {
-  int puzzleId = Int32.Parse(args[1]);
-  startGame(puzzleId);
-} catch (Exception exception) {
-  if ( exception is FormatException ) {
-    Console.WriteLine("puzzle id is an int");
-    return;
-  }
-  if ( exception is OverflowException ) {
-    Console.WriteLine("puzzle id is too large");
-    return;
-  }
-  Console.WriteLine("unhandled exception " + exception.ToString());
-  return;
-  
-}
-*/
 
 List<char> parseFlags(string[] args,int flagStart) {
   List<char> flags = new();
@@ -264,7 +242,13 @@ void startGame(int puzzleId) {
 
 
   Application.Init();
+  
+  //clear all predefined bindings, but preserve Command.Tab for the
+  //MessageQuery class
+  KeyBinding keyBinding = Application.KeyBindings.Get(Key.Tab);
   Application.KeyBindings.Clear();
+  Application.KeyBindings.Bindings.Add(Key.Tab,keyBinding);
+
   Application.KeyDown += (sender,key) => {
     //Default was escape
     if (key.Equals(Key.C.WithCtrl)) {
@@ -277,7 +261,6 @@ void startGame(int puzzleId) {
   Terminal.Gui.ConfigurationManager.Apply();
 
   Application.Run(gameView);
-  Application.Shutdown ();
 }
 
 void AddServices(IServiceCollection services) {

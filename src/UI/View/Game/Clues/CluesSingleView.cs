@@ -2,13 +2,12 @@ namespace UI.View.Game
 {
 
     using System.Data;
-    using Entity;
     using Enums;
     using Event;
     using Terminal.Gui;
     using Settings.Theme;
     using System.Drawing;
-    using UI.KeyMapping;
+    using UI.Model;
 
     public class CluesSingleView : Toplevel
     {
@@ -22,9 +21,7 @@ namespace UI.View.Game
         private TableView _activeTableView;
         private TableView _inactiveTableView;
 
-        private int? _crosswordId;
-        public (int AcrossOrdinal, int DownOrdinal)? _activeClues;
-        private Direction _activeOrientation = Direction.Across;
+        private GameModel? _gameModel;
 
         public CluesSingleView(DatabaseContext dbContext, EventBus eventBus,Theme theme)
         {
@@ -33,17 +30,17 @@ namespace UI.View.Game
             _eventBus.Register(this, (args) =>
             {
 
-                if (args is StartPuzzleEventArgs)
+                if (args is PuzzleLoadedEventArgs)
                 {
-                    OnStartPuzzleEvent((StartPuzzleEventArgs)args);
+                    OnPuzzleLoaded((PuzzleLoadedEventArgs)args);
                 }
                 if (args is FocusClueChangeEventArgs)
                 {
-                    OnFocusClueChangeEvent((FocusClueChangeEventArgs)args);
+                    OnFocusClueChange();
                 }
-                if (args is UICommand && ((UICommand)args).Type == UICommandType.SWAP_ORIENTATION)
+                if (args is OrientationChangeEventArgs)
                 {
-                  OnOrientationChange();
+                    OnOrientationChange();
                 }
 
             });
@@ -78,7 +75,7 @@ namespace UI.View.Game
 
                 if (RowColorGetterArgs.RowIndex == tableView.SelectedRow)
                 {
-                    if (_activeOrientation == direction)
+                    if (_gameModel.GridModel.Orientation == direction)
                     {
                         return new ColorScheme(new Attribute(_theme.FocusedClueFG, _theme.FocusedClueBG));
                     }
@@ -144,7 +141,8 @@ namespace UI.View.Game
         private void UpdateTableContent(Size size)
         {
 
-            IEnumerable<Word> words = _dbContext.Words.Where(w => w.CrosswordId == _crosswordId);
+            //IEnumerable<Word> words = _dbContext.Words.Where(w => w.CrosswordId == _crosswordId);
+            List<GridClueModel> clues = _gameModel.GridModel.GridClueModels;
 
             String clueTrailString = "...";
             int clueCutoff = size.Width
@@ -156,8 +154,8 @@ namespace UI.View.Game
             adt.Columns.Add("ordinal");
             adt.Columns.Add("clue");
 
-            List<Word> across = words.Where(w => w.Direction == Direction.Across).ToList();
-            across.ForEach(across =>
+            List<GridClueModel> across = clues.Where(w => w.Direction == Direction.Across).ToList();
+            across.ForEach( across =>
             {
                 String clueText = clueCutoff < across.Clue.Count() 
                   ? across.Clue.Substring(0,Math.Max(0,clueCutoff-clueTrailString.Count())) + clueTrailString
@@ -171,7 +169,7 @@ namespace UI.View.Game
             ddt.Columns.Add("ordinal");
             ddt.Columns.Add("clue");
 
-            List<Word> down = words.Where(w => w.Direction == Direction.Down).ToList();
+            List<GridClueModel> down = clues.Where(w => w.Direction == Direction.Down).ToList();
             down.ForEach(down =>
             {
                 String clueText = clueCutoff < down.Clue.Count() 
@@ -194,16 +192,18 @@ namespace UI.View.Game
                 return;
             }
 
-            _tableLabel.Text = _activeOrientation == Direction.Across ? "Across" : "Down";
+            _tableLabel.Text = _gameModel.GridModel.Orientation == Direction.Across ? "Across" : "Down";
 
             int ordinalRow = 0;
             bool found = false;
-            if (_activeClues.HasValue)
+            //if (_activeClues.HasValue)
+            (GridClueModel? across, GridClueModel? down) active = _gameModel.GridModel.GetActiveClues();
+            if ( active.across != null && active.down != null)
             {
 
-                int activeOrdinal = _activeOrientation == Direction.Across ?
-                  _activeClues.Value.AcrossOrdinal :
-                  _activeClues.Value.DownOrdinal;
+                int activeOrdinal = _gameModel.GridModel.Orientation == Direction.Across ?
+                  active.across.I :
+                  active.down.I;
 
                 while (!found && ordinalRow < _activeTableView.Table.Rows)
                 {
@@ -229,16 +229,14 @@ namespace UI.View.Game
           //that is UpdateTableContent call would have the old Table Viewport
           //size, if we didn't pass it from the event here. Feels like
           //a hack, but I couldn't find a better way to achieve this
-          if ( _crosswordId.HasValue ) {
+          if ( _gameModel != null ) {
             UpdateTableContent(e.NewViewport.Size);
           }
         }
 
 
-        private void OnStartPuzzleEvent(StartPuzzleEventArgs args)
-        {
-            _crosswordId = args.CrosswordId;
-            _activeOrientation = Direction.Across;
+        private void OnPuzzleLoaded(PuzzleLoadedEventArgs args) {
+            _gameModel = args.GameModel;
             _activeTableView = _acrossTableView;
             _inactiveTableView = _downTableView;
             _acrossTableView.Visible = true;
@@ -246,22 +244,16 @@ namespace UI.View.Game
             UpdateTableContent();
         }
 
-        private void OnFocusClueChangeEvent(FocusClueChangeEventArgs args)
-        {
-            _activeClues = args.ActiveClues;
+        private void OnFocusClueChange() {
             UpdateSelectedRows();
         }
 
         private void OnOrientationChange()
         {
-            _activeOrientation = 
-              (_activeOrientation == Direction.Across) ? 
-              Direction.Down : 
-              Direction.Across;
 
-            _activeTableView = _activeOrientation == Direction.Across ? 
+            _activeTableView = _gameModel.GridModel.Orientation == Direction.Across ? 
               _acrossTableView : _downTableView;
-            _inactiveTableView = _activeOrientation == Direction.Across ? 
+            _inactiveTableView = _gameModel.GridModel.Orientation == Direction.Across ? 
               _downTableView : _acrossTableView;
 
             _activeTableView.Visible = true;

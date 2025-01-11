@@ -1,4 +1,4 @@
-using Enums;
+using UI.Model;
 
 namespace Event {
 
@@ -6,18 +6,30 @@ namespace Event {
     public int CrosswordId;
 
     public StartPuzzleEventArgs(int crosswordId) {
-      CrosswordId = crosswordId;
+       CrosswordId = crosswordId;
     }
   }
 
-  public class EndPuzzleEventArgs : EventArgs {
-    public EndPuzzleEventArgs() {}
+  public class PuzzleLoadedEventArgs : EventArgs {
+    public GameModel GameModel;
+
+    public PuzzleLoadedEventArgs(GameModel gameModel) {
+       GameModel = gameModel;
+    }
   }
 
   public class FocusClueChangeEventArgs : EventArgs {
-    public (int AcrossOrdinal,int DownOrdinal) ActiveClues;
-    public FocusClueChangeEventArgs((int acrossOrdinal,int downOrdinal) activeClues) {
-      ActiveClues = activeClues;
+    public FocusClueChangeEventArgs() {
+    }
+  }
+
+  public class OrientationChangeEventArgs : EventArgs {
+    public OrientationChangeEventArgs() {
+    }
+  }
+
+  public class ClueViewChangeEventArgs : EventArgs {
+    public ClueViewChangeEventArgs() {
     }
   }
 
