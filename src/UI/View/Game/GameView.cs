@@ -15,8 +15,10 @@ namespace UI.View.Game
         private KeySequenceInterpreter _insertKeySequenceInterpreter;
         private KeySequenceInterpreter _normalKeySequenceInterpreter;
         private bool _isInsertMode = false;
+        private int _crosswordId;
+        private DatabaseContext _dbContext;
 
-        public GameView(CluesView cluesView, GridView gridView, EventBus eventBus)
+        public GameView(CluesView cluesView, GridView gridView, EventBus eventBus, DatabaseContext dbContext)
         {
 
             _gridView = gridView;
@@ -35,6 +37,20 @@ namespace UI.View.Game
 
             _normalKeySequenceInterpreter = new KeySequenceInterpreter(KeyMaps.BuildNormalKeyMaps());
             _insertKeySequenceInterpreter = new KeySequenceInterpreter(KeyMaps.BuildInsertKeyMaps());
+
+            _eventBus.Register(this, (args) =>
+            {
+                if (args is StartPuzzleEventArgs)
+                {
+                  OnStartPuzzleEvent((StartPuzzleEventArgs) args);
+                }
+                if (args is EndPuzzleEventArgs)
+                {
+                  OnEndPuzzleEvent();
+                }
+            });
+
+            _dbContext = dbContext;
 
         }
 
@@ -68,6 +84,7 @@ namespace UI.View.Game
 
               case UICommandType.EXIT_PUZZLE:
                 MessageBox.Query(30, 5, "System", "Ending Puzzle", "OK");
+                _eventBus.PostEvent(new EndPuzzleEventArgs());
                 //todo save puzzle
                 Application.Shutdown();
                 break;
@@ -75,6 +92,15 @@ namespace UI.View.Game
 
             return true;
 
+        }
+
+        public void OnStartPuzzleEvent(StartPuzzleEventArgs args) {
+          _crosswordId = args.CrosswordId;
+        }
+
+        public void OnEndPuzzleEvent() {
+          var crossword = _dbContext.Crosswords.Find(_crosswordId);
+          //save elapsed time?
         }
 
     }

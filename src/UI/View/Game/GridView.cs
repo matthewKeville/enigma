@@ -31,6 +31,10 @@ namespace UI.View.Game
                 {
                   OnStartPuzzleEvent((StartPuzzleEventArgs)args);
                 }
+                if (args is EndPuzzleEventArgs)
+                {
+                  OnEndPuzzleEvent();
+                }
                 if (args is UICommand) {
                   ProcessUICommand((UICommand) args);
                 }
@@ -238,6 +242,19 @@ namespace UI.View.Game
         private void OnStartPuzzleEvent(StartPuzzleEventArgs args)
         {
             Init(args.CrosswordId);
+        }
+
+        private void OnEndPuzzleEvent()
+        {
+          Trace.WriteLine("saving puzzle");
+          _gridModel.GridCharModels.ForEach( gcm => {
+            GridChar gc = _dbContext.GridChars.First( 
+                gc => gc.CrosswordId == _crossword.Id &&
+                gc.X == gcm.X &&
+                gc.Y == gcm.Y);
+            gc.C = gcm.C;
+            _dbContext.SaveChanges();
+          });
         }
 
         private void setupView() {

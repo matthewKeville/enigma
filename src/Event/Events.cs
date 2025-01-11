@@ -10,6 +10,10 @@ namespace Event {
     }
   }
 
+  public class EndPuzzleEventArgs : EventArgs {
+    public EndPuzzleEventArgs() {}
+  }
+
   public class FocusClueChangeEventArgs : EventArgs {
     public (int AcrossOrdinal,int DownOrdinal) ActiveClues;
     public FocusClueChangeEventArgs((int acrossOrdinal,int downOrdinal) activeClues) {
