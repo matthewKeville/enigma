@@ -16,9 +16,6 @@ namespace UI.View.Game
         private EventBus _eventBus;
         private GridModel? _gridModel;
         private Crossword? _crossword;
-        private bool _isInsertMode = false;
-        private KeySequenceInterpreter _normalKeySequenceInterpreter;
-        private KeySequenceInterpreter _insertKeySequenceInterpreter;
         private Theme _theme;
 
         private int gridOffX = 3;
@@ -32,42 +29,23 @@ namespace UI.View.Game
             {
                 if (args is StartPuzzleEventArgs)
                 {
-                    OnStartPuzzleEvent((StartPuzzleEventArgs)args);
+                  OnStartPuzzleEvent((StartPuzzleEventArgs)args);
+                }
+                if (args is UICommand) {
+                  ProcessUICommand((UICommand) args);
                 }
             });
 
-            _eventBus.Register(this, (eventArgs) =>
-            {
-                if (eventArgs is StartPuzzleEventArgs)
-                {
-                    SetFocus();
-                }
-            }
-            );
             _theme = theme;
 
             KeyBindings.Clear();
-
-            _normalKeySequenceInterpreter = new KeySequenceInterpreter(BuildNormalKeyMaps());
-            _insertKeySequenceInterpreter = new KeySequenceInterpreter(BuildInsertKeyMaps());
 
             setupView();
 
         }
 
-        public override bool OnKeyDown(Key key)
+        public void ProcessUICommand(UICommand command)
         {
-
-          (bool partialMatch,UICommand? command) = _isInsertMode ? 
-            _insertKeySequenceInterpreter.ProcessKey(key) :
-            _normalKeySequenceInterpreter.ProcessKey(key) ;
-
-          if ( !partialMatch ) {
-            return false;
-          }
-          if ( partialMatch && command is null) {
-            return true;
-          } 
 
           var activeCluesStart = _gridModel.GetActiveClues();
           var orientationStart = _gridModel.Orientation;
@@ -77,15 +55,10 @@ namespace UI.View.Game
             //////////////////////////////////////////
             //Normal
             //////////////////////////////////////////
-            
-            case UICommandType.ENTER_INSERT_MODE:
-              _isInsertMode = true;
-              break;
 
             case UICommandType.SWAP_ORIENTATION:
               _gridModel.SwapOrientation();
               break;
-
             case UICommandType.MOVE_UP:
               _gridModel.MoveUp();
               break;
@@ -122,7 +95,6 @@ namespace UI.View.Game
               FindCharArgs findRevCharArgs = (FindCharArgs) command.Args!;
               _gridModel.FindReverseChar(findRevCharArgs.C);
               break;
-
             case UICommandType.REPLACE_CHAR:
               ReplaceCharArgs replaceCharArgs = (ReplaceCharArgs) command.Args!;
               _gridModel.ReplaceChar(replaceCharArgs.C);
@@ -136,35 +108,16 @@ namespace UI.View.Game
             case UICommandType.DELETE_INNER_WORD:
               _gridModel.DeleteInnerWord();
               break;
-            //Not loving this, perhaps the mode change should be captured in
-            //the model...
             case UICommandType.CHANGE_WORD:
               _gridModel.DeleteWord();
-              _isInsertMode = true;
               break;
             case UICommandType.CHANGE_INNER_WORD:
               _gridModel.DeleteInnerWord();
-              _isInsertMode = true;
-              break;
-
-            case UICommandType.TOGGLE_CLUES_VIEW:
-              _eventBus.PostEvent(new ToggleLayoutEventArgs());
-              break;
-
-            case UICommandType.EXIT_PUZZLE:
-              MessageBox.Query(30, 5, "System", "Ending Puzzle", "OK");
-              //todo save puzzle
-              Application.Shutdown();
               break;
 
             //////////////////////////////////////////
             //Insert
             //////////////////////////////////////////
-            
-            case UICommandType.ENTER_NORMAL_MODE:
-              _isInsertMode = false;
-              break;
-
 
             case UICommandType.INSERT_CHAR:
               InsertCharArgs insertCharArgs = (InsertCharArgs) command.Args!;
@@ -175,30 +128,18 @@ namespace UI.View.Game
               _gridModel.DeleteChar(true);
               break;
 
-
-
             default:
-              Trace.WriteLine("Unhandled command type : " + command.Type.ToString());
               break;
+
           }
 
           var activeCluesEnd = _gridModel.GetActiveClues();
 
           if (activeCluesStart != activeCluesEnd ) { 
-            Trace.WriteLine("Active clues have changed");
-            Trace.WriteLine($"Across Clue {activeCluesEnd.Item1.X} {activeCluesEnd.Item1.Y} {activeCluesEnd.Item1.I}");
-            Trace.WriteLine($"Down Clue {activeCluesEnd.Item2.X} {activeCluesEnd.Item2.Y} {activeCluesEnd.Item2.I}");
-              _eventBus.PostEvent(new FocusClueChangeEventArgs((activeCluesEnd.Item1.I,activeCluesEnd.Item2.I)));
-          }
-
-          var orientationEnd = _gridModel.Orientation;
-          if (orientationEnd != orientationStart ) { 
-            Trace.WriteLine("Orientation has changed");
-              _eventBus.PostEvent(new OrientationChangeEventArgs(orientationEnd));
+            _eventBus.PostEvent(new FocusClueChangeEventArgs((activeCluesEnd.Item1.I,activeCluesEnd.Item2.I)));
           }
 
           SetNeedsDisplay();
-          return true;
 
         }
 
@@ -297,169 +238,6 @@ namespace UI.View.Game
         private void OnStartPuzzleEvent(StartPuzzleEventArgs args)
         {
             Init(args.CrosswordId);
-        }
-
-        private List<(List<Key>,UICommand)> BuildNormalKeyMaps() {
-          List<(List<Key>,UICommand)> normalKeyMaps = new () {
-
-            (new List<Key>() { Key.I },new UICommand(UICommandType.ENTER_INSERT_MODE)),
-
-            (new List<Key>() { Key.Space },new UICommand(UICommandType.SWAP_ORIENTATION)),
-
-
-            (new List<Key>() { Key.K },new UICommand(UICommandType.MOVE_UP)),
-            (new List<Key>() { Key.J },new UICommand(UICommandType.MOVE_DOWN)),
-            (new List<Key>() { Key.H },new UICommand(UICommandType.MOVE_LEFT)),
-            (new List<Key>() { Key.L },new UICommand(UICommandType.MOVE_RIGHT)),
-
-            (new List<Key>() { Key.W },new UICommand(UICommandType.MOVE_NEXT_CLUE)),
-            (new List<Key>() { Key.B },new UICommand(UICommandType.MOVE_PREV_CLUE)),
-
-            // C# Console.Driver limitation, perhaps down the line, the application can
-            // request the use of curses driver, and depending on the underlying implementation
-            // we can enable the preferred mapping
-            // (new List<Key>() { Key.D4.WithShift },new UICommand(UICommandType.MOVE_CLUE_END)),
-            // (new List<Key>() { Key.D6.WithShift },new UICommand(UICommandType.MOVE_CLUE_START)),
-            // these now conflict <D><D>gg
-            // (new List<Key>() { Key.D4},new UICommand(UICommandType.MOVE_CLUE_END)),
-            // (new List<Key>() { Key.D6},new UICommand(UICommandType.MOVE_CLUE_START)),
-          
-
-            (new List<Key>() { Key.X },new UICommand(UICommandType.DELETE_CHAR)),
-            (new List<Key>() { Key.D, Key.W },new UICommand(UICommandType.DELETE_WORD)),
-            (new List<Key>() { Key.D, Key.I, Key.W },new UICommand(UICommandType.DELETE_INNER_WORD)),
-            (new List<Key>() { Key.C, Key.W},new UICommand(UICommandType.CHANGE_WORD)),
-            (new List<Key>() { Key.C, Key.I, Key.W },new UICommand(UICommandType.CHANGE_INNER_WORD)),
-
-            (new List<Key>() { Key.Tab },new UICommand(UICommandType.TOGGLE_CLUES_VIEW)),
-            (new List<Key>() { Key.Z, Key.Z },new UICommand(UICommandType.EXIT_PUZZLE)),
-
-          };
-
-          //r<key>
-          foreach ( int x  in Enumerable.Range(0,26)) {
-            //tolerate ambigous case for r? input
-            normalKeyMaps.Add( 
-              (new List<Key>() { Key.R, new Key((char)(x+65)) } ,
-                new UICommand(
-                  UICommandType.REPLACE_CHAR,
-                  new ReplaceCharArgs((char)(x+65))
-                )
-              )
-            );
-            normalKeyMaps.Add( 
-              (new List<Key>() { Key.R, new Key((char)(x+97)) } ,
-                new UICommand(
-                  UICommandType.REPLACE_CHAR,
-                  new ReplaceCharArgs((char)(x+65))
-                )
-              )
-            );
-          }
-
-          //f<key>
-          foreach ( int x  in Enumerable.Range(0,26)) {
-            //tolerate ambigous case for f? input
-            normalKeyMaps.Add( 
-              (new List<Key>() { Key.F, new Key((char)(x+65)) } ,
-                new UICommand(
-                  UICommandType.FIND_CHAR,
-                  new FindCharArgs((char)(x+65))
-                )
-              )
-            );
-            normalKeyMaps.Add( 
-              (new List<Key>() { Key.F, new Key((char)(x+97)) } ,
-                new UICommand(
-                  UICommandType.FIND_CHAR,
-                  new FindCharArgs((char)(x+65))
-                )
-              )
-            );
-          }
-
-          //F<key>
-          foreach ( int x  in Enumerable.Range(0,26)) {
-            //tolerate ambigous case for f? input
-            normalKeyMaps.Add( 
-              (new List<Key>() { Key.F.WithShift, new Key((char)(x+65)) } ,
-                new UICommand(
-                  UICommandType.FIND_REV_CHAR,
-                  new FindCharArgs((char)(x+65))
-                )
-              )
-            );
-            normalKeyMaps.Add( 
-              (new List<Key>() { Key.F.WithShift, new Key((char)(x+97)) } ,
-                new UICommand(
-                  UICommandType.FIND_REV_CHAR,
-                  new FindCharArgs((char)(x+65))
-                )
-              )
-            );
-          }
-
-          // gg<num> or gg<num1><num2>
-          foreach ( int x  in Enumerable.Range(0,9)) {
-            foreach ( int y  in Enumerable.Range(0,9)) {
-                
-              List<Key> seq = new ();
-              if ( x != 0 ) {
-                seq.Add( new Key((char)(48+x)) );
-              }
-              seq.Add( new Key((char)(48+y)) );
-              seq.Add( Key.G );
-              seq.Add( Key.G );
-
-              normalKeyMaps.Add( 
-                (seq,
-                  new UICommand(
-                    UICommandType.MOVE_CLUE,
-                    new MoveClueArgs(Int32.Parse($"{x}{y}"))
-                  )
-                )
-              );
-            }
-          }
-
-          return normalKeyMaps;
-
-        }
-
-        private List<(List<Key>,UICommand)> BuildInsertKeyMaps() {
-
-          //Terminal.Gui.Key
-
-          List<(List<Key>,UICommand)> insertKeyMaps = new () {
-            (new List<Key>() { Key.Esc },new UICommand(UICommandType.ENTER_NORMAL_MODE)),
-            //Grrr I want to do <C-]> but it's not supported by Console.ReadKey ... Key
-          };
-
-          //tolerate ambigous case for insert input
-          foreach ( int x  in Enumerable.Range(0,26)) {
-            insertKeyMaps.Add( 
-              (new List<Key>() { new Key((char)(x+65)) } ,
-                new UICommand(
-                  UICommandType.INSERT_CHAR,
-                  new InsertCharArgs((char)(x+65))
-                )
-              )
-            );
-            insertKeyMaps.Add( 
-              (new List<Key>() { new Key((char)(x+97)) } ,
-                new UICommand(
-                  UICommandType.INSERT_CHAR,
-                  new InsertCharArgs((char)(x+65))
-                )
-              )
-            );
-          }
-
-          insertKeyMaps.Add( 
-            (new List<Key>() { Key.Backspace } , new UICommand(UICommandType.DELETE_CHAR_INS))
-          );
-
-          return insertKeyMaps;
         }
 
         private void setupView() {

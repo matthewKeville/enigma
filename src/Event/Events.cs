@@ -17,13 +17,4 @@ namespace Event {
     }
   }
 
-  public class OrientationChangeEventArgs : EventArgs {
-    public Direction Orientation;
-    public OrientationChangeEventArgs(Direction orientation) {
-      Orientation = orientation;
-    }
-  }
-
-  public class ToggleLayoutEventArgs : EventArgs {
-  }
 }

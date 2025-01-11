@@ -1,15 +1,17 @@
 namespace UI.View.Game.Clues
 {
-
+    using Event;
     using Terminal.Gui;
+    using UI.KeyMapping;
 
     public class CluesView : Toplevel
     {
+        private EventBus _eventBus;
         private CluesSplitView _cluesSplitView;
         private CluesSingleView _cluesSingleView;
         private View _activeView;
 
-        public CluesView(CluesSplitView cluesSplitView, CluesSingleView cluesSingleView)
+        public CluesView(CluesSplitView cluesSplitView, CluesSingleView cluesSingleView,EventBus eventBus)
         {
             _cluesSingleView = cluesSingleView;
             _cluesSplitView = cluesSplitView;
@@ -20,9 +22,19 @@ namespace UI.View.Game.Clues
 
             Add(_cluesSingleView);
             Add(_cluesSplitView);
+
+            _eventBus = eventBus;
+            _eventBus.Register(this, (args) =>
+            {
+                if (args is UICommand && ((UICommand) args).Type == UICommandType.TOGGLE_CLUES_VIEW)
+                {
+                    ToggleLayout();
+                }
+            });
+
         }
 
-        public void ToggleLayout()
+        private void ToggleLayout()
         {
             if (_activeView == _cluesSingleView)
             {

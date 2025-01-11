@@ -8,6 +8,7 @@ namespace UI.View.Game
     using Terminal.Gui;
     using Settings.Theme;
     using System.Drawing;
+    using UI.KeyMapping;
 
     public class CluesSingleView : Toplevel
     {
@@ -40,9 +41,9 @@ namespace UI.View.Game
                 {
                     OnFocusClueChangeEvent((FocusClueChangeEventArgs)args);
                 }
-                if (args is OrientationChangeEventArgs)
+                if (args is UICommand && ((UICommand)args).Type == UICommandType.SWAP_ORIENTATION)
                 {
-                    OnOrientationChangeEvent((OrientationChangeEventArgs)args);
+                  OnOrientationChange();
                 }
 
             });
@@ -251,9 +252,12 @@ namespace UI.View.Game
             UpdateSelectedRows();
         }
 
-        private void OnOrientationChangeEvent(OrientationChangeEventArgs args)
+        private void OnOrientationChange()
         {
-            _activeOrientation = args.Orientation;
+            _activeOrientation = 
+              (_activeOrientation == Direction.Across) ? 
+              Direction.Down : 
+              Direction.Across;
 
             _activeTableView = _activeOrientation == Direction.Across ? 
               _acrossTableView : _downTableView;
