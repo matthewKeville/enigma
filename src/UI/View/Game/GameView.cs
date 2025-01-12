@@ -69,31 +69,42 @@ namespace UI.View.Game
         }
 
         public void OnStartPuzzleEvent(StartPuzzleEventArgs args) {
+          Crossword crossword = _dbContext.Crosswords.First( c => c.Id == args.CrosswordId );
+          crossword.StartDate ??= DateTime.UtcNow;
           //build game model
           int crosswordId = args.CrosswordId;
           GridModel gridModel = new GridModel(
                 _dbContext.GridChars.Where(gc => gc.CrosswordId == crosswordId).ToList(),
                 _dbContext.Words.Where(w => w.CrosswordId == crosswordId).ToList(),
-                _dbContext.Crosswords.First( c => c.Id == crosswordId ).Rows,
-                _dbContext.Crosswords.First( c => c.Id == crosswordId ).Columns
+                crossword.Rows,
+                crossword.Columns
           );
           _gameModel = new GameModel(crosswordId,gridModel);
           _eventBus.PostEvent(new PuzzleLoadedEventArgs(_gameModel));
         }
 
-        public void SavePuzzle() {
+        public void SavePuzzle(bool complete) {
+
           _gameModel.GridModel.GridCharModels.ForEach( gcm => {
             GridChar gc = _dbContext.GridChars.First( 
                 gc => gc.CrosswordId == _gameModel.CrosswordId &&
                 gc.X == gcm.X &&
                 gc.Y == gcm.Y);
             gc.C = gcm.C;
-            _dbContext.SaveChanges();
           });
+
+          Crossword crossword = _dbContext.Crosswords.First( c => c.Id == _gameModel.CrosswordId );
+          crossword.Elapsed += DateTime.UtcNow - _gameModel.SessionStartTime;
+
+          if ( complete ) {
+            crossword.FinishDate = DateTime.UtcNow;
+          }
+
+          _dbContext.SaveChanges();
         }
 
         public void PuzzleFinished() {
-          SavePuzzle();
+          SavePuzzle(true);
           MessageBox.Query(30, 5, "System", "Puzzle Complete", "Exit");
           Application.RequestStop();
         }
@@ -182,7 +193,7 @@ namespace UI.View.Game
             case UICommandType.EXIT_PUZZLE:
               var confirm = MessageBox.Query(30, 5, "System", "Ending Puzzle", "CONFIRM", "ABORT");
               if ( confirm == 0 ) {
-                SavePuzzle();
+                SavePuzzle(false);
                 Application.RequestStop();
               }
               return;
