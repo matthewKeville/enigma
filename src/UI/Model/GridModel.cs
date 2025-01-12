@@ -347,6 +347,19 @@ namespace UI.Model
 
         }
 
+        public bool IsComplete() {
+          foreach (GridClueModel clue in GridClueModels) {
+            GridCharModel gcm = GridCharModels.First( 
+              gchar => gchar.X == clue.X && gchar.Y == clue.Y);
+            List<GridCharModel> clueGridChars = getWordChars(gcm,clue.Direction);
+            String userAnswer = clueGridChars.Aggregate("", (result,next) => result+=next.C);
+            if ( !userAnswer.Equals(clue.Answer) ) {
+              return false;
+            }
+          }
+          return true;
+        }
+
         //Return the list of GridCharModels that represent the "word" answer to
         //the clue in order.
         private List<GridCharModel> getWordChars(GridCharModel gcm, Direction direction)

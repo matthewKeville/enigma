@@ -92,6 +92,12 @@ namespace UI.View.Game
           });
         }
 
+        public void PuzzleFinished() {
+          SavePuzzle();
+          MessageBox.Query(30, 5, "System", "Puzzle Complete", "Exit");
+          Application.RequestStop();
+        }
+
 
         public void ProcessUICommand(UICommand command)
         {
@@ -209,6 +215,10 @@ namespace UI.View.Game
 
           if ( activeOrientationStart != _gameModel.GridModel.Orientation ) {
             _eventBus.PostEvent(new OrientationChangeEventArgs());
+          }
+
+          if ( _gameModel.GridModel.IsComplete() ) {
+            PuzzleFinished();
           }
 
           SetNeedsDisplay();
