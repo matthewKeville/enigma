@@ -5,7 +5,7 @@ using Settings;
 public class DatabaseContext : DbContext {
 
   public DbSet<Crossword> Crosswords { get; set; }
-  public DbSet<Word> Words { get; set; }
+  public DbSet<Clue> Clues { get; set; }
   public DbSet<GridChar> GridChars { get; set; }
 
   public String DbPath { get; set; }

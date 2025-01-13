@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace crossword.Migrations
+namespace enigma.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -24,11 +25,38 @@ namespace crossword.Migrations
                     Elapsed = table.Column<TimeSpan>(type: "TEXT", nullable: false),
                     Rows = table.Column<int>(type: "INTEGER", nullable: false),
                     Columns = table.Column<int>(type: "INTEGER", nullable: false),
-                    WordCheckCount = table.Column<int>(type: "INTEGER", nullable: false)
+                    WordCheckCount = table.Column<int>(type: "INTEGER", nullable: false),
+                    CharacterCheckCount = table.Column<int>(type: "INTEGER", nullable: false),
+                    PuzzleCheckCount = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Crosswords", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Clues",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    X = table.Column<int>(type: "INTEGER", nullable: false),
+                    Y = table.Column<int>(type: "INTEGER", nullable: false),
+                    I = table.Column<int>(type: "INTEGER", nullable: false),
+                    Direction = table.Column<int>(type: "INTEGER", nullable: false),
+                    Prompt = table.Column<string>(type: "TEXT", nullable: false),
+                    Answer = table.Column<string>(type: "TEXT", nullable: false),
+                    CrosswordId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Clues", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Clues_Crosswords_CrosswordId",
+                        column: x => x.CrosswordId,
+                        principalTable: "Crosswords",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -39,7 +67,10 @@ namespace crossword.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     X = table.Column<int>(type: "INTEGER", nullable: false),
                     Y = table.Column<int>(type: "INTEGER", nullable: false),
-                    C = table.Column<char>(type: "TEXT", nullable: false),
+                    UserChar = table.Column<char>(type: "TEXT", nullable: true),
+                    AnswerChar = table.Column<char>(type: "TEXT", nullable: false),
+                    Status = table.Column<int>(type: "INTEGER", nullable: false),
+                    IsBlock = table.Column<bool>(type: "INTEGER", nullable: false),
                     CrosswordId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -53,39 +84,14 @@ namespace crossword.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Words",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    X = table.Column<int>(type: "INTEGER", nullable: false),
-                    Y = table.Column<int>(type: "INTEGER", nullable: false),
-                    I = table.Column<int>(type: "INTEGER", nullable: false),
-                    Direction = table.Column<int>(type: "INTEGER", nullable: false),
-                    Answer = table.Column<string>(type: "TEXT", nullable: false),
-                    Clue = table.Column<string>(type: "TEXT", nullable: false),
-                    CrosswordId = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Words", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Words_Crosswords_CrosswordId",
-                        column: x => x.CrosswordId,
-                        principalTable: "Crosswords",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+            migrationBuilder.CreateIndex(
+                name: "IX_Clues_CrosswordId",
+                table: "Clues",
+                column: "CrosswordId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_GridChars_CrosswordId",
                 table: "GridChars",
-                column: "CrosswordId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Words_CrosswordId",
-                table: "Words",
                 column: "CrosswordId");
         }
 
@@ -93,10 +99,10 @@ namespace crossword.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "GridChars");
+                name: "Clues");
 
             migrationBuilder.DropTable(
-                name: "Words");
+                name: "GridChars");
 
             migrationBuilder.DropTable(
                 name: "Crosswords");

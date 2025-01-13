@@ -65,7 +65,7 @@ namespace UI.View.Game
                   attr = new Terminal.Gui.Attribute(_theme.BlockFG,_theme.BlockBG);
 
                 //emtpy
-                } else if ( gcm.C == ' ' ) {
+                } else if ( gcm.UserChar == ' ' ) {
 
                   if ( _gameModel.GridModel.Selection.Equals(gcm) ) {
                     rune = new Rune(_theme.CursorEmptyHighlightChar);
@@ -94,22 +94,62 @@ namespace UI.View.Game
                 //filled
                 } else {
 
-                  rune = new Rune(gcm.C);
+                  rune = new Rune(gcm.UserChar ?? ' ');
 
                   if ( _gameModel.GridModel.Selection.Equals(gcm) ) {
-                    attr = new Terminal.Gui.Attribute(_theme.CursorHighlightFG,_theme.CursorHighlightBG);
+                    switch ( gcm.Status ) {
+                      case GridCharStatus.INCORRECT: 
+                        attr = new Terminal.Gui.Attribute(_theme.CursorInorrectHighlightFG,_theme.CursorInorrectHighlightBG);
+                        break;
+                      case GridCharStatus.CORRECT: 
+                        attr = new Terminal.Gui.Attribute(_theme.CursorCorrectHighlightFG,_theme.CursorCorrectHighlightBG);
+                        break;
+                      default:
+                        attr = new Terminal.Gui.Attribute(_theme.CursorHighlightFG,_theme.CursorHighlightBG);
+                        break;
+                    }
                   }
 
                   else if ( _gameModel.GridModel.ActiveWordChars().Contains(gcm) ) {
-                    attr = new Terminal.Gui.Attribute(_theme.ActiveHighlightFG,_theme.ActiveHighlightBG);
+                    switch ( gcm.Status ) {
+                      case GridCharStatus.INCORRECT: 
+                        attr = new Terminal.Gui.Attribute(_theme.ActiveInorrectHighlightFG,_theme.ActiveInorrectHighlightBG);
+                        break;
+                      case GridCharStatus.CORRECT: 
+                        attr = new Terminal.Gui.Attribute(_theme.ActiveCorrectHighlightFG,_theme.ActiveCorrectHighlightBG);
+                        break;
+                      default:
+                        attr = new Terminal.Gui.Attribute(_theme.ActiveHighlightFG,_theme.ActiveHighlightBG);
+                        break;
+                    }
                   } 
 
                   else if ( _gameModel.GridModel.CrossWordChars().Contains(gcm) ) {
-                    attr = new Terminal.Gui.Attribute(_theme.CrossHighlightFG,_theme.CrossHighlightBG);
+                    switch ( gcm.Status ) {
+                      case GridCharStatus.INCORRECT: 
+                        attr = new Terminal.Gui.Attribute(_theme.CrossIncorrectHighlightFG,_theme.CrossIncorrectHighlightBG);
+                        break;
+                      case GridCharStatus.CORRECT: 
+                        attr = new Terminal.Gui.Attribute(_theme.CrossCorrectHighlightFG,_theme.CrossCorrectHighlightBG);
+                        break;
+                      default:
+                        attr = new Terminal.Gui.Attribute(_theme.CrossHighlightFG,_theme.CrossHighlightBG);
+                        break;
+                    }
                   } 
 
                   else {
-                    attr = new Terminal.Gui.Attribute(_theme.CellFG,_theme.CellBG);
+                    switch ( gcm.Status ) {
+                      case GridCharStatus.INCORRECT: 
+                        attr = new Terminal.Gui.Attribute(_theme.CellIncorrectHighlightFG,_theme.CellIncorrectHighlightBG);
+                        break;
+                      case GridCharStatus.CORRECT: 
+                        attr = new Terminal.Gui.Attribute(_theme.CellCorrectHighlightFG,_theme.CellCorrectHighlightBG);
+                        break;
+                      default:
+                        attr = new Terminal.Gui.Attribute(_theme.CellFG,_theme.CellBG);
+                        break;
+                    }
                   }
 
                 }

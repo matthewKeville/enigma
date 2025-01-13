@@ -7,6 +7,7 @@ namespace UI.View.Game
     using UI.KeyMapping;
     using UI.Model;
     using UI.View.Game.Clues;
+    using Microsoft.EntityFrameworkCore;
 
     public class GameView : Toplevel
     {
@@ -76,17 +77,26 @@ namespace UI.View.Game
         }
 
         public void OnStartPuzzleEvent(StartPuzzleEventArgs args) {
-          Crossword crossword = _dbContext.Crosswords.First( c => c.Id == args.CrosswordId );
+
+          Crossword crossword = _dbContext.Crosswords
+            .Include( x => x.GridChars )
+            .Include( x => x.Clues )
+            .First( x => x.Id == args.CrosswordId );
           crossword.StartDate ??= DateTime.UtcNow;
+
           //build game model
           int crosswordId = args.CrosswordId;
           GridModel gridModel = new GridModel(
-                _dbContext.GridChars.Where(gc => gc.CrosswordId == crosswordId).ToList(),
-                _dbContext.Words.Where(w => w.CrosswordId == crosswordId).ToList(),
+                crossword.GridChars,
+                crossword.Clues,
                 crossword.Rows,
                 crossword.Columns
           );
-          _gameModel = new GameModel(crosswordId,gridModel,crossword.Elapsed);
+
+          _gameModel = new GameModel(crosswordId,gridModel,crossword.Elapsed,
+              crossword.CharacterCheckCount,
+              crossword.WordCheckCount,
+              crossword.PuzzleCheckCount);
           _eventBus.PostEvent(new PuzzleLoadedEventArgs(_gameModel));
         }
 
@@ -97,11 +107,16 @@ namespace UI.View.Game
                 gc => gc.CrosswordId == _gameModel.CrosswordId &&
                 gc.X == gcm.X &&
                 gc.Y == gcm.Y);
-            gc.C = gcm.C;
+            gc.UserChar = gcm.UserChar;
+            gc.Status = gcm.Status;
           });
 
           Crossword crossword = _dbContext.Crosswords.First( c => c.Id == _gameModel.CrosswordId );
           crossword.Elapsed += DateTime.UtcNow - _gameModel.SessionStartTime;
+
+          crossword.CharacterCheckCount = _gameModel.CharacterCheckCount;
+          crossword.WordCheckCount = _gameModel.WordCheckCount;
+          crossword.PuzzleCheckCount = _gameModel.PuzzleCheckCount;
 
           if ( complete ) {
             crossword.FinishDate = DateTime.UtcNow;
@@ -177,7 +192,7 @@ namespace UI.View.Game
               _gameModel.GridModel.ReplaceChar(replaceCharArgs.C);
               break;
             case UICommandType.DELETE_CHAR:
-              _gameModel.GridModel.DeleteChar();
+              _gameModel.GridModel.DeleteChar(false);
               break;
             case UICommandType.DELETE_WORD:
               _gameModel.GridModel.DeleteWord();
@@ -193,9 +208,27 @@ namespace UI.View.Game
               _gameModel.GridModel.DeleteInnerWord();
               _isInsertMode = true;
               break;
+
+            case UICommandType.CHECK_CHAR:
+              Trace.WriteLine("check char");
+              _gameModel.GridModel.CheckChar();
+              _gameModel.CharacterCheckCount++;
+              break;
+            case UICommandType.CHECK_WORD:
+              Trace.WriteLine("check word");
+              _gameModel.GridModel.CheckWord();
+              _gameModel.WordCheckCount++;
+              break;
+            case UICommandType.CHECK_PUZZLE:
+              Trace.WriteLine("check puzzle");
+              _gameModel.GridModel.CheckPuzzle();
+              _gameModel.PuzzleCheckCount++;
+              break;
+
             case UICommandType.ENTER_INSERT_MODE:
               _isInsertMode = true;
               break;
+
 
             case UICommandType.EXIT_PUZZLE:
               var confirm = MessageBox.Query(30, 5, "System", "Ending Puzzle", "CONFIRM", "ABORT");

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace crossword.Migrations
+namespace enigma.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
     partial class DatabaseContextModelSnapshot : ModelSnapshot
@@ -16,10 +16,49 @@ namespace crossword.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.6");
 
+            modelBuilder.Entity("Entity.Clue", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Answer")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("CrosswordId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Direction")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("I")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Prompt")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("X")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Y")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CrosswordId");
+
+                    b.ToTable("Clues");
+                });
+
             modelBuilder.Entity("Entity.Crossword", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CharacterCheckCount")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Columns")
@@ -33,6 +72,9 @@ namespace crossword.Migrations
 
                     b.Property<DateTime>("Published")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("PuzzleCheckCount")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Rows")
                         .HasColumnType("INTEGER");
@@ -61,14 +103,20 @@ namespace crossword.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<char>("C")
+                    b.Property<char>("AnswerChar")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("CrosswordId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("IsBlock")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("Status")
                         .HasColumnType("INTEGER");
+
+                    b.Property<char?>("UserChar")
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("X")
                         .HasColumnType("INTEGER");
@@ -83,40 +131,13 @@ namespace crossword.Migrations
                     b.ToTable("GridChars");
                 });
 
-            modelBuilder.Entity("Entity.Word", b =>
+            modelBuilder.Entity("Entity.Clue", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Answer")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Clue")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("CrosswordId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Direction")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("I")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("X")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Y")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CrosswordId");
-
-                    b.ToTable("Words");
+                    b.HasOne("Entity.Crossword", null)
+                        .WithMany("Clues")
+                        .HasForeignKey("CrosswordId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Entity.GridChar", b =>
@@ -128,20 +149,11 @@ namespace crossword.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Entity.Word", b =>
-                {
-                    b.HasOne("Entity.Crossword", null)
-                        .WithMany("Words")
-                        .HasForeignKey("CrosswordId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Entity.Crossword", b =>
                 {
-                    b.Navigation("GridChars");
+                    b.Navigation("Clues");
 
-                    b.Navigation("Words");
+                    b.Navigation("GridChars");
                 });
 #pragma warning restore 612, 618
         }

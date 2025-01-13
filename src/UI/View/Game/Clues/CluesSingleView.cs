@@ -157,9 +157,9 @@ namespace UI.View.Game
             List<GridClueModel> across = clues.Where(w => w.Direction == Direction.Across).ToList();
             across.ForEach( across =>
             {
-                String clueText = clueCutoff < across.Clue.Count() 
-                  ? across.Clue.Substring(0,Math.Max(0,clueCutoff-clueTrailString.Count())) + clueTrailString
-                  : across.Clue;
+                String clueText = clueCutoff < across.Prompt.Count() 
+                  ? across.Prompt.Substring(0,Math.Max(0,clueCutoff-clueTrailString.Count())) + clueTrailString
+                  : across.Prompt;
                   
                 adt.Rows.Add(new object[] { across.I, clueText });
             });
@@ -172,9 +172,9 @@ namespace UI.View.Game
             List<GridClueModel> down = clues.Where(w => w.Direction == Direction.Down).ToList();
             down.ForEach(down =>
             {
-                String clueText = clueCutoff < down.Clue.Count() 
-                  ? down.Clue.Substring(0,Math.Max(0,clueCutoff-clueTrailString.Count())) + clueTrailString
-                  : down.Clue;
+                String clueText = clueCutoff < down.Prompt.Count() 
+                  ? down.Prompt.Substring(0,Math.Max(0,clueCutoff-clueTrailString.Count())) + clueTrailString
+                  : down.Prompt;
                   
                 ddt.Rows.Add(new object[] { down.I, clueText  });
             });

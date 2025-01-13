@@ -33,7 +33,9 @@ namespace Services.CrosswordInstaller.NYT
               gridChars.Add(new GridChar(){
                   X=columnIndex,
                   Y=rowIndex,
-                  C=actual != '#' ? ' ' : '\0' //null byte encodes block
+                  UserChar=actual != '#' ? ' ' : '\0',       //null byte encodes block
+                  AnswerChar=actual != '#' ? actual : '\0',  //null byte encodes block
+                  IsBlock = actual == '#'
                 });
             
               columnIndex++;
@@ -43,7 +45,7 @@ namespace Services.CrosswordInstaller.NYT
 
           // Words
 
-          List<Word> Words = new List<Word>();
+          List<Clue> Words = new List<Clue>();
 
           int ordinal = 1;
 
@@ -86,13 +88,13 @@ namespace Services.CrosswordInstaller.NYT
                           wend++;
                       }
                       // Trace.WriteLine("\tand the answer is " + answer);
-                      Words.Add(new Word() {
+                      Words.Add(new Clue() {
                           X = i,
                           Y = j,
                           I = ordinal,
                           Direction = Direction.Across,
-                          Answer = answer,
-                          Clue = clue
+                          Prompt = clue,
+                          Answer = answer
                       });
                       wordHit = true;
                   }
@@ -123,13 +125,13 @@ namespace Services.CrosswordInstaller.NYT
                           wend++;
                       }
                       // Trace.WriteLine("\tand the answer is " + answer);
-                      Words.Add(new Word(){
+                      Words.Add(new Clue(){
                           X=i,
                           Y=j,
                           I=ordinal,
                           Direction=Direction.Down,
-                          Answer=answer,
-                          Clue=clue
+                          Prompt=clue,
+                          Answer=answer
                         });
 
                       wordHit = true;
@@ -151,7 +153,7 @@ namespace Services.CrosswordInstaller.NYT
             Columns = data.columns,
           };
           crossword.Type = CrosswordType.NYTIMES;
-          crossword.Words.AddRange(Words);
+          crossword.Clues.AddRange(Words);
           crossword.GridChars.AddRange(gridChars);
 
           return crossword;

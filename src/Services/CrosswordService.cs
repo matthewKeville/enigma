@@ -14,7 +14,7 @@ namespace Services {
     public Crossword GetCrossword(int crosswordId) {
       Crossword? crosswordQ = dbCtx.Crosswords
         .Where( c => c.Id == crosswordId)
-        .Include( c => c.Words)
+        .Include( c => c.Clues)
         .Include( c => c.GridChars)
         .FirstOrDefault();
       if ( crosswordQ is null ) {

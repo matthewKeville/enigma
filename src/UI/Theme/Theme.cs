@@ -43,6 +43,10 @@ namespace Settings.Theme {
 
     public Color CellFG = ColorName.Black;
     public Color CellBG = ColorName.White;
+    public Color CellCorrectHighlightFG = ColorName.Green;
+    public Color CellCorrectHighlightBG = ColorName.White;
+    public Color CellIncorrectHighlightFG = ColorName.Red;
+    public Color CellIncorrectHighlightBG = ColorName.White;
     public char CellEmptyChar = ' ';
 
     public Color BlockFG = ColorName.Black;
@@ -51,12 +55,18 @@ namespace Settings.Theme {
 
     //Cursor Cell Styling
 
-    public Color CursorHighlightFG = ColorName.Red;
+    public Color CursorHighlightFG = ColorName.Yellow;
     public Color CursorHighlightBG = ColorName.White;
 
-    public Color CursorEmptyHighlightFG = ColorName.Red;
+    public Color CursorEmptyHighlightFG = ColorName.Yellow;
     public Color CursorEmptyHighlightBG = ColorName.White;
     public char CursorEmptyHighlightChar = '*';
+
+    public Color CursorCorrectHighlightFG = ColorName.Green;
+    public Color CursorCorrectHighlightBG = ColorName.White;
+    public Color CursorInorrectHighlightFG = ColorName.Red;
+    public Color CursorInorrectHighlightBG = ColorName.White;
+
 
     //Active Cell Styling
 
@@ -67,6 +77,11 @@ namespace Settings.Theme {
     public Color ActiveEmptyHighlightBG = ColorName.White;
     public char ActiveEmptyHighlightAcrossChar = '-';
     public char ActiveEmptyHighlightDownChar = '|';
+
+    public Color ActiveCorrectHighlightFG = ColorName.Green;
+    public Color ActiveCorrectHighlightBG = ColorName.White;
+    public Color ActiveInorrectHighlightFG = ColorName.Red;
+    public Color ActiveInorrectHighlightBG = ColorName.White;
  
     //Cross Cell Styling
 
@@ -77,6 +92,11 @@ namespace Settings.Theme {
     public Color CrossEmptyHighlightBG = ColorName.White;
     public char CrossEmptyHighlightAcrossChar = '-';
     public char CrossEmptyHighlightDownChar = '|';
+
+    public Color CrossCorrectHighlightFG = ColorName.Green;
+    public Color CrossCorrectHighlightBG = ColorName.White;
+    public Color CrossIncorrectHighlightFG = ColorName.Red;
+    public Color CrossIncorrectHighlightBG = ColorName.White;
 
   }
 }

@@ -6,23 +6,27 @@ namespace UI.Model
 
     public class GridCharModel
     {
+
         public int X;
         public int Y;
-        public char C;
+        public char? UserChar;
+        public char AnswerChar;
         public GridCharStatus Status;
         public bool IsBlock;
+
         public GridCharModel? Up;
         public GridCharModel? Down;
         public GridCharModel? Left;
         public GridCharModel? Right;
 
-        public GridCharModel(int x, int y, char c, bool isBlock)
+        public GridCharModel(GridChar gridChar)
         {
-            this.X = x;
-            this.Y = y;
-            this.C = c;
-            this.IsBlock = isBlock;
-            this.Status = GridCharStatus.UNKNOWN;
+            X = gridChar.X;
+            Y = gridChar.Y;
+            UserChar = gridChar.UserChar;
+            AnswerChar = gridChar.AnswerChar;
+            Status = gridChar.Status;
+            IsBlock = gridChar.IsBlock;
         }
 
         public override bool Equals(Object? obj)
@@ -36,12 +40,12 @@ namespace UI.Model
                 return false;
             }
             GridCharModel other = (GridCharModel)obj;
-            return other.X == X && other.Y == Y && other.C == C;
+            return other.X == X && other.Y == Y;
         }
 
         public void Dump()
         {
-            Trace.WriteLine($"gcm : {X},{Y},{C},{IsBlock}, {Up is null}, {Down is null}, {Right is null}, {Left is null}");
+            Trace.WriteLine($"gcm : {X},{Y},{UserChar},{IsBlock}, {Up is null}, {Down is null}, {Right is null}, {Left is null}");
         }
 
     }
@@ -53,18 +57,18 @@ namespace UI.Model
         public int I;
         public Direction Direction;
         public int Size;
+        public String Prompt;
         public String Answer;
-        public String Clue;
 
-        public GridClueModel(int x, int y, int i, Direction direction, int size, String answer, String clue)
+        public GridClueModel(Clue clue)
         {
-            this.X = x;
-            this.Y = y;
-            this.I = i;
-            this.Direction = direction;
-            this.Size = size;
-            this.Answer = answer;
-            this.Clue = clue;
+            this.X = clue.X;
+            this.Y = clue.Y;
+            this.I = clue.I;
+            this.Direction = clue.Direction;
+            this.Prompt = clue.Prompt;
+            this.Answer = clue.Answer;
+            this.Size = clue.Answer.Count();
         }
     }
 
@@ -82,25 +86,26 @@ namespace UI.Model
 
         public int WordCheckCount;
 
-        public GridModel(List<GridChar> gridChars, List<Word> words, int rowCount, int columnCount)
+        public GridModel(List<GridChar> gridChars, List<Clue> clues, int rowCount, int columnCount)
         {
 
             //Clue Models
             GridClueModels = new();
-            foreach (Word word in words)
+            foreach (Clue clue in clues)
             {
-                GridClueModels.Add(new GridClueModel(word.X, word.Y, word.I, word.Direction, word.Answer.Count(), word.Answer, word.Clue));
+                GridClueModels.Add(new GridClueModel(clue));
             }
 
             //Char Models
             GridCharModels = new();
             foreach (GridChar gc in gridChars)
             {
-                var gcm = new GridCharModel(gc.X, gc.Y, gc.C, gc.C == '\0');
+                var gcm = new GridCharModel(gc);
                 gcm.Status = gc.Status;
                 GridCharModels.Add(gcm);
             }
 
+            //Link Char Models
             foreach (GridCharModel gcm in GridCharModels)
             {
                 gcm.Up = GridCharModels.FirstOrDefault(m => m.X == gcm.X && m.Y == gcm.Y - 1, null);
@@ -220,7 +225,7 @@ namespace UI.Model
             while (index < wordChars.Count)
             {
                 GridCharModel gcm = wordChars[index];
-                if (gcm.C == c)
+                if (gcm.UserChar == c)
                 {
                     Selection = gcm;
                     return;
@@ -238,7 +243,7 @@ namespace UI.Model
             while (index >= 0)
             {
                 GridCharModel gcm = wordChars[index];
-                if (gcm.C == c)
+                if (gcm.UserChar == c)
                 {
                     Selection = gcm;
                     return;
@@ -261,7 +266,10 @@ namespace UI.Model
 
         public void InsertChar(char c)
         {
-            Selection.C = c;
+            Selection.UserChar = c;
+            if ( Selection.UserChar != c ) {
+              Selection.Status = GridCharStatus.UNKNOWN;
+            }
             if (Orientation == Direction.Across)
             {
                 if (!(Selection.Right?.IsBlock ?? true))
@@ -276,34 +284,36 @@ namespace UI.Model
                     Selection = Selection.Down;
                 }
             }
-            //todo advance key ...
         }
 
         public void ReplaceChar(char c)
         {
-            Selection.C = c;
-        }
-
-        public void DeleteChar()
-        {
-          DeleteChar(false);
+            if ( Selection.UserChar != c ) {
+              Selection.Status = GridCharStatus.UNKNOWN;
+            }
+            Selection.UserChar = c;
         }
 
         public void DeleteChar(bool moveBackChar)
         {
-            Selection.C = ' ';
-            if (moveBackChar)  {
-              if ( Orientation == Direction.Across ) {
-                if (!Selection.Left?.IsBlock ?? false)
+            Selection.UserChar = ' ';
+            Selection.Status = GridCharStatus.UNKNOWN;
+            if (moveBackChar)
+            {
+                if (Orientation == Direction.Across)
                 {
-                    Selection = Selection.Left!;
+                    if (!Selection.Left?.IsBlock ?? false)
+                    {
+                        Selection = Selection.Left!;
+                    }
                 }
-              } else {
-                if (!Selection.Up?.IsBlock ?? false)
+                else
                 {
-                    Selection = Selection.Up!;
+                    if (!Selection.Up?.IsBlock ?? false)
+                    {
+                        Selection = Selection.Up!;
+                    }
                 }
-              }
             }
         }
 
@@ -315,7 +325,8 @@ namespace UI.Model
             var selectIndex = wordChars.IndexOf(Selection);
             while (selectIndex < wordChars.Count())
             {
-                wordChars[selectIndex].C = ' ';
+                wordChars[selectIndex].UserChar = ' ';
+                wordChars[selectIndex].Status = GridCharStatus.UNKNOWN;
                 selectIndex++;
             }
         }
@@ -328,7 +339,8 @@ namespace UI.Model
             var index = 0;
             while (index < wordChars.Count())
             {
-                wordChars[index].C = ' ';
+                wordChars[index].UserChar = ' ';
+                wordChars[index].Status = GridCharStatus.UNKNOWN;
                 index++;
             }
             Selection = wordChars.First();
@@ -349,17 +361,53 @@ namespace UI.Model
 
         }
 
-        public bool IsComplete() {
-          foreach (GridClueModel clue in GridClueModels) {
-            GridCharModel gcm = GridCharModels.First( 
-              gchar => gchar.X == clue.X && gchar.Y == clue.Y);
-            List<GridCharModel> clueGridChars = getWordChars(gcm,clue.Direction);
-            String userAnswer = clueGridChars.Aggregate("", (result,next) => result+=next.C);
-            if ( !userAnswer.Equals(clue.Answer) ) {
-              return false;
+        public bool IsComplete()
+        {
+            foreach (GridCharModel gcm  in GridCharModels)
+            {
+              if ( gcm.UserChar != gcm.AnswerChar) {
+                return false;
+              }
             }
+            return true;
+        }
+
+        public void CheckChar() {
+          if ( Selection.UserChar == ' ' ) {
+            return;
           }
-          return true;
+          if ( Selection.UserChar == Selection.AnswerChar ) {
+            Selection.Status = GridCharStatus.CORRECT;
+          } else {
+            Selection.Status = GridCharStatus.INCORRECT;
+          }
+        }
+
+        public void CheckWord() {
+          List<GridCharModel> gcms = getWordChars(Selection,Orientation);
+          gcms.ForEach( gcm => {
+            if ( gcm.UserChar == ' ' ) {
+              return;
+            }
+            if ( gcm.UserChar == gcm.AnswerChar ) {
+              gcm.Status = GridCharStatus.CORRECT;
+            } else {
+              gcm.Status = GridCharStatus.INCORRECT;
+            }
+          });
+        }
+
+        public void CheckPuzzle() {
+          GridCharModels.ForEach( gcm => {
+            if ( gcm.UserChar == ' ' ) {
+              return;
+            }
+            if ( gcm.UserChar == gcm.AnswerChar ) {
+              gcm.Status = GridCharStatus.CORRECT;
+            } else {
+              gcm.Status = GridCharStatus.INCORRECT;
+            }
+          });
         }
 
         //Return the list of GridCharModels that represent the "word" answer to

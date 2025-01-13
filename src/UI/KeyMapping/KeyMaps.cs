@@ -39,6 +39,10 @@ namespace UI.KeyMaping {
 
             (new List<Key>() { Key.Tab },new UICommand(UICommandType.TOGGLE_CLUES_VIEW)),
             (new List<Key>() { Key.Z, Key.Z },new UICommand(UICommandType.EXIT_PUZZLE)),
+            
+            (new List<Key>() { Key.Z, Key.C },new UICommand(UICommandType.CHECK_CHAR)),
+            (new List<Key>() { Key.Z, Key.W },new UICommand(UICommandType.CHECK_WORD)),
+            (new List<Key>() { Key.Z, Key.G },new UICommand(UICommandType.CHECK_PUZZLE)),
 
           };
 
