@@ -15,6 +15,7 @@ namespace UI.View.Game
         private EventBus _eventBus;
         private KeySequenceInterpreter _insertKeySequenceInterpreter;
         private KeySequenceInterpreter _normalKeySequenceInterpreter;
+        private KeyMaps _keyMaps;
         private DatabaseContext _dbContext;
 
         private bool _isInsertMode = false;
@@ -23,20 +24,27 @@ namespace UI.View.Game
         private CluesView _cluesView;
         private GridView _gridView;
         private StatusView _statusView;
+        private KeyBindsView _keyBindsView;
 
-        public GameView(CluesView cluesView, GridView gridView, StatusView statusView,EventBus eventBus, DatabaseContext dbContext)
+        public GameView(CluesView cluesView, GridView gridView, StatusView statusView,EventBus eventBus, KeyBindsView keyBindsView, KeyMaps keyMaps, DatabaseContext dbContext)
         {
 
             _gridView = gridView;
             _cluesView = cluesView;
             _statusView = statusView;
+            _keyBindsView = keyBindsView;
             _eventBus = eventBus;
+            _keyMaps = keyMaps;
 
             _gridView.X = 0;
             _gridView.Visible = true;
 
             _statusView.X = 0;
             _statusView.Y = Pos.Bottom(_gridView) + 2;
+
+            // _keyBindsView.Visible = false;
+            // _keyBindsView.Width = Dim.Fill();
+            // _keyBindsView.Height = Dim.Fill();
      
             _cluesView.X = Pos.Right(_gridView);
             _cluesView.Width = Dim.Fill();
@@ -46,8 +54,10 @@ namespace UI.View.Game
             Add(_statusView);
             Add(_cluesView);
 
-            _normalKeySequenceInterpreter = new KeySequenceInterpreter(KeyMaps.BuildNormalKeyMaps());
-            _insertKeySequenceInterpreter = new KeySequenceInterpreter(KeyMaps.BuildInsertKeyMaps());
+            //Add(_keyBindsView);
+
+            _normalKeySequenceInterpreter = new KeySequenceInterpreter(_keyMaps.NormalKeyMaps);
+            _insertKeySequenceInterpreter = new KeySequenceInterpreter(_keyMaps.InsertKeyMaps);
 
             _eventBus.Register(this, (args) =>
             {
@@ -146,7 +156,12 @@ namespace UI.View.Game
             //////////////////////////////////////////
             //Normal
             //////////////////////////////////////////
-
+            ///
+            case UICommandType.SHOW_KEYBINDS:
+              //_eventBus.PostEvent(new ClueViewChangeEventArgs());
+              Application.Run(_keyBindsView);
+              Trace.WriteLine("showing keybidns");
+              break;
             case UICommandType.TOGGLE_CLUES_VIEW:
               _eventBus.PostEvent(new ClueViewChangeEventArgs());
               break;

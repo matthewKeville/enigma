@@ -46,6 +46,7 @@ public enum UICommandType {
     //
 
     TOGGLE_CLUES_VIEW,
+    SHOW_KEYBINDS,
     EXIT_PUZZLE
 
   }
@@ -81,14 +82,24 @@ public enum UICommandType {
   }
 
   public class UICommand : EventArgs {
+    public String Description = "";
     public UICommandType Type;
     public UICommandArgs? Args;
     public UICommand(UICommandType type){
       this.Type = type;
     }
+    public UICommand(UICommandType type,String description){
+      this.Type = type;
+      this.Description = description;
+    }
     public UICommand(UICommandType type,UICommandArgs args){
       this.Type = type;
       this.Args = args;
+    }
+    public UICommand(UICommandType type,UICommandArgs args,String description){
+      this.Type = type;
+      this.Args = args;
+      this.Description = description;
     }
   }
 

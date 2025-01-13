@@ -11,6 +11,7 @@ using UI.View.Game.Clues;
 using Settings.Theme;
 using Microsoft.Extensions.Configuration;
 using Settings;
+using UI.KeyMaping;
 
 HostApplicationBuilder builder = Host.CreateEmptyApplicationBuilder(new HostApplicationBuilderSettings());
 AddServices(builder.Services);
@@ -270,10 +271,12 @@ void AddServices(IServiceCollection services) {
   builder.Services.AddSingleton<NYTCrosswordParser, NYTCrosswordParser>();
   builder.Services.AddSingleton<CrosswordInstallerService, CrosswordInstallerService>();
   builder.Services.AddSingleton<EventBus, EventBus>();
+  builder.Services.AddSingleton<KeyMaps, KeyMaps>();
   builder.Services.AddSingleton<Theme, Theme>();
   builder.Services.AddSingleton<GameView, GameView>();
   builder.Services.AddSingleton<GridView, GridView>();
   builder.Services.AddSingleton<StatusView, StatusView>();
+  builder.Services.AddSingleton<KeyBindsView, KeyBindsView>();
   builder.Services.AddSingleton<CluesView, CluesView>();
   builder.Services.AddSingleton<CluesSingleView, CluesSingleView>();
   builder.Services.AddSingleton<CluesSplitView, CluesSplitView>();
