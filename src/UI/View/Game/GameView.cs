@@ -11,8 +11,6 @@ namespace UI.View.Game
     public class GameView : Toplevel
     {
 
-        private CluesView _cluesView;
-        private GridView _gridView;
         private EventBus _eventBus;
         private KeySequenceInterpreter _insertKeySequenceInterpreter;
         private KeySequenceInterpreter _normalKeySequenceInterpreter;
@@ -21,22 +19,31 @@ namespace UI.View.Game
         private bool _isInsertMode = false;
         private GameModel _gameModel;
 
-        public GameView(CluesView cluesView, GridView gridView, EventBus eventBus, DatabaseContext dbContext)
+        private CluesView _cluesView;
+        private GridView _gridView;
+        private StatusView _statusView;
+
+        public GameView(CluesView cluesView, GridView gridView, StatusView statusView,EventBus eventBus, DatabaseContext dbContext)
         {
 
             _gridView = gridView;
             _cluesView = cluesView;
+            _statusView = statusView;
             _eventBus = eventBus;
 
             _gridView.X = 0;
             _gridView.Visible = true;
 
+            _statusView.X = 0;
+            _statusView.Y = Pos.Bottom(_gridView);
+     
             _cluesView.X = Pos.Right(_gridView);
             _cluesView.Width = Dim.Fill();
             _cluesView.Visible = true;
 
-            Add(gridView);
-            Add(cluesView);
+            Add(_gridView);
+            Add(_statusView);
+            Add(_cluesView);
 
             _normalKeySequenceInterpreter = new KeySequenceInterpreter(KeyMaps.BuildNormalKeyMaps());
             _insertKeySequenceInterpreter = new KeySequenceInterpreter(KeyMaps.BuildInsertKeyMaps());
@@ -79,7 +86,7 @@ namespace UI.View.Game
                 crossword.Rows,
                 crossword.Columns
           );
-          _gameModel = new GameModel(crosswordId,gridModel);
+          _gameModel = new GameModel(crosswordId,gridModel,crossword.Elapsed);
           _eventBus.PostEvent(new PuzzleLoadedEventArgs(_gameModel));
         }
 

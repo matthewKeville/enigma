@@ -273,6 +273,7 @@ void AddServices(IServiceCollection services) {
   builder.Services.AddSingleton<Theme, Theme>();
   builder.Services.AddSingleton<GameView, GameView>();
   builder.Services.AddSingleton<GridView, GridView>();
+  builder.Services.AddSingleton<StatusView, StatusView>();
   builder.Services.AddSingleton<CluesView, CluesView>();
   builder.Services.AddSingleton<CluesSingleView, CluesSingleView>();
   builder.Services.AddSingleton<CluesSplitView, CluesSplitView>();

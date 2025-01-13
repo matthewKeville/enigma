@@ -33,6 +33,10 @@ public enum UICommandType {
     CHANGE_WORD,
     CHANGE_INNER_WORD,
 
+    CHECK_CHAR,
+    CHECK_WORD,
+    CHECK_PUZZLE,
+
     //Insert Mode Commands
 
     ENTER_INSERT_MODE,

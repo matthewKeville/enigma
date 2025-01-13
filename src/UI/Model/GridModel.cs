@@ -9,7 +9,7 @@ namespace UI.Model
         public int X;
         public int Y;
         public char C;
-        public int Status = 0;
+        public GridCharStatus Status;
         public bool IsBlock;
         public GridCharModel? Up;
         public GridCharModel? Down;
@@ -22,6 +22,7 @@ namespace UI.Model
             this.Y = y;
             this.C = c;
             this.IsBlock = isBlock;
+            this.Status = GridCharStatus.UNKNOWN;
         }
 
         public override bool Equals(Object? obj)
@@ -96,6 +97,7 @@ namespace UI.Model
             foreach (GridChar gc in gridChars)
             {
                 var gcm = new GridCharModel(gc.X, gc.Y, gc.C, gc.C == '\0');
+                gcm.Status = gc.Status;
                 GridCharModels.Add(gcm);
             }
 

@@ -34,11 +34,18 @@ namespace Entity {
 
   }
 
+  public enum GridCharStatus {
+    UNKNOWN,
+    INCORRECT,
+    CHECKED
+  }
+
   public class GridChar {
     public int Id { get; set; }
     public int X { get; set; }
     public int Y { get; set; }
     public char C { get; set; }
+    public GridCharStatus Status { get; set; }
 
     public int CrosswordId { get; set; }
 
