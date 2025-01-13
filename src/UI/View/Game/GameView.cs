@@ -108,7 +108,7 @@ namespace UI.View.Game
                 gc.X == gcm.X &&
                 gc.Y == gcm.Y);
             gc.UserChar = gcm.UserChar;
-            gc.Status = gcm.Status;
+            gc.KnownChars = gcm.KnownChars;
           });
 
           Crossword crossword = _dbContext.Crosswords.First( c => c.Id == _gameModel.CrosswordId );

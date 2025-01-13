@@ -39,11 +39,6 @@ namespace Entity {
 
   }
 
-  public enum GridCharStatus {
-    UNKNOWN,
-    INCORRECT,
-    CORRECT
-  }
 
   public class GridChar {
     public int Id { get; set; }
@@ -51,10 +46,11 @@ namespace Entity {
     public int Y { get; set; }
     public char? UserChar { get; set; }
     public char AnswerChar { get; set; }
-    public GridCharStatus Status { get; set; } = GridCharStatus.UNKNOWN;
+    public String KnownChars { get; set; } = "";
     public bool IsBlock { get; set; }
 
     public int CrosswordId { get; set; }
 
   }
+
 }

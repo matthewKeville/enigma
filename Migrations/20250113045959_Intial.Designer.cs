@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace enigma.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20250113030814_Initial")]
-    partial class Initial
+    [Migration("20250113045959_Intial")]
+    partial class Intial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -115,8 +115,9 @@ namespace enigma.Migrations
                     b.Property<bool>("IsBlock")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("KnownChars")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<char?>("UserChar")
                         .HasColumnType("TEXT");

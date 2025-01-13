@@ -112,8 +112,9 @@ namespace enigma.Migrations
                     b.Property<bool>("IsBlock")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("KnownChars")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<char?>("UserChar")
                         .HasColumnType("TEXT");

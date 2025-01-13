@@ -97,7 +97,7 @@ namespace UI.View.Game
                   rune = new Rune(gcm.UserChar ?? ' ');
 
                   if ( _gameModel.GridModel.Selection.Equals(gcm) ) {
-                    switch ( gcm.Status ) {
+                    switch ( gcm.Status() ) {
                       case GridCharStatus.INCORRECT: 
                         attr = new Terminal.Gui.Attribute(_theme.CursorInorrectHighlightFG,_theme.CursorInorrectHighlightBG);
                         break;
@@ -111,7 +111,7 @@ namespace UI.View.Game
                   }
 
                   else if ( _gameModel.GridModel.ActiveWordChars().Contains(gcm) ) {
-                    switch ( gcm.Status ) {
+                    switch ( gcm.Status() ) {
                       case GridCharStatus.INCORRECT: 
                         attr = new Terminal.Gui.Attribute(_theme.ActiveInorrectHighlightFG,_theme.ActiveInorrectHighlightBG);
                         break;
@@ -125,7 +125,7 @@ namespace UI.View.Game
                   } 
 
                   else if ( _gameModel.GridModel.CrossWordChars().Contains(gcm) ) {
-                    switch ( gcm.Status ) {
+                    switch ( gcm.Status() ) {
                       case GridCharStatus.INCORRECT: 
                         attr = new Terminal.Gui.Attribute(_theme.CrossIncorrectHighlightFG,_theme.CrossIncorrectHighlightBG);
                         break;
@@ -139,7 +139,7 @@ namespace UI.View.Game
                   } 
 
                   else {
-                    switch ( gcm.Status ) {
+                    switch ( gcm.Status() ) {
                       case GridCharStatus.INCORRECT: 
                         attr = new Terminal.Gui.Attribute(_theme.CellIncorrectHighlightFG,_theme.CellIncorrectHighlightBG);
                         break;

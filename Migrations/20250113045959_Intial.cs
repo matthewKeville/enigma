@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace enigma.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class Intial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -69,7 +69,7 @@ namespace enigma.Migrations
                     Y = table.Column<int>(type: "INTEGER", nullable: false),
                     UserChar = table.Column<char>(type: "TEXT", nullable: true),
                     AnswerChar = table.Column<char>(type: "TEXT", nullable: false),
-                    Status = table.Column<int>(type: "INTEGER", nullable: false),
+                    KnownChars = table.Column<string>(type: "TEXT", nullable: false),
                     IsBlock = table.Column<bool>(type: "INTEGER", nullable: false),
                     CrosswordId = table.Column<int>(type: "INTEGER", nullable: false)
                 },

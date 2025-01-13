@@ -4,6 +4,12 @@ using Enums;
 namespace UI.Model
 {
 
+    public enum GridCharStatus {
+      UNKNOWN,
+      INCORRECT,
+      CORRECT
+    }
+
     public class GridCharModel
     {
 
@@ -11,7 +17,7 @@ namespace UI.Model
         public int Y;
         public char? UserChar;
         public char AnswerChar;
-        public GridCharStatus Status;
+        public String KnownChars = "";
         public bool IsBlock;
 
         public GridCharModel? Up;
@@ -25,8 +31,31 @@ namespace UI.Model
             Y = gridChar.Y;
             UserChar = gridChar.UserChar;
             AnswerChar = gridChar.AnswerChar;
-            Status = gridChar.Status;
             IsBlock = gridChar.IsBlock;
+            KnownChars = gridChar.KnownChars;
+        }
+
+        public GridCharStatus Status() {
+          if (UserChar == null || UserChar == ' ') {
+            return GridCharStatus.UNKNOWN;
+          } 
+          if ( !KnownChars.Contains(UserChar.Value) ) {
+            return GridCharStatus.UNKNOWN;
+          }
+          if ( UserChar != AnswerChar ) {
+            return GridCharStatus.INCORRECT;
+          }
+          return GridCharStatus.CORRECT;
+        }
+
+        public void Check() {
+          if ( UserChar == null || UserChar == ' ') {
+            return;
+          }
+          if ( KnownChars.Contains(UserChar.Value)) {
+            return;
+          }
+          KnownChars+=UserChar;
         }
 
         public override bool Equals(Object? obj)
@@ -101,7 +130,6 @@ namespace UI.Model
             foreach (GridChar gc in gridChars)
             {
                 var gcm = new GridCharModel(gc);
-                gcm.Status = gc.Status;
                 GridCharModels.Add(gcm);
             }
 
@@ -267,9 +295,6 @@ namespace UI.Model
         public void InsertChar(char c)
         {
             Selection.UserChar = c;
-            if ( Selection.UserChar != c ) {
-              Selection.Status = GridCharStatus.UNKNOWN;
-            }
             if (Orientation == Direction.Across)
             {
                 if (!(Selection.Right?.IsBlock ?? true))
@@ -288,16 +313,12 @@ namespace UI.Model
 
         public void ReplaceChar(char c)
         {
-            if ( Selection.UserChar != c ) {
-              Selection.Status = GridCharStatus.UNKNOWN;
-            }
             Selection.UserChar = c;
         }
 
         public void DeleteChar(bool moveBackChar)
         {
             Selection.UserChar = ' ';
-            Selection.Status = GridCharStatus.UNKNOWN;
             if (moveBackChar)
             {
                 if (Orientation == Direction.Across)
@@ -326,7 +347,6 @@ namespace UI.Model
             while (selectIndex < wordChars.Count())
             {
                 wordChars[selectIndex].UserChar = ' ';
-                wordChars[selectIndex].Status = GridCharStatus.UNKNOWN;
                 selectIndex++;
             }
         }
@@ -340,7 +360,6 @@ namespace UI.Model
             while (index < wordChars.Count())
             {
                 wordChars[index].UserChar = ' ';
-                wordChars[index].Status = GridCharStatus.UNKNOWN;
                 index++;
             }
             Selection = wordChars.First();
@@ -373,40 +392,19 @@ namespace UI.Model
         }
 
         public void CheckChar() {
-          if ( Selection.UserChar == ' ' ) {
-            return;
-          }
-          if ( Selection.UserChar == Selection.AnswerChar ) {
-            Selection.Status = GridCharStatus.CORRECT;
-          } else {
-            Selection.Status = GridCharStatus.INCORRECT;
-          }
+          Selection.Check();
         }
 
         public void CheckWord() {
           List<GridCharModel> gcms = getWordChars(Selection,Orientation);
           gcms.ForEach( gcm => {
-            if ( gcm.UserChar == ' ' ) {
-              return;
-            }
-            if ( gcm.UserChar == gcm.AnswerChar ) {
-              gcm.Status = GridCharStatus.CORRECT;
-            } else {
-              gcm.Status = GridCharStatus.INCORRECT;
-            }
+            gcm.Check();
           });
         }
 
         public void CheckPuzzle() {
           GridCharModels.ForEach( gcm => {
-            if ( gcm.UserChar == ' ' ) {
-              return;
-            }
-            if ( gcm.UserChar == gcm.AnswerChar ) {
-              gcm.Status = GridCharStatus.CORRECT;
-            } else {
-              gcm.Status = GridCharStatus.INCORRECT;
-            }
+            gcm.Check();
           });
         }
 
