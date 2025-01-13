@@ -33,4 +33,9 @@ namespace Event {
     }
   }
 
+  public class CheckChangeEventArgs : EventArgs {
+    public CheckChangeEventArgs() {
+    }
+  }
+
 }

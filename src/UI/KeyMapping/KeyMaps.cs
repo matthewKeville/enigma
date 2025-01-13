@@ -42,7 +42,7 @@ namespace UI.KeyMaping {
             
             (new List<Key>() { Key.Z, Key.C },new UICommand(UICommandType.CHECK_CHAR)),
             (new List<Key>() { Key.Z, Key.W },new UICommand(UICommandType.CHECK_WORD)),
-            (new List<Key>() { Key.Z, Key.G },new UICommand(UICommandType.CHECK_PUZZLE)),
+            (new List<Key>() { Key.Z, Key.P },new UICommand(UICommandType.CHECK_PUZZLE)),
 
           };
 

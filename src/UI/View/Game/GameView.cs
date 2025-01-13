@@ -36,7 +36,7 @@ namespace UI.View.Game
             _gridView.Visible = true;
 
             _statusView.X = 0;
-            _statusView.Y = Pos.Bottom(_gridView);
+            _statusView.Y = Pos.Bottom(_gridView) + 2;
      
             _cluesView.X = Pos.Right(_gridView);
             _cluesView.Width = Dim.Fill();
@@ -96,7 +96,9 @@ namespace UI.View.Game
           _gameModel = new GameModel(crosswordId,gridModel,crossword.Elapsed,
               crossword.CharacterCheckCount,
               crossword.WordCheckCount,
-              crossword.PuzzleCheckCount);
+              crossword.PuzzleCheckCount,
+              crossword.Title
+              );
           _eventBus.PostEvent(new PuzzleLoadedEventArgs(_gameModel));
         }
 
@@ -213,16 +215,19 @@ namespace UI.View.Game
               Trace.WriteLine("check char");
               _gameModel.GridModel.CheckChar();
               _gameModel.CharacterCheckCount++;
+              _eventBus.PostEvent(new PuzzleLoadedEventArgs(_gameModel));
               break;
             case UICommandType.CHECK_WORD:
               Trace.WriteLine("check word");
               _gameModel.GridModel.CheckWord();
               _gameModel.WordCheckCount++;
+              _eventBus.PostEvent(new PuzzleLoadedEventArgs(_gameModel));
               break;
             case UICommandType.CHECK_PUZZLE:
               Trace.WriteLine("check puzzle");
               _gameModel.GridModel.CheckPuzzle();
               _gameModel.PuzzleCheckCount++;
+              _eventBus.PostEvent(new PuzzleLoadedEventArgs(_gameModel));
               break;
 
             case UICommandType.ENTER_INSERT_MODE:

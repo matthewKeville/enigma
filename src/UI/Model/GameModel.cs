@@ -9,13 +9,14 @@ namespace UI.Model
       public DateTime SessionStartTime;
       public TimeSpan PrevElapsed;
 
+      public String Title;
       public int WordCheckCount;
       public int CharacterCheckCount;
       public int PuzzleCheckCount;
 
       public GameModel(int crosswordId, GridModel gridModel,
           TimeSpan prevElapsed,int wordCheckCount, int characterCheckCount,
-          int puzzleCheckCount) {
+          int puzzleCheckCount,String title) {
         CrosswordId = crosswordId;
         GridModel = gridModel;
         SessionStartTime = DateTime.UtcNow;
@@ -23,6 +24,7 @@ namespace UI.Model
         CharacterCheckCount = characterCheckCount;
         WordCheckCount = wordCheckCount;
         PuzzleCheckCount = puzzleCheckCount;
+        Title = title;
       }
     }
 }

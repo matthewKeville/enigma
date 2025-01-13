@@ -47,7 +47,7 @@ namespace Services.CrosswordInstaller
             {
                 Crossword? crossword = parser.ParseData(data.Value);
                 crossword.Published = data.Value.published.ToDateTime(TimeOnly.MinValue);
-                crossword.Title = $"NYT DAILY {crossword.Published.ToShortDateString()}";
+                crossword.Title = $"NYT {crossword.Published.ToShortDateString()}";
                 return crossword;
             }
             catch (Exception ex)

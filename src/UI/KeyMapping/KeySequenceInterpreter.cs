@@ -8,22 +8,16 @@ namespace UI.KeyMapping {
     private DateTime _lastProcessTime = DateTime.UtcNow;
     public List<(List<Key>,UICommand)> keyMaps;
 
-    private void dumpSequence( List<Key> sequence ) {
-      String msg = "";
-      sequence.ForEach( key => {
-        msg += key.ToString() + " , ";
-      });
-      Debug.WriteLine(msg);
+    public void DumpSequences() {
+      this.keyMaps.ForEach( km => dumpSequence(km.Item1));
     }
 
     public KeySequenceInterpreter(List<(List<Key>,UICommand)> keyMaps) {
       this.keyMaps = keyMaps;
-      this.keyMaps.ForEach( km => dumpSequence(km.Item1));
     }
 
     public KeySequenceInterpreter(List<(List<Key>,UICommand)> keyMaps, float flushTime) {
       this.keyMaps = keyMaps;
-      this.keyMaps.ForEach( km => dumpSequence(km.Item1));
       this._autoFlushTimeMS = flushTime;
     }
 
@@ -75,6 +69,14 @@ namespace UI.KeyMapping {
 
       return (true,null);
 
+    }
+
+    private void dumpSequence( List<Key> sequence ) {
+      String msg = "";
+      sequence.ForEach( key => {
+        msg += key.ToString() + " , ";
+      });
+      Debug.WriteLine(msg);
     }
   }
 
