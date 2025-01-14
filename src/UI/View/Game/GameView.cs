@@ -41,10 +41,6 @@ namespace UI.View.Game
 
             _statusView.X = 0;
             _statusView.Y = Pos.Bottom(_gridView) + 2;
-
-            // _keyBindsView.Visible = false;
-            // _keyBindsView.Width = Dim.Fill();
-            // _keyBindsView.Height = Dim.Fill();
      
             _cluesView.X = Pos.Right(_gridView);
             _cluesView.Width = Dim.Fill();
@@ -54,10 +50,10 @@ namespace UI.View.Game
             Add(_statusView);
             Add(_cluesView);
 
-            //Add(_keyBindsView);
-
-            _normalKeySequenceInterpreter = new KeySequenceInterpreter(_keyMaps.NormalKeyMaps);
-            _insertKeySequenceInterpreter = new KeySequenceInterpreter(_keyMaps.InsertKeyMaps);
+            _normalKeySequenceInterpreter = new KeySequenceInterpreter(
+                _keyMaps.NormalKeyMaps.SelectMany( km => km.Bindings ).ToList());
+            _insertKeySequenceInterpreter = new KeySequenceInterpreter(
+                _keyMaps.InsertKeyMaps.SelectMany( km => km.Bindings ).ToList());
 
             _eventBus.Register(this, (args) =>
             {
@@ -158,9 +154,7 @@ namespace UI.View.Game
             //////////////////////////////////////////
             ///
             case UICommandType.SHOW_KEYBINDS:
-              //_eventBus.PostEvent(new ClueViewChangeEventArgs());
               Application.Run(_keyBindsView);
-              Trace.WriteLine("showing keybidns");
               break;
             case UICommandType.TOGGLE_CLUES_VIEW:
               _eventBus.PostEvent(new ClueViewChangeEventArgs());
@@ -227,19 +221,16 @@ namespace UI.View.Game
               break;
 
             case UICommandType.CHECK_CHAR:
-              Trace.WriteLine("check char");
               _gameModel.GridModel.CheckChar();
               _gameModel.CharacterCheckCount++;
               _eventBus.PostEvent(new PuzzleLoadedEventArgs(_gameModel));
               break;
             case UICommandType.CHECK_WORD:
-              Trace.WriteLine("check word");
               _gameModel.GridModel.CheckWord();
               _gameModel.WordCheckCount++;
               _eventBus.PostEvent(new PuzzleLoadedEventArgs(_gameModel));
               break;
             case UICommandType.CHECK_PUZZLE:
-              Trace.WriteLine("check puzzle");
               _gameModel.GridModel.CheckPuzzle();
               _gameModel.PuzzleCheckCount++;
               _eventBus.PostEvent(new PuzzleLoadedEventArgs(_gameModel));
@@ -248,7 +239,6 @@ namespace UI.View.Game
             case UICommandType.ENTER_INSERT_MODE:
               _isInsertMode = true;
               break;
-
 
             case UICommandType.EXIT_PUZZLE:
               var confirm = MessageBox.Query(30, 5, "System", "Ending Puzzle", "CONFIRM", "ABORT");
