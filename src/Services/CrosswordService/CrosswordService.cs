@@ -1,7 +1,7 @@
 using Entity;
 using Microsoft.EntityFrameworkCore;
 
-namespace Services {
+namespace Services.CrosswordService {
 
   public class CrosswordService {
 
