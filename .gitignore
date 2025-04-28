@@ -3,3 +3,4 @@ obj/
 logs/
 enigma.db
 enigma.json
+plugins/
