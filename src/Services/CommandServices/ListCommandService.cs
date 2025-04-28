@@ -10,6 +10,9 @@ public class ListCommandService {
     this.crosswordService = crosswordService;
   }
 
+  /// <summary>
+  /// list the installed crosswords to standard out
+  /// </summary>
   public void List(string[] args) {
 
     if ( args.Count() > 1 ) {

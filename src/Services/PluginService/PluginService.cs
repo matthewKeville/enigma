@@ -1,8 +1,7 @@
-using System.Text.RegularExpressions;
-using System;
 using Settings;
 using Exceptions;
-
+using Utils.Exceptions;
+using Utils;
 
 namespace Services.PluginService {
 
@@ -13,6 +12,19 @@ namespace Services.PluginService {
     public PluginService(AppSettings appSettings) {
       this.appSettings = appSettings;
     }
+
+    public List<String> GetInstalledPlugins() {
+      List<String> pluginNames = appSettings.UserSettings.Plugins
+        .FindAll(p => p.Enabled)
+        .Select( p => $"{p.Repo} as {p.As}")
+        .ToList();
+      return pluginNames;
+    }
+
+    public void GetPluginInfo() {}
+    public void GetPluginMethods() {}
+    public void GetPluginMethod() {}
+    public void Install() {}
 
     /// <summary>
     /// Install or Delete Plugins based on user configuration
@@ -30,29 +42,26 @@ namespace Services.PluginService {
 
       //check if any plugins need to be installed 
       foreach( PluginSetting pluginSetting in (appSettings.UserSettings.Plugins.FindAll(p => p.Enabled))) {
-        String repoName = getRepoName(pluginSetting.Src);
-        String inspectedPluginPath = Path.Join(appSettings.PluginPath,repoName);
+        String inspectedPluginPath = Path.Join(appSettings.PluginPath,pluginSetting.Repo);
         if ( !Directory.Exists(inspectedPluginPath)) {
           Console.WriteLine($"installing plugin {pluginSetting.Src}");
           installPlugin(pluginSetting.Src,appSettings.PluginPath);
-          Console.WriteLine($"done {pluginSetting.Src}");
         }
       }
 
       //check if any plugins need to removed (no longer in configuration)
       foreach( String path in Directory.GetDirectories(appSettings.PluginPath))  {
         String pluginName = Path.GetFileName(path);
-        if ( !appSettings.UserSettings.Plugins.Any( ps => ps.Enabled && (getRepoName(ps.Src) == pluginName) ) ) {
+        if ( !appSettings.UserSettings.Plugins.Any( ps => ps.Enabled && (ps.Repo == pluginName) ) ) {
           Console.WriteLine($" the plugin {pluginName} does not exist in config or is disabled, {pluginName} will be deleted");
           Directory.Delete(path, recursive:true);
         }
       }
 
+      //check if any plugins need to be updated
+
     }
 
-    private bool isPluginInstalled(PluginSetting pluginSetting) {
-      return false;
-    }
 
     /// <exception cref="PluginException"></exception>
     private void installPlugin(String src,String installationPath) {
@@ -76,20 +85,6 @@ namespace Services.PluginService {
 
       Console.WriteLine($"building plugin {src}");
       //do build...
-    }
-
-    /// <exception cref="PluginException">If src can't be parsed into 'author/repo' </exception>
-    private String getRepoName(String src) {
-      string[] tokens = src.Split('/');
-      if ( tokens.Count() < 3 ) {
-        throw new PluginException("Unable to determine repo name");
-      }
-      string repo = tokens[tokens.Count()-1];
-      // rip .git
-      if ( repo.Contains(".git") ) {
-        repo = repo.Substring(0,repo.Count()-4);
-      }
-      return $"{repo}";
     }
 
   }

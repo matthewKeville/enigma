@@ -18,6 +18,9 @@ public class Startup() {
 
     services.AddSingleton<ListCommandService, ListCommandService>();
     services.AddSingleton<StartCommandService, StartCommandService>();
+    services.AddSingleton<InstallCommandService, InstallCommandService>();
+    services.AddSingleton<PluginCommandService, PluginCommandService>();
+    services.AddSingleton<SyncCommandService, SyncCommandService>();
 
     services.AddSingleton<CrosswordService, CrosswordService>();
     services.AddSingleton<PluginService, PluginService>();
@@ -45,6 +48,9 @@ public class Startup() {
   }
 
   public static void InitializeLogger() {
+    if ( !Directory.Exists("./logs") ) {
+      Directory.CreateDirectory("./logs");
+    }
     // log location should depend on release type
     Trace.Listeners.Add(new TextWriterTraceListener("./logs/enigma.log"));
     Trace.AutoFlush = true;
