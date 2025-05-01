@@ -6,7 +6,10 @@ namespace Utils {
 
   public static class RepoParser {
 
-    /// <exception cref="PluginException">If src can't be parsed into 'author/repo' </exception>
+    /// <summary>
+    /// Given a github repo url, return the name of the repository
+    /// </summary>
+    /// <exception cref="PluginException">If src can't be parsed into expected format</exception>
     public static String GetRepoName(String src) {
       string[] tokens = src.Split('/');
       if ( tokens.Count() < 3 ) {

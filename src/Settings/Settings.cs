@@ -42,7 +42,18 @@ namespace Settings {
 
     public bool IsDev = false;
     public String DbPath = "";
-    public String PluginPath = "./plugins";
+    /// <value>
+    /// Absolute path to plugin directory
+    /// </value>
+    public String PluginPath = Path.GetFullPath("./plugins");
+    /// <value>
+    /// Absolute path to plugin src directory
+    /// </value>
+    public String PluginSrcPath = Path.GetFullPath("./plugins/src");
+    /// <value>
+    /// Absolute path to plugin deployment directory
+    /// </value>
+    public String PluginDeployPath = Path.GetFullPath("./plugins/deploy");
     public UserSettings UserSettings = new UserSettings();
 
     //TD UI Settings

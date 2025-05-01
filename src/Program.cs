@@ -68,5 +68,5 @@ try {
     Console.Error.WriteLine(ex.Message);
   }
 } catch (Exception ex) {
-  Console.Error.WriteLine("unexpected error \n" + ex.Message);
+  Console.Error.WriteLine("unexpected error \n" + ex.ToString());
 }
