@@ -1,7 +1,7 @@
 using Enums;
 
 public class CrosswordHeader {
-    public String Title;
+    public String Title = "";
     public CrosswordType Type;
     public DateTime Published;
     public DateTime? StartDate;

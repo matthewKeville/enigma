@@ -182,7 +182,7 @@ namespace Services.PluginService {
       ResponseBody? responseBody;
       try {
         JsonDocument doc = JsonDocument.Parse(stdout);
-        String responseType = doc.RootElement.GetProperty("responseType").GetString();
+        String responseType = doc.RootElement.GetProperty("responseType").GetString() ?? "";
         switch ( responseType ) {
           case "info":
             {

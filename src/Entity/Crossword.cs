@@ -32,8 +32,8 @@ namespace Entity {
     public int Y { get; set; }
     public int I { get; set; }
     public Direction Direction { get; set; }
-    public String Prompt { get; set; } 
-    public String Answer { get; set; } 
+    public String Prompt { get; set; } = "";
+    public String Answer { get; set; } = "";
 
     public int CrosswordId { get; set; }
 

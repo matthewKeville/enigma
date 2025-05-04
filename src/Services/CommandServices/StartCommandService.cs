@@ -32,7 +32,7 @@ public class StartCommandService {
       startGame(puzzleId);
       Application.Shutdown();
     } catch (Exception exception) {
-      throw new BadArgsException($"invalid argument <puzzleId> {args[1]}");
+      throw new BadArgsException($"invalid argument <puzzleId> {args[1]}",exception);
     }
 
     //TODO need to verify input is non-zero and maps to a known puzzleId
