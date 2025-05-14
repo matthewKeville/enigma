@@ -40,36 +40,34 @@ public class GenerateSchemaClasses {
     schemaUrls.Add("request-schema.json","https://raw.githubusercontent.com/matthewKeville/enigma-puzzle-fetcher-schema/refs/heads/main/schemas/request-schema.json");
     schemaUrls.Add("response-schema.json","https://raw.githubusercontent.com/matthewKeville/enigma-puzzle-fetcher-schema/refs/heads/main/schemas/response-schema.json");
 
-    async Task<String> DownloadSchema(string url, string path) {
+    async Task DownloadSchema(string url, string path) {
       HttpClient client = new HttpClient();
       HttpResponseMessage result = await client.GetAsync(url);
       String content = await result.Content.ReadAsStringAsync();
-
       String directory = Path.GetDirectoryName(Path.Combine(SCHEMAS_DIR,path));
       String filePath = Path.Combine(SCHEMAS_DIR,path);
       Directory.CreateDirectory(directory);
       File.WriteAllText(filePath,content);
-      return filePath;
     }
 
     //download schemas to filesystem
-    List<(string/*name*/,string/*filePath*/)> schemaPaths = new();
     foreach ( var entry in schemaUrls ) {
-      String schemaFilePath = await DownloadSchema(entry.Value,entry.Key);
-      schemaPaths.Add((entry.Key,schemaFilePath));
+      await DownloadSchema(entry.Value,entry.Key);
     }
 
-    //load schemas into JsonSchema
-    JsonSchema schema = null;
-    foreach ( (string name, string filePath) in schemaPaths ) {
-    //  Omnisharp gives 
-    //  1. 'TaskAwaiter<JsonSchema>' does not implement 'INotifyCompletion' [CS4027]
-    //  But script executes just fine
-      schema = await JsonSchema.FromFileAsync(filePath);
-    }
+    //load root schemas into JsonSchema
+    JsonSchema requestSchema  = await JsonSchema.FromFileAsync(Path.Combine(SCHEMAS_DIR,"request-schema.json"));
+    JsonSchema responseSchema  = await JsonSchema.FromFileAsync(Path.Combine(SCHEMAS_DIR,"response-schema.json"));
+
+    //load schema roots into synthetic root
+    JsonSchema syntheticRoot = new JsonSchema {
+      Type = JsonObjectType.Object,
+    };
+    syntheticRoot.Properties.Add("request", new JsonSchemaProperty { Reference = requestSchema } );
+    syntheticRoot.Properties.Add("response", new JsonSchemaProperty { Reference = responseSchema } );
 
     //generate cs file
-    var generator = new CSharpGenerator(schema, new CSharpGeneratorSettings
+    var generator = new CSharpGenerator(syntheticRoot, new CSharpGeneratorSettings
     {
         Namespace = "Fetcher.Models"
     });
