@@ -1,0 +1,70 @@
+{
+  "$id": "https://raw.githubusercontent.com/org/repo/main/schemas/v1/RequestSchema.json",
+  "definitions": {
+    "FetchRequest": {
+      "description": "Fetch Request object",
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "Method": {
+          "type": "string"
+        },
+        "Args": {
+          "type": "array",
+          "items": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "required": [
+        "Method",
+        "Args"
+      ]
+    }
+  },
+  "type": "object",
+  "properties": {
+    "Version": {
+      "type": "string"
+    },
+    "Type": {
+      "description": "The Type of Request",
+      "type": "integer",
+      "enum": [
+        0,
+        1,
+        2
+      ]
+    },
+    "Fetch": {
+      "$ref": "#/definitions/FetchRequest"
+    }
+  },
+  "required": [
+    "Version",
+    "Type"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "Type": {
+            "enum": [
+              2
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "Fetch"
+        ]
+      }
+    }
+  ]
+}

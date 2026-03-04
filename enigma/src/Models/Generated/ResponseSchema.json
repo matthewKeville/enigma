@@ -1,0 +1,165 @@
+{
+  "$id": "https://raw.githubusercontent.com/org/repo/main/schemas/v1/ResponseSchema.json",
+  "definitions": {
+    "Argument": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "Name": {
+          "type": "string"
+        },
+        "Description": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "Name",
+        "Description"
+      ]
+    },
+    "FetchResponse": {
+      "description": "Fetch object",
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "PuzzleData": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "PuzzleData"
+      ]
+    },
+    "InfoResponse": {
+      "description": "Info object",
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "Name": {
+          "type": "string"
+        },
+        "Description": {
+          "type": "string"
+        },
+        "Version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "Name",
+        "Description",
+        "Version"
+      ]
+    },
+    "MethodsResponse": {
+      "description": "Methods object",
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "Name": {
+          "type": "string"
+        },
+        "Description": {
+          "type": "string"
+        },
+        "Arguments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Argument"
+          }
+        }
+      },
+      "required": [
+        "Name",
+        "Description",
+        "Arguments"
+      ]
+    }
+  },
+  "type": "object",
+  "properties": {
+    "Version": {
+      "type": "string"
+    },
+    "Type": {
+      "description": "The Type of Response",
+      "type": "integer",
+      "enum": [
+        0,
+        1,
+        2
+      ]
+    },
+    "Fetch": {
+      "$ref": "#/definitions/FetchResponse"
+    },
+    "Methods": {
+      "$ref": "#/definitions/MethodsResponse"
+    },
+    "Info": {
+      "$ref": "#/definitions/InfoResponse"
+    }
+  },
+  "required": [
+    "Version",
+    "Type"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "Type": {
+            "enum": [
+              2
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "Fetch"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "Type": {
+            "enum": [
+              1
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "Methods"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "Type": {
+            "enum": [
+              0
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "Info"
+        ]
+      }
+    }
+  ]
+}

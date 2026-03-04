@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Services.CommandServices;
 using Services.CommandServices.Exceptions;
 using Exceptions;
+using Schema;
 
 IHost? host = null;
 
@@ -35,6 +36,14 @@ if ( args.Count() == 0 ) {
 String command = args[0];
 try {
   switch ( command ) {
+
+    #if DEBUG
+    case "generate":
+    SchemaGenerator.Generate();
+    Environment.Exit(0);
+    break;
+    #endif
+
     case "list":
       host.Services.GetRequiredService<ListCommandService>().List(args);
       break;

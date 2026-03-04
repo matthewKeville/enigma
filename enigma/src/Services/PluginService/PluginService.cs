@@ -24,9 +24,11 @@ namespace Services.PluginService {
     /// <exception cref="PluginNotFoundException"></exception>
     /// <exception cref="PluginResponseSerializationException"></exception>
     /// <exception cref="PluginResponseException"></exception>
+    /**
     public InfoResponseBody RequestPluginInfo(String pluginName) {
       return (InfoResponseBody) runPlugin(pluginName,PluginInfoRequest.AsJsonString());
     }
+    */
 
     /// <summary>
     /// Return the methods available for the plugin
@@ -36,9 +38,11 @@ namespace Services.PluginService {
     ///   MethodsResponseBody 
     /// </returns>
     /// <exception cref="PluginException"></exception>
+    /**
     public MethodsResponseBody GetPluginMethods(String pluginName) {
       return (MethodsResponseBody) runPlugin(pluginName,MethodsRequest.AsJsonString());
     }
+    */
 
     //public void Install() {}
 
@@ -54,9 +58,6 @@ namespace Services.PluginService {
       return pluginNames;
     }
 
-
-    // public void GetPluginInfo() {}
-    // public void GetPluginMethod() {}
 
     /// <summary>
     /// Update the plugins managed under enigma, cloning & building
@@ -154,6 +155,7 @@ namespace Services.PluginService {
     /// <exception cref="PluginNotFoundException"></exception>
     /// <exception cref="PluginResponseSerializationException"></exception>
     /// <exception cref="PluginResponseException"></exception>
+    /**
     private ResponseBody runPlugin(String pluginName, String json) {
       PluginSetting? pluginSetting = appSettings.UserSettings.Plugins.Find( p => p.As.Equals(pluginName));
       if (pluginSetting is null) {
@@ -212,6 +214,7 @@ namespace Services.PluginService {
       return responseBody!;
 
     }
+    */
 
     public class PluginInfoRequest {
       [JsonPropertyName("requestType")]

@@ -33,30 +33,28 @@ public class PluginCommandService {
         break;
       case "info":
         {
+          /**
           InfoResponseBody body = pluginService.RequestPluginInfo(args[2]);
           Console.WriteLine($" plugin : {body.name}");
           Console.WriteLine(new String('-',80));
           Console.WriteLine(body.description);
+          */
+          Console.WriteLine($"not implemented");
         }
         break;
       case "methods":
         {
+          /**
           MethodsResponseBody body = pluginService.GetPluginMethods(args[2]);
           Console.WriteLine(JsonSerializer.Serialize<MethodsResponseBody>(body));
+          */
+          Console.WriteLine($"not implemented");
         }
         break;
       default :
         throw new BadArgsException($"no such plugin sub command {command}");
 
     }
-
-    //plugin list
-    //plugin info <pluginName>
-    //plugin methods <pluginName>
-    //plugin method <pluginName> <methodName>
-  }
-
-  private void list() {
 
   }
 
