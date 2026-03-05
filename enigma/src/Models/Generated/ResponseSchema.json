@@ -57,8 +57,7 @@
         "Version"
       ]
     },
-    "MethodsResponse": {
-      "description": "Methods object",
+    "Method": {
       "type": [
         "object",
         "null"
@@ -81,6 +80,27 @@
         "Name",
         "Description",
         "Arguments"
+      ]
+    },
+    "MethodsResponse": {
+      "description": "Methods object",
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "Methods": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/Method"
+          }
+        }
+      },
+      "required": [
+        "Methods"
       ]
     }
   },

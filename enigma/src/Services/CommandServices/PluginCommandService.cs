@@ -1,14 +1,18 @@
 namespace Services.CommandServices {
-    using System.Text.Json;
-    using Services.CommandServices.Exceptions;
+
+using Plugin;
+using Services.CommandServices.Exceptions;
 using Services.PluginService;
+using Services.PluginRunnerService;
 
 public class PluginCommandService {
 
   private PluginService pluginService;
+  private PluginRunnerService pluginRunnerService;
 
-  public PluginCommandService(PluginService pluginService) {
+  public PluginCommandService(PluginService pluginService,PluginRunnerService pluginRunnerService) {
     this.pluginService = pluginService;
+    this.pluginRunnerService = pluginRunnerService;
   }
 
   /// <exception cref="BadArgsException"></exception>
@@ -33,22 +37,14 @@ public class PluginCommandService {
         break;
       case "info":
         {
-          /**
-          InfoResponseBody body = pluginService.RequestPluginInfo(args[2]);
-          Console.WriteLine($" plugin : {body.name}");
-          Console.WriteLine(new String('-',80));
-          Console.WriteLine(body.description);
-          */
-          Console.WriteLine($"not implemented");
+          InfoResponse info = pluginRunnerService.RequestInfo(args[2]);
+          Console.WriteLine(info.ToString());
         }
         break;
       case "methods":
         {
-          /**
-          MethodsResponseBody body = pluginService.GetPluginMethods(args[2]);
-          Console.WriteLine(JsonSerializer.Serialize<MethodsResponseBody>(body));
-          */
-          Console.WriteLine($"not implemented");
+          MethodsResponse info = pluginRunnerService.RequestMethods(args[2]);
+          Console.WriteLine(info.ToString());
         }
         break;
       default :

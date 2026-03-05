@@ -104,7 +104,20 @@ public class  Response {
 
   public class MethodsResponse {
 
-    public class  Argument {
+    public class Method {
+
+      [JsonProperty(Required = Required.Always)]
+      public String Name;
+
+      [JsonProperty(Required = Required.Always)]
+      public String Description;
+
+      [JsonProperty(Required = Required.Always)]
+      public Argument[] Arguments;
+
+    }
+
+    public class Argument {
 
       [JsonProperty(Required = Required.Always)]
       public String Name;
@@ -114,12 +127,7 @@ public class  Response {
 
     }
 
-    [JsonProperty(Required = Required.Always)]
-    public String Name;
-    [JsonProperty(Required = Required.Always)]
-    public String Description;
-    [JsonProperty(Required = Required.Always)]
-    public Argument[] Arguments;
+    public Method[] Methods;
 
   }
 

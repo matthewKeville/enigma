@@ -2,6 +2,7 @@ using Settings;
 using Exceptions;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using Plugin;
 
 namespace Services.PluginService {
 
@@ -12,39 +13,6 @@ namespace Services.PluginService {
     public PluginService(AppSettings appSettings) {
       this.appSettings = appSettings;
     }
-
-    /// <summary>
-    /// Return the info response JSON as a dictionary for
-    /// the provided plugin
-    /// </summary>
-    /// <param name="pluginName"> plugin alias </param>
-    /// <returns>
-    ///   InfoResponseBody
-    /// </returns>
-    /// <exception cref="PluginNotFoundException"></exception>
-    /// <exception cref="PluginResponseSerializationException"></exception>
-    /// <exception cref="PluginResponseException"></exception>
-    /**
-    public InfoResponseBody RequestPluginInfo(String pluginName) {
-      return (InfoResponseBody) runPlugin(pluginName,PluginInfoRequest.AsJsonString());
-    }
-    */
-
-    /// <summary>
-    /// Return the methods available for the plugin
-    /// </summary>
-    /// <param name="pluginName"> plugin alias </param>
-    /// <returns>
-    ///   MethodsResponseBody 
-    /// </returns>
-    /// <exception cref="PluginException"></exception>
-    /**
-    public MethodsResponseBody GetPluginMethods(String pluginName) {
-      return (MethodsResponseBody) runPlugin(pluginName,MethodsRequest.AsJsonString());
-    }
-    */
-
-    //public void Install() {}
 
     /// <summary>
     /// Return list of the aliases of installed plugins
@@ -152,89 +120,6 @@ namespace Services.PluginService {
 
     }
 
-    /// <exception cref="PluginNotFoundException"></exception>
-    /// <exception cref="PluginResponseSerializationException"></exception>
-    /// <exception cref="PluginResponseException"></exception>
-    /**
-    private ResponseBody runPlugin(String pluginName, String json) {
-      PluginSetting? pluginSetting = appSettings.UserSettings.Plugins.Find( p => p.As.Equals(pluginName));
-      if (pluginSetting is null) {
-        throw new PluginNotFoundException($"no such plugin with alias {pluginName}");
-      }
-
-      Process process = new Process { 
-        StartInfo = new ProcessStartInfo {
-          FileName = Environment.OSVersion.Platform == PlatformID.Win32NT ? "sh" : "/bin/sh",
-          Arguments = "run.sh",
-          WorkingDirectory = Path.Join(appSettings.PluginDeployPath,pluginSetting.Repo),
-          RedirectStandardOutput = true,
-          RedirectStandardInput = true
-        }
-      };
-
-      Trace.WriteLine($"writing this to stdin \n {json}");
-      process.Start();
-      process.StandardInput.Write(json);
-      process.StandardInput.Close();
-      String stdout = process.StandardOutput.ReadToEnd();
-      process.WaitForExit();
-      Trace.WriteLine($"process finished stdout is \n {stdout}");
-
-      //try parse response
-      ResponseBody? responseBody;
-      try {
-        JsonDocument doc = JsonDocument.Parse(stdout);
-        String responseType = doc.RootElement.GetProperty("responseType").GetString() ?? "";
-        switch ( responseType ) {
-          case "info":
-            {
-              JsonElement body = doc.RootElement.GetProperty("body");
-              responseBody = JsonSerializer.Deserialize<InfoResponseBody>(body.GetRawText());
-            }
-            break;
-          case "methods":
-            { 
-              JsonElement body = doc.RootElement.GetProperty("body");
-              responseBody = JsonSerializer.Deserialize<MethodsResponseBody>(body.GetRawText());
-            }
-            break;
-          case "fetch":
-            {
-              throw new NotImplemented("fetch response parsing not implemented");
-              break;
-            }
-          default:
-            throw new PluginResponseException("Unexpected plugin response, missing responseType");
-        }
-      }
-      catch ( Exception ex) {
-        throw new PluginResponseSerializationException("plugin response is not understood",ex);
-      } 
-
-      return responseBody!;
-
-    }
-    */
-
-    public class PluginInfoRequest {
-      [JsonPropertyName("requestType")]
-      [JsonInclude]
-      public readonly String? requestType = "info";
-      public static String AsJsonString() {
-        return JsonSerializer.Serialize<PluginInfoRequest>(new PluginInfoRequest());
-      }
-    }
-
-    public class MethodsRequest {
-      [JsonPropertyName("requestType")]
-      [JsonInclude]
-      public readonly String? requestType = "methods";
-      public static String AsJsonString() {
-        return JsonSerializer.Serialize<MethodsRequest>(new MethodsRequest());
-      }
-    }
-
   }
-
 
 }
