@@ -19,6 +19,44 @@
         "Description"
       ]
     },
+    "Clue": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "X": {
+          "type": "integer"
+        },
+        "Y": {
+          "type": "integer"
+        },
+        "I": {
+          "type": "integer"
+        },
+        "D": {
+          "type": "string",
+          "enum": [
+            "Across",
+            "Down"
+          ]
+        },
+        "Prompt": {
+          "type": "string"
+        },
+        "Answer": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "X",
+        "Y",
+        "I",
+        "D",
+        "Prompt",
+        "Answer"
+      ]
+    },
     "FetchResponse": {
       "description": "Fetch object",
       "type": [
@@ -26,12 +64,37 @@
         "null"
       ],
       "properties": {
-        "PuzzleData": {
+        "Columns": {
+          "type": "integer"
+        },
+        "Rows": {
+          "type": "integer"
+        },
+        "Clues": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Clue"
+          }
+        },
+        "Title": {
+          "type": "string"
+        },
+        "Author": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "ReleaseDate": {
           "type": "string"
         }
       },
       "required": [
-        "PuzzleData"
+        "Columns",
+        "Rows",
+        "Clues",
+        "Title",
+        "ReleaseDate"
       ]
     },
     "InfoResponse": {

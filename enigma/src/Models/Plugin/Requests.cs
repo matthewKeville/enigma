@@ -69,5 +69,4 @@ namespace Plugin {
 
   }
 
-  //public class MethodsRequest { }
 }
