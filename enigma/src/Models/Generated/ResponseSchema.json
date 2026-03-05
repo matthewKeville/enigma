@@ -110,13 +110,7 @@
       "type": "string"
     },
     "Type": {
-      "description": "The Type of Response",
-      "type": "integer",
-      "enum": [
-        0,
-        1,
-        2
-      ]
+      "description": "The Type of Response"
     },
     "Fetch": {
       "$ref": "#/definitions/FetchResponse"
@@ -138,7 +132,7 @@
         "properties": {
           "Type": {
             "enum": [
-              2
+              "Fetch"
             ]
           }
         }
@@ -154,7 +148,7 @@
         "properties": {
           "Type": {
             "enum": [
-              1
+              "Methods"
             ]
           }
         }
@@ -170,7 +164,7 @@
         "properties": {
           "Type": {
             "enum": [
-              0
+              "Info"
             ]
           }
         }

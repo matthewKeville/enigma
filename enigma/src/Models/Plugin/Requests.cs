@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using Newtonsoft.Json.Schema.Generation;
@@ -7,7 +8,8 @@ namespace Plugin {
 
 
   public class Request {
-
+  
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum RequestType {
       Info,
       Methods,

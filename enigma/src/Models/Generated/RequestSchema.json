@@ -33,13 +33,7 @@
       "type": "string"
     },
     "Type": {
-      "description": "The Type of Request",
-      "type": "integer",
-      "enum": [
-        0,
-        1,
-        2
-      ]
+      "description": "The Type of Request"
     },
     "Fetch": {
       "$ref": "#/definitions/FetchRequest"
@@ -55,7 +49,7 @@
         "properties": {
           "Type": {
             "enum": [
-              2
+              "Fetch"
             ]
           }
         }

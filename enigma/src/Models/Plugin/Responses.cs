@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using Newtonsoft.Json.Schema.Generation;
@@ -7,6 +8,7 @@ namespace Plugin {
 
 public class  Response {
 
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum ResponseType {
       Info,
       Methods,
@@ -142,6 +144,7 @@ public class  Response {
 
   public class Error {
 
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum ErrorType {
       BadRequest,
       InvalidArgs,
