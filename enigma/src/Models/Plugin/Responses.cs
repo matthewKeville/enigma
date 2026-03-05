@@ -41,6 +41,7 @@ public class  Response {
     public static JSchema Generate() {
 
           JSchemaGenerator generator = new JSchemaGenerator();
+          generator.GenerationProviders.Add(new StringEnumGenerationProvider());
           JSchema schema = generator.Generate(typeof(Response));
 
           schema.AllOf.Add(new JSchema

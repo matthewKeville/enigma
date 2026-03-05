@@ -110,7 +110,13 @@
       "type": "string"
     },
     "Type": {
-      "description": "The Type of Response"
+      "description": "The Type of Response",
+      "type": "string",
+      "enum": [
+        "Info",
+        "Methods",
+        "Fetch"
+      ]
     },
     "Fetch": {
       "$ref": "#/definitions/FetchResponse"

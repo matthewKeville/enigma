@@ -29,6 +29,7 @@ namespace Plugin {
     public static JSchema Generate() {
 
       JSchemaGenerator generator = new JSchemaGenerator();
+      generator.GenerationProviders.Add(new StringEnumGenerationProvider());
       JSchema schema = generator.Generate(typeof(Request));
 
       // Use allOf to combine multiple conditional rules
