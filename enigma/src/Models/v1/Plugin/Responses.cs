@@ -21,17 +21,17 @@ public class  Response {
     [JsonProperty(Required = Required.Always)]
     public ResponseType Type { get; set; }
 
-    //this should be required if requestType is Fetch
     [JsonProperty(Required = Required.Default)]
     public FetchResponse Fetch { get; set; }
 
-    //this should be required if requestType is Methods
     [JsonProperty(Required = Required.Default)]
     public MethodsResponse Methods { get; set; }
 
-    //this should be required if requestType is Methods
     [JsonProperty(Required = Required.Default)]
     public InfoResponse Info{ get; set; }
+
+    [JsonProperty(Required = Required.Default)]
+    public ErrorResponse Error { get; set; }
 
     public override string ToString()
     {
@@ -188,6 +188,7 @@ public class  Response {
 
     }
 
+    [JsonProperty(Required = Required.Default)]
     public Method[] Methods { get; set; }
 
   }
@@ -201,7 +202,7 @@ public class  Response {
     public String Version { get; set; }
   }
 
-  public class Error {
+  public class ErrorResponse {
 
     [JsonConverter(typeof(StringEnumConverter))]
     public enum ErrorType {

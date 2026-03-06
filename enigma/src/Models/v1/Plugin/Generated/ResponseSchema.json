@@ -57,6 +57,32 @@
         "Answer"
       ]
     },
+    "ErrorResponse": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "Type": {
+          "type": "string",
+          "enum": [
+            "BadRequest",
+            "InvalidArgs",
+            "FetchFailed",
+            "CriticalFailure"
+          ]
+        },
+        "errorMessage": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "Type"
+      ]
+    },
     "FetchResponse": {
       "description": "Fetch object",
       "type": [
@@ -185,10 +211,7 @@
             "$ref": "#/definitions/Method"
           }
         }
-      },
-      "required": [
-        "Methods"
-      ]
+      }
     }
   },
   "type": "object",
@@ -213,6 +236,9 @@
     },
     "Info": {
       "$ref": "#/definitions/InfoResponse"
+    },
+    "Error": {
+      "$ref": "#/definitions/ErrorResponse"
     }
   },
   "required": [
