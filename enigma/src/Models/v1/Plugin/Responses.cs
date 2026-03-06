@@ -3,12 +3,13 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using Newtonsoft.Json.Schema.Generation;
+using Newtonsoft.Json.Serialization;
 
 namespace Models.Plugin.V1 {
 
 public class  Response {
 
-    [JsonConverter(typeof(StringEnumConverter))]
+    [JsonConverter(typeof(StringEnumConverter), typeof(CamelCaseNamingStrategy))]
     public enum ResponseType {
       Info,
       Methods,
@@ -114,7 +115,7 @@ public class  Response {
 
     public class Clue {
 
-      [JsonConverter(typeof(StringEnumConverter))]
+      [JsonConverter(typeof(StringEnumConverter), typeof(CamelCaseNamingStrategy))]
       public enum Direction {
         Across,
         Down,
@@ -239,7 +240,7 @@ public class  Response {
 
   public class ErrorResponse {
 
-    [JsonConverter(typeof(StringEnumConverter))]
+    [JsonConverter(typeof(StringEnumConverter), typeof(CamelCaseNamingStrategy))]
     public enum ErrorType {
       BadRequest,
       InvalidArgs,

@@ -3,12 +3,13 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using Newtonsoft.Json.Schema.Generation;
+using Newtonsoft.Json.Serialization;
 
 namespace Models.Plugin.V1 {
 
   public class Request {
   
-    [JsonConverter(typeof(StringEnumConverter))]
+    [JsonConverter(typeof(StringEnumConverter), typeof(CamelCaseNamingStrategy))]
     public enum RequestType {
       Info,
       Methods,
