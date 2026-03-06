@@ -47,6 +47,11 @@ public class PluginCommandService {
           Console.WriteLine(info.ToString());
         }
         break;
+      case "install":
+        {
+          Console.WriteLine("This feature is not implemented yet");
+        }
+        break;
       default :
         throw new BadArgsException($"no such plugin sub command {command}");
 

@@ -16,7 +16,7 @@ namespace Models.Plugin.V1 {
     }
 
     [JsonProperty(Required = Required.Always)]
-    public String APIVersion { get; } = SchemaGenerator.VERSION;
+    public String ApiVersion { get; } = SchemaGenerator.VERSION;
 
     [JsonProperty(Required = Required.Always)]
     public RequestType Type { get; set; }

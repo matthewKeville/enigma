@@ -16,12 +16,12 @@ public static class HelpCommandService {
     Console.WriteLine("list".PadRight(40) + "list installed crosswords");
     Console.WriteLine("start".PadRight(40) + "start the interactive crossword player");
     Console.WriteLine("sync".PadRight(40) + "sync plugin configuration");
-    Console.WriteLine("install <plugin> <method> <args>".PadRight(40) + "install a crossword from a plugin");
 
     Console.WriteLine("plugin list".PadRight(40) + "list installed plugins");
     Console.WriteLine("plugin info <plugin>".PadRight(40) + "info for a specific plugin");
     Console.WriteLine("plugin methods <plugin>".PadRight(40) + "list install methods for a plugin");
-    Console.WriteLine("plugin method <plugin> <method>".PadRight(40) + "list info for a specific plugin method");
+    Console.WriteLine("plugin list".PadRight(40) + "list installed plugins");
+    Console.WriteLine("plugin install <plugin> <method> <args>".PadRight(40) + "install a crossword from a plugin");
   }
 
 }

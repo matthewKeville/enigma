@@ -29,7 +29,7 @@
   },
   "type": "object",
   "properties": {
-    "APIVersion": {
+    "ApiVersion": {
       "type": "string"
     },
     "Type": {
@@ -46,7 +46,7 @@
     }
   },
   "required": [
-    "APIVersion",
+    "ApiVersion",
     "Type"
   ],
   "allOf": [

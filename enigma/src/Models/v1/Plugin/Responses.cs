@@ -16,7 +16,7 @@ public class  Response {
     }
 
     [JsonProperty(Required = Required.Always)]
-    public String APIVersion { get; set; }
+    public String ApiVersion { get; set; }
 
     [JsonProperty(Required = Required.Always)]
     public ResponseType Type { get; set; }

@@ -50,9 +50,6 @@ try {
     case "sync":
       host.Services.GetRequiredService<SyncCommandService>().Sync(args);
       break;
-    case "install":
-      host.Services.GetRequiredService<InstallCommandService>().Install(args);
-      break;
     case "plugin":
       host.Services.GetRequiredService<PluginCommandService>().Process(args);
       break;

@@ -19,7 +19,6 @@ public class Startup() {
 
     services.AddSingleton<ListCommandService, ListCommandService>();
     services.AddSingleton<StartCommandService, StartCommandService>();
-    services.AddSingleton<InstallCommandService, InstallCommandService>();
     services.AddSingleton<PluginCommandService, PluginCommandService>();
     services.AddSingleton<PluginRunnerService, PluginRunnerService>();
     services.AddSingleton<SyncCommandService, SyncCommandService>();
