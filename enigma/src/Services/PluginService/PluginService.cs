@@ -2,7 +2,7 @@ using Settings;
 using Exceptions;
 using System.Text.Json.Serialization;
 using System.Text.Json;
-using Plugin;
+using Models.Plugin.V1;
 
 namespace Services.PluginService {
 

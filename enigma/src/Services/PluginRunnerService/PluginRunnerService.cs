@@ -2,7 +2,7 @@ using Settings;
 using Exceptions;
 using System.Text.Json.Serialization;
 using System.Text.Json;
-using Plugin;
+using Models.Plugin.V1;
 
 namespace Services.PluginRunnerService {
 
@@ -21,7 +21,6 @@ namespace Services.PluginRunnerService {
     public InfoResponse RequestInfo(String pluginName) {
       Request request = new Request
       {
-          Version = Schema.SchemaGenerator.VERSION,
           Type = Request.RequestType.Info,
       };
       Console.WriteLine(Request.SerializeJson(request));
@@ -33,7 +32,6 @@ namespace Services.PluginRunnerService {
     public MethodsResponse RequestMethods(String pluginName) {
       Request request = new Request
       {
-          Version = Schema.SchemaGenerator.VERSION,
           Type = Request.RequestType.Methods,
       };
       Console.WriteLine(Request.SerializeJson(request));

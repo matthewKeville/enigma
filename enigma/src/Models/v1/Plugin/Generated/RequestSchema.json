@@ -1,5 +1,5 @@
 {
-  "$id": "https://raw.githubusercontent.com/org/repo/main/schemas/v1/RequestSchema.json",
+  "$id": "https://raw.githubusercontent.com/matthewKeville/enigma/master/enigma/src/Models/v1/Plugin/Generated/RequestSchema.json",
   "definitions": {
     "FetchRequest": {
       "description": "Fetch Request object",
@@ -29,7 +29,7 @@
   },
   "type": "object",
   "properties": {
-    "Version": {
+    "APIVersion": {
       "type": "string"
     },
     "Type": {
@@ -46,7 +46,7 @@
     }
   },
   "required": [
-    "Version",
+    "APIVersion",
     "Type"
   ],
   "allOf": [

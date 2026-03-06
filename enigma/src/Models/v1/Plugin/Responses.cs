@@ -4,7 +4,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using Newtonsoft.Json.Schema.Generation;
 
-namespace Plugin {
+namespace Models.Plugin.V1 {
 
 public class  Response {
 
@@ -16,7 +16,7 @@ public class  Response {
     }
 
     [JsonProperty(Required = Required.Always)]
-    public String Version { get; set; }
+    public String APIVersion { get; set; }
 
     [JsonProperty(Required = Required.Always)]
     public ResponseType Type { get; set; }
@@ -35,7 +35,7 @@ public class  Response {
 
     public override string ToString()
     {
-      return $"Response(Version={Version}, Type={Type}, Fetch={Fetch}, Methods={Methods}, Info={Info})";
+      return $"Response(Version={SchemaGenerator.VERSION}, Type={Type}, Fetch={Fetch}, Methods={Methods}, Info={Info})";
     }
 
     public static JSchema Generate() {
@@ -84,7 +84,7 @@ public class  Response {
           schema.Properties["Methods"].Description = "Methods object";
           schema.Properties["Info"].Description = "Info object";
 
-          schema.Id = new Uri(Schema.SchemaGenerator.SCHEMA_HOME + "/ResponseSchema.json");
+          schema.Id = new Uri(SchemaGenerator.SCHEMA_HOME + "/ResponseSchema.json");
 
           return schema;
 

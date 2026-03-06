@@ -4,8 +4,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using Newtonsoft.Json.Schema.Generation;
 
-namespace Plugin {
-
+namespace Models.Plugin.V1 {
 
   public class Request {
   
@@ -17,12 +16,11 @@ namespace Plugin {
     }
 
     [JsonProperty(Required = Required.Always)]
-    public String Version { get; set; }
+    public String APIVersion { get; } = SchemaGenerator.VERSION;
 
     [JsonProperty(Required = Required.Always)]
     public RequestType Type { get; set; }
 
-    //this should be required if requestType is Fetch
     [JsonProperty(Required = Required.Default)]
     public FetchRequest Fetch { get; set; }
 
@@ -48,7 +46,7 @@ namespace Plugin {
       schema.Properties["Type"].Description = "The Type of Request";
       schema.Properties["Fetch"].Description = "Fetch Request object";
 
-      schema.Id = new Uri(Schema.SchemaGenerator.SCHEMA_HOME + "/RequestSchema.json");
+      schema.Id = new Uri(SchemaGenerator.SCHEMA_HOME + "/RequestSchema.json");
       return schema;
 
     }

@@ -1,6 +1,6 @@
 namespace Services.CommandServices {
 
-using Plugin;
+using Models.Plugin.V1;
 using Services.CommandServices.Exceptions;
 using Services.PluginService;
 using Services.PluginRunnerService;

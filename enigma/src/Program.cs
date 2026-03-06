@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Services.CommandServices;
 using Services.CommandServices.Exceptions;
 using Exceptions;
-using Schema;
+using Models.Plugin.V1;
 
 IHost? host = null;
 
