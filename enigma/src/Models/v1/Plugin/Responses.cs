@@ -141,6 +141,9 @@ public class  Response {
     }
 
     [JsonProperty(Required = Required.Always)]
+    public MetaData Meta { get; set; }
+
+    [JsonProperty(Required = Required.Always)]
     public int Columns { get; set; }
 
     [JsonProperty(Required = Required.Always)]

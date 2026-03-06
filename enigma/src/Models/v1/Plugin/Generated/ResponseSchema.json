@@ -64,6 +64,9 @@
         "null"
       ],
       "properties": {
+        "Meta": {
+          "$ref": "#/definitions/MetaData"
+        },
         "Columns": {
           "type": "integer"
         },
@@ -90,6 +93,7 @@
         }
       },
       "required": [
+        "Meta",
         "Columns",
         "Rows",
         "Clues",
@@ -118,6 +122,26 @@
         "Name",
         "Description",
         "Version"
+      ]
+    },
+    "MetaData": {
+      "type": "object",
+      "properties": {
+        "Plugin": {
+          "type": "string"
+        },
+        "PluginVersion": {
+          "type": "string"
+        },
+        "FetchDate": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "Plugin",
+        "PluginVersion",
+        "FetchDate"
       ]
     },
     "Method": {
