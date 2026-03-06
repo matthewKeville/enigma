@@ -4,34 +4,31 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
-
 namespace Settings {
 
 
-  public class PluginSettingJson {
+  public class PluginSetting {
+
     [JsonPropertyName("src")]
-    public String Src { get; set; }
+    public String Src { get; set; } = String.Empty;
 
     [JsonPropertyName("as")]
     public String? As { get; set; }
 
     [JsonPropertyName("enabled")]
-    public bool Enabled { get; set; }
-  }
-
-  public class UserSettingsJson {
-    [JsonPropertyName("plugins")]
-    public List<PluginSettingJson> Plugins { get; set; } = new();
-  }
-
-  public class PluginSetting {
-    public String Src { get; set; } = String.Empty;
-    public String Repo { get; set; } = String.Empty;
-    public String As { get; set; } = String.Empty;
     public bool Enabled { get; set; } = false;
+
+    //name of Repo, not url
+    public String Repo { 
+      get {
+        return Utils.RepoParser.GetRepoName(Src);
+      }
+    }
+
   }
 
   public class UserSettings {
+    [JsonPropertyName("plugins")]
     public List<PluginSetting> Plugins { get; set; } = new();
   }
 
@@ -42,17 +39,11 @@ namespace Settings {
 
     public bool IsDev = false;
     public String DbPath = "";
-    /// <value>
-    /// Absolute path to plugin directory
-    /// </value>
+    /// <value> Absolute path to plugin directory </value>
     public String PluginPath = Path.GetFullPath("./plugins");
-    /// <value>
-    /// Absolute path to plugin src directory
-    /// </value>
+    /// <value> Absolute path to plugin src directory </value>
     public String PluginSrcPath = Path.GetFullPath("./plugins/src");
-    /// <value>
-    /// Absolute path to plugin deployment directory
-    /// </value>
+    /// <value> Absolute path to plugin deployment directory </value>
     public String PluginDeployPath = Path.GetFullPath("./plugins/deploy");
     public UserSettings UserSettings = new UserSettings();
 
@@ -60,7 +51,7 @@ namespace Settings {
 
     public AppSettings(IConfiguration cm) {
 
-      // build?
+      // Build
 
       String? build = cm.GetValue<String>("build");
       if ( build == null ) {
@@ -69,7 +60,7 @@ namespace Settings {
       }
       IsDev = build == "local";
 
-      // db
+      // DB
 
       if ( IsDev ) {
         DbPath = "enigma.db";
@@ -77,7 +68,7 @@ namespace Settings {
         SetReleaseDBPath();
       }
 
-      // user settings
+      // Settings
 
       ReadUserSettings();
 
@@ -90,52 +81,50 @@ namespace Settings {
     /// <exception cref="ConfigurationException"></exception>
     private void ReadUserSettings() {
 
-      UserSettings = new UserSettings();
+      UserSettings userSettings;
 
       if (File.Exists("./enigma.json")) {
 
         String text = File.ReadAllText("./enigma.json");
+        userSettings = JsonSerializer.Deserialize<UserSettings>(text);
 
         //config non-empty?
+
         if ( text == "") {
             Trace.WriteLine("Configuration file is empty");
             throw new ConfigurationException("Configuration file is empty");
         }
 
-        Trace.WriteLine("found non-empty config file, contents :");
-        Trace.WriteLine(text);
-
         //parse settings
-        UserSettingsJson? userSettingsJson;
+      
         try {
-          userSettingsJson = JsonSerializer.Deserialize<UserSettingsJson>(text);
+          userSettings = JsonSerializer.Deserialize<UserSettings>(text);
         } catch ( JsonException exception ) {
           Console.Error.WriteLine("invalid user settings, unserializable");
           throw new ConfigurationException("invalid user settings, unserializable",exception);
         }
 
-        if (userSettingsJson == null ) {
+        if (userSettings == null ) {
           Console.Error.WriteLine("invalid user settings, unserializable");
           throw new ConfigurationException("invalid user settings, empty");
         }
 
-        //Validate Plugins
+        //validate Plugins
+      
         List<PluginSetting> validatedPluginSettings = new ();
-        foreach ( PluginSettingJson pluginSettingJson in userSettingsJson.Plugins ) {
-
+        foreach ( PluginSetting pluginSetting in userSettings.Plugins ) {
 
           //valid repo src?
-          if (!Utils.RepoParser.IsRepoUrl(pluginSettingJson.Src)) {
-            Trace.WriteLine($"Bad Plugin Configuration, not a git repo {pluginSettingJson.Src}");
-            Console.WriteLine($"[WARN] : Bad Plugin Configuration, not a git repo {pluginSettingJson.Src}");
+          if (!Utils.RepoParser.IsRepoUrl(pluginSetting.Src)) {
+            Trace.WriteLine($"Bad Plugin Configuration, not a git repo {pluginSetting.Src}");
+            Console.WriteLine($"[WARN] : Bad Plugin Configuration, not a git repo {pluginSetting.Src}");
             continue;
           } 
       
           validatedPluginSettings.Add(new PluginSetting() {
-              Src = pluginSettingJson.Src,
-              Repo = Utils.RepoParser.GetRepoName(pluginSettingJson.Src),
+              Src = pluginSetting.Src,
               Enabled = true,
-              As = ( pluginSettingJson.As ?? Utils.RepoParser.GetRepoName(pluginSettingJson.Src) )
+              As = ( pluginSetting.As ?? pluginSetting.Repo )
           });
 
         }

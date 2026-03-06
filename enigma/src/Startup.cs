@@ -10,6 +10,7 @@ using UI.KeyMaping;
 using Services.CrosswordService;
 using Services.PluginService;
 using Services.CommandServices;
+using Services.PluginRunnerService;
 
 public class Startup() {
 
@@ -20,6 +21,7 @@ public class Startup() {
     services.AddSingleton<StartCommandService, StartCommandService>();
     services.AddSingleton<InstallCommandService, InstallCommandService>();
     services.AddSingleton<PluginCommandService, PluginCommandService>();
+    services.AddSingleton<PluginRunnerService, PluginRunnerService>();
     services.AddSingleton<SyncCommandService, SyncCommandService>();
 
     services.AddSingleton<CrosswordService, CrosswordService>();

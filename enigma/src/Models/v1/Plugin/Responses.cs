@@ -176,6 +176,15 @@ public class  Response {
       [JsonProperty(Required = Required.Always)]
       public Argument[] Arguments { get; set; }
 
+      public override string ToString()
+      {
+        String argumentsString = "";
+        foreach ( Argument a in Arguments ) {
+          argumentsString = argumentsString + "\n" + a.ToString();
+        }
+        return $"Method(Name={Name}, Description={Description}, Arguments={argumentsString}";
+      }
+
     }
 
     public class Argument {
@@ -189,10 +198,24 @@ public class  Response {
       [JsonProperty(Required = Required.Always)]
       public String[] Constraints;  //maybe can just be part of description
 
+      public override string ToString()
+      {
+        return $"Argument(Name={Name}, Description={Description}, Constraints={Constraints})";
+      }
+
     }
 
     [JsonProperty(Required = Required.Default)]
     public Method[] Methods { get; set; }
+
+    public override string ToString()
+    {
+      String methodsString = "";
+      foreach ( Method m in Methods ) {
+        methodsString = methodsString + "\n" + m.ToString();
+      }
+      return $"MethodResponse(Methods={methodsString})";
+    }
 
   }
 
@@ -206,6 +229,11 @@ public class  Response {
 
     [JsonProperty(Required = Required.Always)]
     public String Version { get; set; }
+
+    public override string ToString()
+    {
+      return $"InfoResponse(Name={Name}, Description={Description}, Version={Version}";
+    }
 
   }
 

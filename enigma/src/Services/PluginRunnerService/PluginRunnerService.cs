@@ -71,7 +71,7 @@ namespace Services.PluginRunnerService {
         response = Response.DeserializeJson(stdout);
       }
       catch ( Exception ex) {
-        throw new PluginResponseSerializationException("plugin response is not understood",ex);
+        throw new PluginResponseSerializationException("plugin response is not understood\n"+stdout+"\n",ex);
       } 
 
       return response!;
