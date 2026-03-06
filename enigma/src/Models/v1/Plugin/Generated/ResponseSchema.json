@@ -82,7 +82,7 @@
             "CriticalFailure"
           ]
         },
-        "errorMessage": {
+        "Message": {
           "type": [
             "string",
             "null"
@@ -235,7 +235,8 @@
       "enum": [
         "Info",
         "Methods",
-        "Fetch"
+        "Fetch",
+        "Error"
       ]
     },
     "Fetch": {

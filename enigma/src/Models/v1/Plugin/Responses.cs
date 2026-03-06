@@ -13,7 +13,8 @@ public class  Response {
     public enum ResponseType {
       Info,
       Methods,
-      Fetch
+      Fetch,
+      Error
     }
 
     [JsonProperty(Required = Required.Always)]
@@ -252,7 +253,7 @@ public class  Response {
     public ErrorType Type { get; set; }
 
     [JsonProperty(Required = Required.Default)]
-    public String errorMessage { get; set; }
+    public String Message { get; set; }
 
   }
 
