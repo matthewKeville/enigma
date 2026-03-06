@@ -1,3 +1,4 @@
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
@@ -11,9 +12,13 @@ public class  Response {
 
     [JsonConverter(typeof(StringEnumConverter), typeof(CamelCaseNamingStrategy))]
     public enum ResponseType {
+      [EnumMember(Value="info")]
       Info,
+      [EnumMember(Value="methods")]
       Methods,
+      [EnumMember(Value="fetch")]
       Fetch,
+      [EnumMember(Value="error")]
       Error
     }
 
@@ -44,47 +49,48 @@ public class  Response {
 
           JSchemaGenerator generator = new JSchemaGenerator();
           generator.GenerationProviders.Add(new StringEnumGenerationProvider());
+          generator.ContractResolver = new CamelCasePropertyNamesContractResolver();
           JSchema schema = generator.Generate(typeof(Response));
 
           schema.AllOf.Add(new JSchema
           {
               If = new JSchema
               {
-                  Properties = { ["Type"] = new JSchema { Enum = { JToken.FromObject(Response.ResponseType.Fetch) } } }
+                  Properties = { ["type"] = new JSchema { Enum = { JToken.FromObject(Response.ResponseType.Fetch) } } }
               },
               Then = new JSchema
               {
-                  Required = { "Fetch" }
+                  Required = { "fetch" }
               }
           });
           schema.AllOf.Add(new JSchema
           {
               If = new JSchema
               {
-                  Properties = { ["Type"] = new JSchema { Enum = { JToken.FromObject(Response.ResponseType.Methods) } } }
+                  Properties = { ["type"] = new JSchema { Enum = { JToken.FromObject(Response.ResponseType.Methods) } } }
               },
               Then = new JSchema
               {
-                  Required = { "Methods" }
+                  Required = { "methods" }
               }
           });
           schema.AllOf.Add(new JSchema
           {
               If = new JSchema
               {
-                  Properties = { ["Type"] = new JSchema { Enum = { JToken.FromObject(Response.ResponseType.Info) } } }
+                  Properties = { ["type"] = new JSchema { Enum = { JToken.FromObject(Response.ResponseType.Info) } } }
               },
               Then = new JSchema
               {
-                  Required = { "Info" }
+                  Required = { "info" }
               }
           });
 
 
-          schema.Properties["Type"].Description = "The Type of Response";
-          schema.Properties["Fetch"].Description = "Fetch object";
-          schema.Properties["Methods"].Description = "Methods object";
-          schema.Properties["Info"].Description = "Info object";
+          schema.Properties["type"].Description = "The Type of Response";
+          schema.Properties["fetch"].Description = "Fetch object";
+          schema.Properties["methods"].Description = "Methods object";
+          schema.Properties["info"].Description = "Info object";
 
           schema.Id = new Uri(SchemaGenerator.SCHEMA_HOME + "/ResponseSchema.json");
 
@@ -118,7 +124,9 @@ public class  Response {
 
       [JsonConverter(typeof(StringEnumConverter), typeof(CamelCaseNamingStrategy))]
       public enum Direction {
+        [EnumMember(Value="across")]
         Across,
+        [EnumMember(Value="down")]
         Down,
       }
 
@@ -243,9 +251,13 @@ public class  Response {
 
     [JsonConverter(typeof(StringEnumConverter), typeof(CamelCaseNamingStrategy))]
     public enum ErrorType {
+      [EnumMember(Value="badRequest")]
       BadRequest,
+      [EnumMember(Value="invalidArgs")]
       InvalidArgs,
+      [EnumMember(Value="fetchFailed")]
       FetchFailed,
+      [EnumMember(Value="criticalFailure")]
       CriticalFailure
     }
 

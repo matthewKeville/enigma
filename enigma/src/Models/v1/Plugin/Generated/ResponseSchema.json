@@ -7,7 +7,7 @@
         "null"
       ],
       "properties": {
-        "Constraints": {
+        "constraints": {
           "type": "array",
           "items": {
             "type": [
@@ -16,17 +16,17 @@
             ]
           }
         },
-        "Name": {
+        "name": {
           "type": "string"
         },
-        "Description": {
+        "description": {
           "type": "string"
         }
       },
       "required": [
-        "Constraints",
-        "Name",
-        "Description"
+        "constraints",
+        "name",
+        "description"
       ]
     },
     "Clue": {
@@ -35,36 +35,36 @@
         "null"
       ],
       "properties": {
-        "X": {
+        "x": {
           "type": "integer"
         },
-        "Y": {
+        "y": {
           "type": "integer"
         },
-        "I": {
+        "i": {
           "type": "integer"
         },
-        "D": {
+        "d": {
           "type": "string",
           "enum": [
-            "Across",
-            "Down"
+            "across",
+            "down"
           ]
         },
-        "Prompt": {
+        "prompt": {
           "type": "string"
         },
-        "Answer": {
+        "answer": {
           "type": "string"
         }
       },
       "required": [
-        "X",
-        "Y",
-        "I",
-        "D",
-        "Prompt",
-        "Answer"
+        "x",
+        "y",
+        "i",
+        "d",
+        "prompt",
+        "answer"
       ]
     },
     "ErrorResponse": {
@@ -73,16 +73,16 @@
         "null"
       ],
       "properties": {
-        "Type": {
+        "type": {
           "type": "string",
           "enum": [
-            "BadRequest",
-            "InvalidArgs",
-            "FetchFailed",
-            "CriticalFailure"
+            "badRequest",
+            "invalidArgs",
+            "fetchFailed",
+            "criticalFailure"
           ]
         },
-        "Message": {
+        "message": {
           "type": [
             "string",
             "null"
@@ -90,7 +90,7 @@
         }
       },
       "required": [
-        "Type"
+        "type"
       ]
     },
     "FetchResponse": {
@@ -100,41 +100,41 @@
         "null"
       ],
       "properties": {
-        "Meta": {
+        "meta": {
           "$ref": "#/definitions/MetaData"
         },
-        "Columns": {
+        "columns": {
           "type": "integer"
         },
-        "Rows": {
+        "rows": {
           "type": "integer"
         },
-        "Clues": {
+        "clues": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/Clue"
           }
         },
-        "Title": {
+        "title": {
           "type": "string"
         },
-        "Author": {
+        "author": {
           "type": [
             "string",
             "null"
           ]
         },
-        "ReleaseDate": {
+        "releaseDate": {
           "type": "string"
         }
       },
       "required": [
-        "Meta",
-        "Columns",
-        "Rows",
-        "Clues",
-        "Title",
-        "ReleaseDate"
+        "meta",
+        "columns",
+        "rows",
+        "clues",
+        "title",
+        "releaseDate"
       ]
     },
     "InfoResponse": {
@@ -144,40 +144,40 @@
         "null"
       ],
       "properties": {
-        "Name": {
+        "name": {
           "type": "string"
         },
-        "Description": {
+        "description": {
           "type": "string"
         },
-        "Version": {
+        "version": {
           "type": "string"
         }
       },
       "required": [
-        "Name",
-        "Description",
-        "Version"
+        "name",
+        "description",
+        "version"
       ]
     },
     "MetaData": {
       "type": "object",
       "properties": {
-        "Plugin": {
+        "plugin": {
           "type": "string"
         },
-        "PluginVersion": {
+        "pluginVersion": {
           "type": "string"
         },
-        "FetchDate": {
+        "fetchDate": {
           "type": "string",
           "format": "date-time"
         }
       },
       "required": [
-        "Plugin",
-        "PluginVersion",
-        "FetchDate"
+        "plugin",
+        "pluginVersion",
+        "fetchDate"
       ]
     },
     "Method": {
@@ -186,13 +186,13 @@
         "null"
       ],
       "properties": {
-        "Name": {
+        "name": {
           "type": "string"
         },
-        "Description": {
+        "description": {
           "type": "string"
         },
-        "Arguments": {
+        "arguments": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/Argument"
@@ -200,9 +200,9 @@
         }
       },
       "required": [
-        "Name",
-        "Description",
-        "Arguments"
+        "name",
+        "description",
+        "arguments"
       ]
     },
     "MethodsResponse": {
@@ -212,7 +212,7 @@
         "null"
       ],
       "properties": {
-        "Methods": {
+        "methods": {
           "type": [
             "array",
             "null"
@@ -226,41 +226,41 @@
   },
   "type": "object",
   "properties": {
-    "ApiVersion": {
+    "apiVersion": {
       "type": "string"
     },
-    "Type": {
+    "type": {
       "description": "The Type of Response",
       "type": "string",
       "enum": [
-        "Info",
-        "Methods",
-        "Fetch",
-        "Error"
+        "info",
+        "methods",
+        "fetch",
+        "error"
       ]
     },
-    "Fetch": {
+    "fetch": {
       "$ref": "#/definitions/FetchResponse"
     },
-    "Methods": {
+    "methods": {
       "$ref": "#/definitions/MethodsResponse"
     },
-    "Info": {
+    "info": {
       "$ref": "#/definitions/InfoResponse"
     },
-    "Error": {
+    "error": {
       "$ref": "#/definitions/ErrorResponse"
     }
   },
   "required": [
-    "ApiVersion",
-    "Type"
+    "apiVersion",
+    "type"
   ],
   "allOf": [
     {
       "if": {
         "properties": {
-          "Type": {
+          "type": {
             "enum": [
               "fetch"
             ]
@@ -269,14 +269,14 @@
       },
       "then": {
         "required": [
-          "Fetch"
+          "fetch"
         ]
       }
     },
     {
       "if": {
         "properties": {
-          "Type": {
+          "type": {
             "enum": [
               "methods"
             ]
@@ -285,14 +285,14 @@
       },
       "then": {
         "required": [
-          "Methods"
+          "methods"
         ]
       }
     },
     {
       "if": {
         "properties": {
-          "Type": {
+          "type": {
             "enum": [
               "info"
             ]
@@ -301,7 +301,7 @@
       },
       "then": {
         "required": [
-          "Info"
+          "info"
         ]
       }
     }

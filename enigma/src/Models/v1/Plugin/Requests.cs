@@ -1,3 +1,4 @@
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
@@ -11,8 +12,11 @@ namespace Models.Plugin.V1 {
   
     [JsonConverter(typeof(StringEnumConverter), typeof(CamelCaseNamingStrategy))]
     public enum RequestType {
+      [EnumMember(Value="info")]
       Info,
+      [EnumMember(Value="methods")]
       Methods,
+      [EnumMember(Value="fetch")]
       Fetch
     }
 
@@ -29,6 +33,7 @@ namespace Models.Plugin.V1 {
 
       JSchemaGenerator generator = new JSchemaGenerator();
       generator.GenerationProviders.Add(new StringEnumGenerationProvider());
+      generator.ContractResolver = new CamelCasePropertyNamesContractResolver();
       JSchema schema = generator.Generate(typeof(Request));
 
       // Use allOf to combine multiple conditional rules
@@ -36,16 +41,16 @@ namespace Models.Plugin.V1 {
       {
           If = new JSchema
           {
-              Properties = { ["Type"] = new JSchema { Enum = { JToken.FromObject(Request.RequestType.Fetch) } } }
+              Properties = { ["type"] = new JSchema { Enum = { JToken.FromObject(Request.RequestType.Fetch) } } }
           },
           Then = new JSchema
           {
-              Required = { "Fetch" }
+              Required = { "fetch" }
           }
       });
 
-      schema.Properties["Type"].Description = "The Type of Request";
-      schema.Properties["Fetch"].Description = "Fetch Request object";
+      schema.Properties["type"].Description = "The Type of Request";
+      schema.Properties["fetch"].Description = "Fetch Request object";
 
       schema.Id = new Uri(SchemaGenerator.SCHEMA_HOME + "/RequestSchema.json");
       return schema;

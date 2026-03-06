@@ -8,10 +8,10 @@
         "null"
       ],
       "properties": {
-        "Method": {
+        "method": {
           "type": "string"
         },
-        "Args": {
+        "args": {
           "type": "array",
           "items": {
             "type": [
@@ -22,38 +22,38 @@
         }
       },
       "required": [
-        "Method",
-        "Args"
+        "method",
+        "args"
       ]
     }
   },
   "type": "object",
   "properties": {
-    "ApiVersion": {
+    "apiVersion": {
       "type": "string"
     },
-    "Type": {
+    "type": {
       "description": "The Type of Request",
       "type": "string",
       "enum": [
-        "Info",
-        "Methods",
-        "Fetch"
+        "info",
+        "methods",
+        "fetch"
       ]
     },
-    "Fetch": {
+    "fetch": {
       "$ref": "#/definitions/FetchRequest"
     }
   },
   "required": [
-    "ApiVersion",
-    "Type"
+    "apiVersion",
+    "type"
   ],
   "allOf": [
     {
       "if": {
         "properties": {
-          "Type": {
+          "type": {
             "enum": [
               "fetch"
             ]
@@ -62,7 +62,7 @@
       },
       "then": {
         "required": [
-          "Fetch"
+          "fetch"
         ]
       }
     }
