@@ -182,9 +182,12 @@ public class  Response {
 
       [JsonProperty(Required = Required.Always)]
       public String Name { get; set; }
+
       [JsonProperty(Required = Required.Always)]
       public String Description { get; set; }
-      //public String[] Constraints;  //maybe can just be part of description
+
+      [JsonProperty(Required = Required.Always)]
+      public String[] Constraints;  //maybe can just be part of description
 
     }
 
@@ -194,12 +197,16 @@ public class  Response {
   }
 
   public class InfoResponse {
+
     [JsonProperty(Required = Required.Always)]
     public String Name { get; set; }
+
     [JsonProperty(Required = Required.Always)]
     public String Description { get; set; }
+
     [JsonProperty(Required = Required.Always)]
     public String Version { get; set; }
+
   }
 
   public class ErrorResponse {
