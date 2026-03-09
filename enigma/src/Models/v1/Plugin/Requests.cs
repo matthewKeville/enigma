@@ -58,7 +58,16 @@ namespace Models.Plugin.V1 {
     }
 
     public static String SerializeJson(Request request) {
-      return JsonConvert.SerializeObject(request);
+
+      var settings = new JsonSerializerSettings
+      {
+          ContractResolver = new DefaultContractResolver
+          {
+              NamingStrategy = new CamelCaseNamingStrategy()
+          }
+      };
+    
+      return JsonConvert.SerializeObject(request,settings);
     }
 
   }

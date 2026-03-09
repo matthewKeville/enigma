@@ -32,7 +32,8 @@ public class StartCommandService {
       startGame(puzzleId);
       Application.Shutdown();
     } catch (Exception exception) {
-      throw new BadArgsException($"invalid argument <puzzleId> {args[1]}",exception);
+      Trace.WriteLine(exception.ToString());
+      throw new BadArgsException($"puzzleId> {args[1]}",exception);
     }
 
     //TODO need to verify input is non-zero and maps to a known puzzleId
@@ -46,8 +47,11 @@ public class StartCommandService {
   /// TODO : This needs to check if the puzzleId exists first...
   private void startGame(int puzzleId) {
 
+    Trace.WriteLine($"starting game for {puzzleId}");
+
     eventBus.PostEvent(new StartPuzzleEventArgs(puzzleId));
 
+    Trace.WriteLine($"Intializing Terminal.GUI");
     Application.Init(); // Terminal.GUI
     
     //clear all predefined bindings, but preserve Command.Tab for the
@@ -66,6 +70,8 @@ public class StartCommandService {
     //Application.Force16Colors = true;
     Terminal.Gui.ConfigurationManager.Themes.Theme = "Light";
     Terminal.Gui.ConfigurationManager.Apply();
+
+    Trace.WriteLine($"Running Game");
 
     Application.Run(gameView);
   }

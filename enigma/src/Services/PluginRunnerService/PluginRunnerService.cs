@@ -16,32 +16,44 @@ namespace Services.PluginRunnerService {
 
     /// <exception cref="PluginNotFoundException"></exception>
     /// <exception cref="PluginResponseSerializationException"></exception>
-    /// <exception cref="PluginResponseException"></exception>
-    ///
-    public InfoResponse RequestInfo(String pluginName) {
+    public Response RequestInfo(String pluginName) {
       Request request = new Request
       {
           Type = Request.RequestType.Info,
       };
-      Console.WriteLine(Request.SerializeJson(request));
-      return runPlugin(pluginName,Request.SerializeJson(request)).Info;
-    }
-
-    /// <exception cref="PluginException"></exception>
-    ///
-    public MethodsResponse RequestMethods(String pluginName) {
-      Request request = new Request
-      {
-          Type = Request.RequestType.Methods,
-      };
-      Console.WriteLine(Request.SerializeJson(request));
-      return runPlugin(pluginName,Request.SerializeJson(request)).Methods;
+      Console.WriteLine(Request.SerializeJson(request)); //DBG
+      return runPlugin(pluginName,Request.SerializeJson(request));
     }
 
     /// <exception cref="PluginNotFoundException"></exception>
     /// <exception cref="PluginResponseSerializationException"></exception>
-    /// <exception cref="PluginResponseException"></exception>
-    ///
+    public Response RequestMethods(String pluginName) {
+      Request request = new Request
+      {
+          Type = Request.RequestType.Methods,
+      };
+      Console.WriteLine(Request.SerializeJson(request)); //DBG
+      return runPlugin(pluginName,Request.SerializeJson(request));
+    }
+
+    /// <exception cref="PluginNotFoundException"></exception>
+    /// <exception cref="PluginResponseSerializationException"></exception>
+    public Response RequestFetch(String pluginName,String method,String[] args) {
+      Request request = new Request
+      {
+          Type = Request.RequestType.Fetch,
+          Fetch = new FetchRequest {
+            Method = method,
+            Args = args
+          }
+      };
+      Console.WriteLine(Request.SerializeJson(request)); //DBG
+      Response response =  runPlugin(pluginName,Request.SerializeJson(request));
+      return response;
+    }
+
+    /// <exception cref="PluginNotFoundException"></exception>
+    /// <exception cref="PluginResponseSerializationException"></exception>
     private Response runPlugin(String pluginName, String json) {
 
       PluginSetting? pluginSetting = appSettings.UserSettings.Plugins.Find( p => p.As.Equals(pluginName));

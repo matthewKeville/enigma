@@ -4,7 +4,7 @@ using Services.CrosswordService;
 
 public class ListCommandService {
 
-  private CrosswordService crosswordService;
+  private Services.CrosswordService.CrosswordService crosswordService;
 
   public ListCommandService(CrosswordService crosswordService) {
     this.crosswordService = crosswordService;

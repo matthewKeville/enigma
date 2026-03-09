@@ -2,7 +2,7 @@ using Enums;
 
 public class CrosswordHeader {
     public String Title = "";
-    public CrosswordType Type;
+    public String Type;
     public DateTime Published;
     public DateTime? StartDate;
     public DateTime? FinishDate;

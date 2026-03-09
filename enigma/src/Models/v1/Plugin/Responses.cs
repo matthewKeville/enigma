@@ -1,4 +1,5 @@
 using System.Runtime.Serialization;
+using System.Text.Json;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
@@ -99,7 +100,15 @@ public class  Response {
         }
 
       public static Response DeserializeJson(String json) {
-        //Trace.WriteLine("");
+
+        // var settings = new JsonSerializerSettings
+        // {
+        //     ContractResolver = new DefaultContractResolver
+        //     {
+        //         NamingStrategy = new CamelCaseNamingStrategy()
+        //     }
+        // };
+          
         return JsonConvert.DeserializeObject<Response>(json);
       }
 
@@ -168,8 +177,8 @@ public class  Response {
     [JsonProperty(Required = Required.Default)]
     public String Author { get; set; }
 
-    [JsonProperty(Required = Required.Always)]
-    public String ReleaseDate { get; set; }
+    [JsonProperty(Required = Required.Default)]
+    public DateTime ReleaseDate { get; set; }
 
   }
 
@@ -266,6 +275,12 @@ public class  Response {
 
     [JsonProperty(Required = Required.Default)]
     public String Message { get; set; }
+
+
+    public override string ToString()
+    {
+      return $"ErrorResponse(Type={Type}, Message={Message}";
+    }
 
   }
 

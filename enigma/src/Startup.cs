@@ -11,6 +11,7 @@ using Services.CrosswordService;
 using Services.PluginService;
 using Services.CommandServices;
 using Services.PluginRunnerService;
+using Services.CrosswordInstaller;
 
 public class Startup() {
 
@@ -23,6 +24,7 @@ public class Startup() {
     services.AddSingleton<PluginRunnerService, PluginRunnerService>();
     services.AddSingleton<SyncCommandService, SyncCommandService>();
 
+    services.AddSingleton<CrosswordInstallerService, CrosswordInstallerService>();
     services.AddSingleton<CrosswordService, CrosswordService>();
     services.AddSingleton<PluginService, PluginService>();
     services.AddSingleton<EventBus, EventBus>();

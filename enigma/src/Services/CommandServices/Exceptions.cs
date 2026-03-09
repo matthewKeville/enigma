@@ -52,14 +52,14 @@ namespace Services.CommandServices.Exceptions {
   /// <summary>
   /// Plugin not found
   /// </summary>
-  public class PluginNotFoundException : NotFoundException
-  {
-    public PluginNotFoundException() {}
-    public PluginNotFoundException(string message) 
-      : base(message) {}
-    public PluginNotFoundException(string message,Exception inner) 
-      : base(message,inner) {}
-  }
+  // public class PluginNotFoundException : NotFoundException
+  // {
+  //   public PluginNotFoundException() {}
+  //   public PluginNotFoundException(string message) 
+  //     : base(message) {}
+  //   public PluginNotFoundException(string message,Exception inner) 
+  //     : base(message,inner) {}
+  // }
 
   /// <summary>
   /// An install request failed dued to the fetcher being unable
