@@ -8,6 +8,8 @@ namespace UI.View.Game
     using UI.Model;
     using UI.View.Game.Clues;
     using Microsoft.EntityFrameworkCore;
+    using Serilog;
+    using Logging;
 
     public class GameView : Toplevel
     {
@@ -25,6 +27,8 @@ namespace UI.View.Game
         private GridView _gridView;
         private StatusView _statusView;
         private KeyBindsView _keyBindsView;
+
+        private static ILogger _logger = Logger.For<GameView>();
 
         public GameView(CluesView cluesView, GridView gridView, StatusView statusView,EventBus eventBus, KeyBindsView keyBindsView, KeyMaps keyMaps, DatabaseContext dbContext)
         {
@@ -84,7 +88,7 @@ namespace UI.View.Game
 
         public void OnStartPuzzleEvent(StartPuzzleEventArgs args) {
 
-          Trace.WriteLine("OnStartPuzzleEvent");
+          _logger.Information("OnStartPuzzleEvent");
 
           Crossword crossword = _dbContext.Crosswords
             .Include( x => x.GridChars )
@@ -92,8 +96,8 @@ namespace UI.View.Game
             .First( x => x.Id == args.CrosswordId );
           crossword.StartDate ??= DateTime.UtcNow;
 
-          Trace.WriteLine("Crossword  accessed");
-          Trace.WriteLine(crossword.ToString());
+          _logger.Debug("Crossword  accessed");
+          _logger.Debug(crossword.ToString());
 
           //build game model
           int crosswordId = args.CrosswordId;
@@ -104,7 +108,7 @@ namespace UI.View.Game
                 crossword.Columns
           );
 
-          Trace.WriteLine("Building Game Model");
+          _logger.Debug("Building Game Model");
 
           _gameModel = new GameModel(crosswordId,gridModel,crossword.Elapsed,
               crossword.CharacterCheckCount,
@@ -112,7 +116,7 @@ namespace UI.View.Game
               crossword.PuzzleCheckCount,
               crossword.Title
               );
-          Trace.WriteLine("All Done..");
+          _logger.Debug("All Done..");
           _eventBus.PostEvent(new PuzzleLoadedEventArgs(_gameModel));
         }
 

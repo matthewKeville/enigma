@@ -1,13 +1,17 @@
 namespace Services.CrosswordInstaller {
+
     using Entity;
     using Enums;
+    using Logging;
     using Models.Plugin.V1;
-using Services.CrosswordService;
+    using Serilog;
+    using Services.CrosswordService;
 
   public class CrosswordInstallerService {
 
     private DatabaseContext _dbCtx;
     private CrosswordService crosswordService;
+    private static ILogger _logger = Logger.For<CrosswordInstallerService>();
 
     public CrosswordInstallerService(DatabaseContext dbCtx, CrosswordService crosswordService) {
       this._dbCtx = dbCtx;
@@ -15,7 +19,8 @@ using Services.CrosswordService;
     }
 
     public void Install(FetchResponse fetch) {
-      Trace.WriteLine("installing crossword");
+
+      _logger.Information("installing crossword");
 
       List<Clue> clues = new List<Clue>();
 

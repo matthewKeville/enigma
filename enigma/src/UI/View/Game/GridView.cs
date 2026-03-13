@@ -6,6 +6,8 @@ namespace UI.View.Game
     using Entity;
     using Enums;
     using Event;
+    using Logging;
+    using Serilog;
     using Settings.Theme;
     using Terminal.Gui;
     using UI.Model;
@@ -20,6 +22,8 @@ namespace UI.View.Game
 
         private int gridOffX = 3;
         private int gridOffY = 3;
+
+        private ILogger _logger = Logger.For<GridView>();
 
         public GridView(DatabaseContext dbContext, EventBus eventBus,Theme  theme)
         {
@@ -57,11 +61,8 @@ namespace UI.View.Game
 
                 //DBG DELETE
                 if (gcm.X == 0 && gcm.Y == 0 ) {
-                  Trace.WriteLine("DBG CORNER");
-                  Trace.WriteLine("DBG CORNER");
-                  Trace.WriteLine("DBG CORNER");
-                  Trace.WriteLine("DBG CORNER");
-                  Trace.WriteLine("Answer char is " + gcm.AnswerChar);
+                  _logger.Debug("DBG CORNER");
+                  _logger.Debug("Answer char is " + gcm.AnswerChar);
                 }
                 //DBG DELETE
        

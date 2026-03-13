@@ -6,12 +6,15 @@ using Services.PluginService;
 using Services.PluginRunnerService;
 using global::Exceptions;
 using Services.CrosswordInstaller;
+using Logging;
+using Serilog;
 
     public class PluginCommandService {
 
   private PluginService pluginService;
   private PluginRunnerService pluginRunnerService;
   private CrosswordInstallerService crosswordInstallerService;
+  private static ILogger _logger = Logger.For<PluginCommandService>();
 
   public PluginCommandService(PluginService pluginService,PluginRunnerService pluginRunnerService,CrosswordInstallerService crosswordInstallerService) {
     this.pluginService = pluginService;
@@ -85,12 +88,12 @@ using Services.CrosswordInstaller;
 
     } catch (PluginNotFoundException ex) {
 
-      Console.WriteLine($"Plugin Not Found");
+      Console.Error.WriteLine($"Plugin Not Found");
 
     } catch (PluginResponseSerializationException ex) {
 
-      Console.WriteLine($"Plugin Response Could Not Be Serialized");
-      Trace.WriteLine(ex.ToString());
+      Console.Error.WriteLine($"Plugin Response Could Not Be Serialized");
+      _logger.Error(ex.ToString());
 
     }
  
@@ -98,8 +101,8 @@ using Services.CrosswordInstaller;
   }
 
   private void handleErrorResponse(ErrorResponse errorResponse) {
-    Console.WriteLine($"Plugin Command Failed");
-    Trace.WriteLine(errorResponse.ToString());
+    Console.Error.WriteLine($"Plugin Command Failed");
+    _logger.Error(errorResponse.ToString());
   }
 
 } 

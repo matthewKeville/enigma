@@ -1,5 +1,7 @@
 using Entity;
 using Enums;
+using Logging;
+using Serilog;
 
 namespace UI.Model
 {
@@ -24,6 +26,8 @@ namespace UI.Model
         public GridCharModel? Down;
         public GridCharModel? Left;
         public GridCharModel? Right;
+
+        private static ILogger _logger = Logger.For<GridCharModel>();
 
         public GridCharModel(GridChar gridChar)
         {
@@ -74,7 +78,7 @@ namespace UI.Model
 
         public void Dump()
         {
-            Trace.WriteLine($"gcm : {X},{Y},{UserChar},{IsBlock}, {Up is null}, {Down is null}, {Right is null}, {Left is null}");
+            _logger.Debug($"gcm : {X},{Y},{UserChar},{IsBlock}, {Up is null}, {Down is null}, {Right is null}, {Left is null}");
         }
 
     }
@@ -114,6 +118,8 @@ namespace UI.Model
         public Direction Orientation = Direction.Across;
 
         public int WordCheckCount;
+
+        private static ILogger _logger = Logger.For<GridModel>();
 
         public GridModel(List<GridChar> gridChars, List<Clue> clues, int rowCount, int columnCount)
         {
@@ -209,7 +215,7 @@ namespace UI.Model
               .FirstOrDefault();
             if (clueModel is null)
             {
-                Trace.WriteLine($"no clue found for ordinal {i}");
+                _logger.Error($"no clue found for ordinal {i}");
                 return;
             }
 
@@ -217,7 +223,7 @@ namespace UI.Model
               .Find(gcm => gcm.X == clueModel.X && gcm.Y == clueModel.Y);
             if (clueStartCharModel is null)
             {
-                Trace.WriteLine($"coudln't find start GridCharModel for clue {i}");
+                _logger.Error($"coudln't find start GridCharModel for clue {i}");
                 return;
             }
             Selection = clueStartCharModel;
@@ -470,7 +476,7 @@ namespace UI.Model
 
             if (clue == null)
             {
-                Trace.WriteLine("no clue found");
+                _logger.Error("no clue found");
                 return;
             }
 
@@ -483,7 +489,7 @@ namespace UI.Model
 
             if (targetClue != null)
             {
-                Trace.WriteLine($"clue found {targetClue.X},{targetClue.Y}");
+                _logger.Debug($"clue found {targetClue.X},{targetClue.Y}");
                 GridCharModel targetCharModel = GridCharModels
                   .Where(gcm => gcm.X == targetClue.X && gcm.Y == targetClue.Y)
                   .First();
@@ -491,7 +497,7 @@ namespace UI.Model
             }
             else
             {
-                Trace.WriteLine("clue not found");
+                _logger.Error("clue not found");
             }
         }
 

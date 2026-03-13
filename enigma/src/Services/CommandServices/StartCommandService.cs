@@ -2,6 +2,8 @@ using Event;
 using UI.View.Game;
 using Terminal.Gui;
 using Services.CommandServices.Exceptions;
+using Serilog;
+using Logging;
 
 namespace Services.CommandServices {
 
@@ -9,6 +11,7 @@ public class StartCommandService {
 
   private EventBus eventBus;
   private GameView gameView;
+  private static ILogger _logger = Logger.For<StartCommandService>();
 
   public StartCommandService(EventBus eventBus, GameView gameView) {
     this.eventBus = eventBus;
@@ -32,7 +35,7 @@ public class StartCommandService {
       startGame(puzzleId);
       Application.Shutdown();
     } catch (Exception exception) {
-      Trace.WriteLine(exception.ToString());
+      _logger.Error(exception.ToString());
       throw new BadArgsException($"puzzleId> {args[1]}",exception);
     }
 
@@ -47,11 +50,11 @@ public class StartCommandService {
   /// TODO : This needs to check if the puzzleId exists first...
   private void startGame(int puzzleId) {
 
-    Trace.WriteLine($"starting game for {puzzleId}");
+    _logger.Information($"starting game for {puzzleId}");
 
     eventBus.PostEvent(new StartPuzzleEventArgs(puzzleId));
 
-    Trace.WriteLine($"Intializing Terminal.GUI");
+    _logger.Debug($"Intializing Terminal.GUI");
     Application.Init(); // Terminal.GUI
     
     //clear all predefined bindings, but preserve Command.Tab for the
@@ -71,7 +74,7 @@ public class StartCommandService {
     Terminal.Gui.ConfigurationManager.Themes.Theme = "Light";
     Terminal.Gui.ConfigurationManager.Apply();
 
-    Trace.WriteLine($"Running Game");
+    _logger.Debug($"Running Game");
 
     Application.Run(gameView);
   }

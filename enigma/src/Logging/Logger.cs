@@ -15,7 +15,7 @@ public static class Logger
         }
 
         Log.Logger = new LoggerConfiguration()
-          .MinimumLevel.Information()
+          .MinimumLevel.Debug()
           .WriteTo.File(LOG_DIR_PATH+"/enigma.log", 
               rollingInterval: RollingInterval.Day,
               outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}")
