@@ -1,17 +1,16 @@
-using Settings;
 using Exceptions;
-using System.Text.Json.Serialization;
-using System.Text.Json;
 using Models.Plugin.V1;
+using Settings.User.Plugin;
+using static Settings.User.Plugin.PluginSettings;
 
 namespace Services.PluginRunnerService {
 
   public class PluginRunnerService {
 
-    AppSettings appSettings;
+    PluginSettings pluginSettings;
 
-    public PluginRunnerService(AppSettings appSettings) {
-      this.appSettings = appSettings;
+    public PluginRunnerService(Settings.Settings settings) {
+      this.pluginSettings = settings.userSettings.pluginSettings;
     }
 
     /// <exception cref="PluginNotFoundException"></exception>
@@ -56,8 +55,8 @@ namespace Services.PluginRunnerService {
     /// <exception cref="PluginResponseSerializationException"></exception>
     private Response runPlugin(String pluginName, String json) {
 
-      PluginSetting? pluginSetting = appSettings.UserSettings.Plugins.Find( p => p.As.Equals(pluginName));
-      if (pluginSetting is null) {
+      PluginConfig? pluginConfig = pluginSettings.Plugins.Find( p => p.As.Equals(pluginName));
+      if (pluginConfig is null) {
         throw new PluginNotFoundException($"no such plugin with alias {pluginName}");
       }
 
@@ -65,7 +64,7 @@ namespace Services.PluginRunnerService {
         StartInfo = new ProcessStartInfo {
           FileName = Environment.OSVersion.Platform == PlatformID.Win32NT ? "sh" : "/bin/sh",
           Arguments = "run.sh",
-          WorkingDirectory = Path.Join(appSettings.PluginDeployPath,pluginSetting.Repo),
+          WorkingDirectory = Path.Join(pluginSettings.PluginDeployPath,pluginConfig.Repo),
           RedirectStandardOutput = true,
           RedirectStandardInput = true
         }

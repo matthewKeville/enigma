@@ -1,6 +1,5 @@
 using Entity;
 using Microsoft.EntityFrameworkCore;
-using Settings;
 
 public class DatabaseContext : DbContext {
 
@@ -10,8 +9,8 @@ public class DatabaseContext : DbContext {
 
   public String DbPath { get; set; }
 
-  public DatabaseContext(AppSettings settings) {
-    DbPath = settings.DbPath;
+  public DatabaseContext(Settings.Settings settings) {
+    DbPath = settings.appSettings.DbPath;
   }
 
   protected override void OnConfiguring(DbContextOptionsBuilder options) {

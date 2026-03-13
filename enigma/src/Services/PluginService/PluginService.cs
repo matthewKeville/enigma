@@ -1,17 +1,18 @@
-using Settings;
 using Exceptions;
 using Logging;
 using Serilog;
+using Settings.User.Plugin;
+using static Settings.User.Plugin.PluginSettings;
 
 namespace Services.PluginService {
 
   public class PluginService {
 
     private static ILogger _logger = Logger.For<PluginService>();
-    AppSettings appSettings;
+    private PluginSettings? pluginSettings;
 
-    public PluginService(AppSettings appSettings) {
-      this.appSettings = appSettings;
+    public PluginService(Settings.Settings settings) {
+      this.pluginSettings = settings.userSettings.pluginSettings;
     }
 
     /// <summary>
@@ -19,7 +20,7 @@ namespace Services.PluginService {
     /// </summary>
     /// <exception cref="PluginException"></exception>
     public List<String> GetInstalledPlugins() {
-      List<String> pluginNames = appSettings.UserSettings.Plugins
+      List<String> pluginNames = pluginSettings.Plugins
         .FindAll(p => p.Enabled)
         .Select( p => $"{p.Repo} as {p.As}")
         .ToList();
@@ -36,38 +37,38 @@ namespace Services.PluginService {
     /// <exception cref="PluginException"></exception>
     public void Sync() {
 
-      Console.WriteLine($"syncing {appSettings.UserSettings.Plugins.Count()} plugins");
+      Console.WriteLine($"syncing {pluginSettings.Plugins.Count()} plugins");
 
       //We need an plugin directory
-      if ( !Directory.Exists(appSettings.PluginPath) ) {
-        _logger.Information($"creating plugin directory {appSettings.PluginPath}");
-        Directory.CreateDirectory(appSettings.PluginPath);
-        Directory.CreateDirectory(appSettings.PluginSrcPath);
-        Directory.CreateDirectory(appSettings.PluginDeployPath);
+      if ( !Directory.Exists(pluginSettings.PluginPath) ) {
+        _logger.Information($"creating plugin directory {pluginSettings.PluginPath}");
+        Directory.CreateDirectory(pluginSettings.PluginPath);
+        Directory.CreateDirectory(pluginSettings.PluginSrcPath);
+        Directory.CreateDirectory(pluginSettings.PluginDeployPath);
       }
 
       //check if any plugins need to be installed 
-      foreach( PluginSetting pluginSetting in (appSettings.UserSettings.Plugins.FindAll(p => p.Enabled))) {
-        String inspectedPluginPath = Path.Join(appSettings.PluginSrcPath,pluginSetting.Repo);
+      foreach( PluginConfig pluginConfig in (pluginSettings.Plugins.FindAll(p => p.Enabled))) {
+        String inspectedPluginPath = Path.Join(pluginSettings.PluginSrcPath,pluginConfig.Repo);
         if ( !Directory.Exists(inspectedPluginPath)) {
-          Console.WriteLine($"installing plugin {pluginSetting.Src}");
-          downloadPlugin(pluginSetting.Src);
-          buildPlugin(pluginSetting.Repo);
+          Console.WriteLine($"installing plugin {pluginConfig.Src}");
+          downloadPlugin(pluginConfig.Src);
+          buildPlugin(pluginConfig.Repo);
         }
       }
 
       //check if any plugins need to removed (no longer in configuration)
-      foreach( String path in Directory.GetDirectories(appSettings.PluginSrcPath))  {
+      foreach( String path in Directory.GetDirectories(pluginSettings.PluginSrcPath))  {
         String pluginName = Path.GetFileName(path);
-        if ( !appSettings.UserSettings.Plugins.Any( ps => ps.Enabled && (ps.Repo == pluginName) ) ) {
+        if ( !pluginSettings.Plugins.Any( ps => ps.Enabled && (ps.Repo == pluginName) ) ) {
           Console.WriteLine($" the plugin src {pluginName} does not exist in config or is disabled, {pluginName} will be deleted");
           Directory.Delete(path, recursive:true);
         }
       }
       //check if any plugins need to removed (no longer in configuration)
-      foreach( String path in Directory.GetDirectories(appSettings.PluginDeployPath))  {
+      foreach( String path in Directory.GetDirectories(pluginSettings.PluginDeployPath))  {
         String pluginName = Path.GetFileName(path);
-        if ( !appSettings.UserSettings.Plugins.Any( ps => ps.Enabled && (ps.Repo == pluginName) ) ) {
+        if ( !pluginSettings.Plugins.Any( ps => ps.Enabled && (ps.Repo == pluginName) ) ) {
           Console.WriteLine($" the plugin build {pluginName} does not exist in config or is disabled, {pluginName} will be deleted");
           Directory.Delete(path, recursive:true);
         }
@@ -81,13 +82,13 @@ namespace Services.PluginService {
     /// <exception cref="PluginCloneException"></exception>
     private void downloadPlugin(String src) {
 
-      Console.WriteLine($"cloning plugin {src} to {appSettings.PluginPath}");
+      Console.WriteLine($"cloning plugin {src} to {pluginSettings.PluginPath}");
 
       Process process = new Process {
         StartInfo= new ProcessStartInfo {
           FileName = "git",
           Arguments = $"clone {src}",
-          WorkingDirectory = appSettings.PluginSrcPath
+          WorkingDirectory = pluginSettings.PluginSrcPath
         }
       };
       process.Start();
@@ -106,9 +107,9 @@ namespace Services.PluginService {
       ProcessStartInfo startInfo= new ProcessStartInfo {
           FileName = Environment.OSVersion.Platform == PlatformID.Win32NT ? "sh" : "/bin/sh",
           Arguments = "build.sh",
-          WorkingDirectory = Path.Join(appSettings.PluginSrcPath,repoName)
+          WorkingDirectory = Path.Join(pluginSettings.PluginSrcPath,repoName)
       };
-      startInfo.EnvironmentVariables["BUILD_DIR"] = Path.Join(appSettings.PluginDeployPath,repoName);
+      startInfo.EnvironmentVariables["BUILD_DIR"] = Path.Join(pluginSettings.PluginDeployPath,repoName);
       Process process = new Process {
         StartInfo = startInfo
       };

@@ -13,6 +13,8 @@ using Services.PluginService;
 using Services.CommandServices;
 using Services.PluginRunnerService;
 using Services.CrosswordInstaller;
+using Settings.App;
+using Settings.User;
 
 public class Startup() {
 
@@ -40,7 +42,10 @@ public class Startup() {
     services.AddSingleton<CluesView, CluesView>();
     services.AddSingleton<CluesSingleView, CluesSingleView>();
     services.AddSingleton<CluesSplitView, CluesSplitView>();
-    services.AddSingleton<AppSettings, AppSettings>();
+
+    services.AddSingleton<AppSettings,AppSettings>();
+    services.AddSingleton<UserSettings,UserSettings>();
+    services.AddSingleton<Settings.Settings, Settings.Settings>();
 
   }
 
