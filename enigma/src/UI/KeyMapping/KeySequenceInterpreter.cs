@@ -1,8 +1,13 @@
+using Serilog;
 using Terminal.Gui;
+using Logging;
 
 namespace UI.KeyMapping {
 
   public class KeySequenceInterpreter {
+
+    private static ILogger _logger = Logger.For<KeySequenceInterpreter>();
+
     private List<Key> _keyBuffer = new ();
     private float _autoFlushTimeMS = 2000;
     private DateTime _lastProcessTime = DateTime.UtcNow;
@@ -26,7 +31,7 @@ namespace UI.KeyMapping {
       // dump expired keys
 
       if ( DateTime.UtcNow > _lastProcessTime.AddMilliseconds(_autoFlushTimeMS) ) {
-        Trace.WriteLine($"flush time exceeded, clearing key buffer : {_keyBuffer.Count()} keys flushed");
+        _logger.Debug($"flush time exceeded, clearing key buffer : {_keyBuffer.Count()} keys flushed");
         _keyBuffer.Clear();
       }
 
@@ -48,7 +53,7 @@ namespace UI.KeyMapping {
         });
 
       if (partialMatches.Count() == 0) {
-        Debug.WriteLine("no command matches");
+        _logger.Debug("no command matches");
         dumpSequence(_keyBuffer);
         _keyBuffer.Clear();
         return (false,null);
@@ -59,9 +64,6 @@ namespace UI.KeyMapping {
         .FindAll( km => { return km.Item1.Count() == _keyBuffer.Count(); });
 
       if (exactMatches.Any()) {
-
-        //Debug.WriteLine("hit keysequence matches " + exactMatches.Count());
-        //exactMatches.ForEach( m => dumpSequence(m.Item1));
 
         _keyBuffer.Clear();
         return (true,exactMatches[0].Item2);
@@ -76,7 +78,7 @@ namespace UI.KeyMapping {
       sequence.ForEach( key => {
         msg += key.ToString() + " , ";
       });
-      Debug.WriteLine(msg);
+      _logger.Debug(msg);
     }
   }
 

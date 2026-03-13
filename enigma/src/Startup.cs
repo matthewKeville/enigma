@@ -1,12 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
+using Logging;
 using Event;
 using UI.View.Game;
 using UI.View.Game.Clues;
-using Settings.Theme;
-using Microsoft.Extensions.Configuration;
-using Settings;
 using UI.KeyMaping;
+using Settings.Theme;
+using Settings;
 using Services.CrosswordService;
 using Services.PluginService;
 using Services.CommandServices;
@@ -16,6 +17,7 @@ using Services.CrosswordInstaller;
 public class Startup() {
 
   public static void AddServices(IServiceCollection services) {
+
     services.AddSingleton<DatabaseContext, DatabaseContext>();
 
     services.AddSingleton<ListCommandService, ListCommandService>();
@@ -39,6 +41,7 @@ public class Startup() {
     services.AddSingleton<CluesSingleView, CluesSingleView>();
     services.AddSingleton<CluesSplitView, CluesSplitView>();
     services.AddSingleton<AppSettings, AppSettings>();
+
   }
 
   public static void AddConfigs(IConfigurationBuilder builder) {
@@ -50,13 +53,11 @@ public class Startup() {
     dbContext.Database.Migrate();
   }
 
-  public static void InitializeLogger() {
-    if ( !Directory.Exists("./logs") ) {
-      Directory.CreateDirectory("./logs");
-    }
-    // log location should depend on release type
-    Trace.Listeners.Add(new TextWriterTraceListener("./logs/enigma.log"));
-    Trace.AutoFlush = true;
+  public static void AddStreamTee() {
+    var originalOut = Console.Out;
+    var originalErr = Console.Error;
+    Console.SetOut(new TeeTextWriter(originalOut, Logger.For<Object>(), TeeTextWriter.StreamType.OUT));
+    Console.SetError(new TeeTextWriter(originalErr, Logger.For<Object>(), TeeTextWriter.StreamType.ERR));
   }
 
 }

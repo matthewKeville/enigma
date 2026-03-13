@@ -4,14 +4,22 @@ using Services.CommandServices;
 using Services.CommandServices.Exceptions;
 using Exceptions;
 using Models.Plugin.V1;
+using Microsoft.Extensions.Configuration;
+using Serilog;
 
 IHost? host = null;
 
 try {
   HostApplicationBuilder builder = Host.CreateEmptyApplicationBuilder(new HostApplicationBuilderSettings());
-  Startup.AddServices(builder.Services);
-  Startup.AddConfigs(builder.Configuration);
-  Startup.InitializeLogger();
+
+  IServiceCollection services = builder.Services;
+  Startup.AddServices(services);
+
+  IConfigurationBuilder config = builder.Configuration;
+  Startup.AddConfigs(config);
+
+  Startup.AddStreamTee();
+
   host = builder.Build();
   DatabaseContext dbContext = host.Services.GetRequiredService<DatabaseContext>();
   Startup.UpdateOrCreateDB(dbContext);
@@ -35,6 +43,7 @@ if ( args.Count() == 0 ) {
 
 String command = args[0];
 try {
+
   switch ( command ) {
 
     #if DEBUG

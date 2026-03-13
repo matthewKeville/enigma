@@ -1,8 +1,9 @@
 using Exceptions;
 using Microsoft.Extensions.Configuration;
+using Serilog;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
+using Logging;
 
 namespace Settings {
 
@@ -37,6 +38,8 @@ namespace Settings {
   // class, .NET 8 has FileInfo which is pretty much what I want.
   public class AppSettings {
 
+    private static ILogger _logger = Logger.For<AppSettings>();
+
     public bool IsDev = false;
     public String DbPath = "";
     /// <value> Absolute path to plugin directory </value>
@@ -55,7 +58,7 @@ namespace Settings {
 
       String? build = cm.GetValue<String>("build");
       if ( build == null ) {
-        Console.WriteLine("Failed to create Settings, no build found");
+        Console.Error.WriteLine("Failed to create Settings, no build found");
         Environment.Exit(1);
       }
       IsDev = build == "local";
@@ -81,6 +84,7 @@ namespace Settings {
     /// <exception cref="ConfigurationException"></exception>
     private void ReadUserSettings() {
 
+      _logger.Information("Reading User Settings");
       UserSettings userSettings;
 
       if (File.Exists("./enigma.json")) {
@@ -91,7 +95,7 @@ namespace Settings {
         //config non-empty?
 
         if ( text == "") {
-            Trace.WriteLine("Configuration file is empty");
+            _logger.Warning("Configuration file is empty");
             throw new ConfigurationException("Configuration file is empty");
         }
 
@@ -101,10 +105,12 @@ namespace Settings {
           userSettings = JsonSerializer.Deserialize<UserSettings>(text);
         } catch ( JsonException exception ) {
           Console.Error.WriteLine("invalid user settings, unserializable");
+          _logger.Error("invalid user settings, unserializable");
           throw new ConfigurationException("invalid user settings, unserializable",exception);
         }
 
         if (userSettings == null ) {
+          _logger.Error("invalid user settings, unserializable");
           Console.Error.WriteLine("invalid user settings, unserializable");
           throw new ConfigurationException("invalid user settings, empty");
         }
@@ -116,9 +122,12 @@ namespace Settings {
 
           //valid repo src?
           if (!Utils.RepoParser.IsRepoUrl(pluginSetting.Src)) {
-            Trace.WriteLine($"Bad Plugin Configuration, not a git repo {pluginSetting.Src}");
-            Console.WriteLine($"[WARN] : Bad Plugin Configuration, not a git repo {pluginSetting.Src}");
+
+            _logger.Error($"Bad Plugin Configuration, not a git repo {pluginSetting.Src}");
+            Console.Error.WriteLine($"Bad Plugin Configuration, not a git repo {pluginSetting.Src}");
+
             continue;
+
           } 
       
           validatedPluginSettings.Add(new PluginSetting() {
