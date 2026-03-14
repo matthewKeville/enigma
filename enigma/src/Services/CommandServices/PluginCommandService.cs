@@ -1,15 +1,13 @@
 namespace Services.CommandServices {
 
 using Models.Plugin.V1;
-using Services.CommandServices.Exceptions;
 using Services.PluginService;
 using Services.PluginRunnerService;
-using global::Exceptions;
 using Services.CrosswordInstaller;
 using Logging;
 using Serilog;
 
-    public class PluginCommandService {
+  public class PluginCommandService {
 
   private PluginService pluginService;
   private PluginRunnerService pluginRunnerService;

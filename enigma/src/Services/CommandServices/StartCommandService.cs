@@ -1,21 +1,25 @@
+
+namespace Services.CommandServices {
+
 using Event;
 using UI.View.Game;
 using Terminal.Gui;
-using Services.CommandServices.Exceptions;
 using Serilog;
 using Logging;
-
-namespace Services.CommandServices {
+using Services.CommandServices.StartService;
+using Services.CrosswordService;
 
 public class StartCommandService {
 
   private EventBus eventBus;
   private GameView gameView;
+  private CrosswordService crosswordService;
   private static ILogger _logger = Logger.For<StartCommandService>();
 
-  public StartCommandService(EventBus eventBus, GameView gameView) {
+  public StartCommandService(EventBus eventBus, GameView gameView,CrosswordService crosswordService) {
     this.eventBus = eventBus;
     this.gameView = gameView;
+    this.crosswordService = crosswordService;
   }
 
   /// <summary>
@@ -30,24 +34,23 @@ public class StartCommandService {
     }
 
     int puzzleId = -1;
+
     try {
       puzzleId = Int32.Parse(args[1]);
-      startGame(puzzleId);
-      Application.Shutdown();
     } catch (Exception exception) {
       _logger.Error(exception.ToString());
-      throw new BadArgsException($"puzzleId> {args[1]}",exception);
+      throw new BadArgsException($"invalid argument '{args[1]}', for puzzleId",exception);
     }
 
-    //TODO need to verify input is non-zero and maps to a known puzzleId
-    //and throw new CrosswordNotFoundException()
+    if (!crosswordService.CrosswordExists(puzzleId)) {
+      throw new CrosswordNotFoundException($"puzzle {puzzleId} does not exist");
+    }
 
     startGame(puzzleId);
     Application.Shutdown();
 
   }
 
-  /// TODO : This needs to check if the puzzleId exists first...
   private void startGame(int puzzleId) {
 
     _logger.Information($"starting game for {puzzleId}");

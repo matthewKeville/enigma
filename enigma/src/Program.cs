@@ -1,13 +1,14 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Services.CommandServices;
-using Services.CommandServices.Exceptions;
-using Exceptions;
 using Models.Plugin.V1;
 using Microsoft.Extensions.Configuration;
+using Logging;
 using Serilog;
+using Exceptions;
 
 IHost? host = null;
+ILogger _logger = Logger.For<object>();
 
 try {
   HostApplicationBuilder builder = Host.CreateEmptyApplicationBuilder(new HostApplicationBuilderSettings());
@@ -25,10 +26,12 @@ try {
   Startup.UpdateOrCreateDB(dbContext);
   host.Start();
 
-} catch (ConfigurationException ex) {
-  Console.Error.WriteLine("bad configuration file\n" + ex.Message);
+} catch (EnigmaException ex) {
+  Console.Error.WriteLine("enigma error, see logs");
+  _logger.Error(ex.ToString());
 } catch (Exception ex) {
-  Console.Error.WriteLine("unknown startup error\n" + ex.Message);
+  Console.Error.WriteLine("unexpected error, see logs");
+  _logger.Error(ex.ToString());
 }
 
 if (host == null) {
@@ -72,16 +75,22 @@ try {
       Console.Error.WriteLine($"unknown command {command}");
       Console.WriteLine($"see help for available commands");
       break;
-
   }
+
 } catch (CommandServiceException ex) {
+
   if ( ex is BadArgsException ) {
     Console.Error.WriteLine("invalid arguments\n" + ex.Message);
-  } else if ( ex is NotFoundException ) {
-    Console.Error.WriteLine(ex.Message);
   } else {
-    Console.Error.WriteLine(ex.Message);
+    Console.Error.WriteLine("command failed\n" + ex.Message);
   }
+
+} catch (EnigmaException ex) {
+  Console.Error.WriteLine("enigma error, see logs");
+  _logger.Error(ex.ToString());
+
 } catch (Exception ex) {
-  Console.Error.WriteLine("unexpected error \n" + ex.ToString());
+  Console.Error.WriteLine("unexpected error, see logs");
+  _logger.Error(ex.ToString());
+
 }

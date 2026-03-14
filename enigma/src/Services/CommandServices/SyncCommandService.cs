@@ -11,7 +11,11 @@ public class SyncCommandService {
   }
   
   public void Sync(String[] args) {
-    pluginService.Sync();
+    try {
+      pluginService.Sync();
+    } catch (PluginServiceException ex) {
+      throw new CommandServiceException("",ex);
+    }
   }
 
 }

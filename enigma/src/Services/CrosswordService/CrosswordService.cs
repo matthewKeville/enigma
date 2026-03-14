@@ -14,6 +14,10 @@ namespace Services.CrosswordService {
       this.dbCtx = dbCtx;
     }
 
+    public bool CrosswordExists(int crosswordId) {
+      return dbCtx.Crosswords.Any( c => c.Id == crosswordId );
+    }
+
     public Crossword GetCrossword(int crosswordId) {
       Crossword? crosswordQ = dbCtx.Crosswords
         .Where( c => c.Id == crosswordId)

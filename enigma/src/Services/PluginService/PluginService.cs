@@ -1,4 +1,3 @@
-using Exceptions;
 using Logging;
 using Serilog;
 using Settings.User.Plugin;
@@ -18,7 +17,7 @@ namespace Services.PluginService {
     /// <summary>
     /// Return list of the aliases of installed plugins
     /// </summary>
-    /// <exception cref="PluginException"></exception>
+    /// <exception cref="PluginServiceException"></exception>
     public List<String> GetInstalledPlugins() {
       List<String> pluginNames = pluginSettings.Plugins
         .FindAll(p => p.Enabled)

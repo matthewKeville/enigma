@@ -1,4 +1,3 @@
-using Exceptions;
 using Models.Plugin.V1;
 using Settings.User.Plugin;
 using static Settings.User.Plugin.PluginSettings;
@@ -13,30 +12,25 @@ namespace Services.PluginRunnerService {
       this.pluginSettings = settings.userSettings.pluginSettings;
     }
 
-    /// <exception cref="PluginNotFoundException"></exception>
-    /// <exception cref="PluginResponseSerializationException"></exception>
+    /// <exception cref="PluginRunnerServiceException"></exception>
     public Response RequestInfo(String pluginName) {
       Request request = new Request
       {
           Type = Request.RequestType.Info,
       };
-      Console.WriteLine(Request.SerializeJson(request)); //DBG
       return runPlugin(pluginName,Request.SerializeJson(request));
     }
 
-    /// <exception cref="PluginNotFoundException"></exception>
-    /// <exception cref="PluginResponseSerializationException"></exception>
+    /// <exception cref="PluginRunnerServiceException"></exception>
     public Response RequestMethods(String pluginName) {
       Request request = new Request
       {
           Type = Request.RequestType.Methods,
       };
-      Console.WriteLine(Request.SerializeJson(request)); //DBG
       return runPlugin(pluginName,Request.SerializeJson(request));
     }
 
-    /// <exception cref="PluginNotFoundException"></exception>
-    /// <exception cref="PluginResponseSerializationException"></exception>
+    /// <exception cref="PluginRunnerServiceException"></exception>
     public Response RequestFetch(String pluginName,String method,String[] args) {
       Request request = new Request
       {
@@ -46,7 +40,6 @@ namespace Services.PluginRunnerService {
             Args = args
           }
       };
-      Console.WriteLine(Request.SerializeJson(request)); //DBG
       Response response =  runPlugin(pluginName,Request.SerializeJson(request));
       return response;
     }

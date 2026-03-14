@@ -22,17 +22,17 @@ namespace Settings.User {
 
     public static UserSettings ReadSettings() {
 
-      _logger.Information("Reading App Settings");
+      _logger.Information("reading enigma.json");
 
       if (!File.Exists("./enigma.json")) {
-        _logger.Warning("enigma.json not found");
+        _logger.Warning("enigma.json not found, using default settings");
         return new UserSettings();
       } 
 
       String fileText = File.ReadAllText("./enigma.json");
 
       if (String.IsNullOrEmpty(fileText)) {
-        _logger.Warning("enigma.json found, but was null or empty");
+        _logger.Warning("enigma.json found, but empty, using default settings");
         return new UserSettings();
       } 
 
@@ -42,11 +42,15 @@ namespace Settings.User {
       try {
         userSettings = JsonConvert.DeserializeObject<UserSettings>(fileText);
         //TBD call settings.validate
+        //TBD call settings.validate
+        //TBD call settings.validate
+        //TBD call settings.validate
+        //TBD call settings.validate
       } catch (JsonReaderException ex) {
-        _logger.Warning("unable to parse enigma.json");
+        _logger.Warning("unable to parse enigma.json, using default settings");
         _logger.Error(ex.ToString());
       } catch (JsonSerializationException ex) {
-        _logger.Warning("unable to parse enigma.json");
+        _logger.Warning("unable to parse enigma.json, using default settings");
         _logger.Error(ex.ToString());
       }
 
