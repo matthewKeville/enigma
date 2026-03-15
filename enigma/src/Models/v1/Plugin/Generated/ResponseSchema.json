@@ -125,7 +125,8 @@
           ]
         },
         "releaseDate": {
-          "type": "string"
+          "type": "string",
+          "format": "date-time"
         }
       },
       "required": [
@@ -133,8 +134,7 @@
         "columns",
         "rows",
         "clues",
-        "title",
-        "releaseDate"
+        "title"
       ]
     },
     "InfoResponse": {

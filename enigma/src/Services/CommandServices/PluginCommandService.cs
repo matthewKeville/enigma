@@ -87,6 +87,7 @@ using Serilog;
     } catch (PluginNotFoundException ex) {
 
       Console.Error.WriteLine($"Plugin Not Found");
+      _logger.Error(ex.ToString());
 
     } catch (PluginResponseSerializationException ex) {
 

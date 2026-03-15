@@ -24,22 +24,22 @@ public class  Response {
     }
 
     [JsonProperty(Required = Required.Always)]
-    public String ApiVersion { get; set; }
+    public required String ApiVersion { get; set; }
 
     [JsonProperty(Required = Required.Always)]
     public ResponseType Type { get; set; }
 
     [JsonProperty(Required = Required.Default)]
-    public FetchResponse Fetch { get; set; }
+    public FetchResponse? Fetch { get; set; }
 
     [JsonProperty(Required = Required.Default)]
-    public MethodsResponse Methods { get; set; }
+    public MethodsResponse? Methods { get; set; }
 
     [JsonProperty(Required = Required.Default)]
-    public InfoResponse Info{ get; set; }
+    public InfoResponse? Info{ get; set; }
 
     [JsonProperty(Required = Required.Default)]
-    public ErrorResponse Error { get; set; }
+    public ErrorResponse? Error { get; set; }
 
     public override string ToString()
     {
@@ -100,15 +100,6 @@ public class  Response {
         }
 
       public static Response DeserializeJson(String json) {
-
-        // var settings = new JsonSerializerSettings
-        // {
-        //     ContractResolver = new DefaultContractResolver
-        //     {
-        //         NamingStrategy = new CamelCaseNamingStrategy()
-        //     }
-        // };
-          
         return JsonConvert.DeserializeObject<Response>(json);
       }
 
@@ -119,10 +110,10 @@ public class  Response {
     public class MetaData {
 
       [JsonProperty(Required = Required.Always)]
-      public String Plugin { get; set; }
+      public required String Plugin { get; set; }
 
       [JsonProperty(Required = Required.Always)]
-      public String PluginVersion { get; set; }
+      public required String PluginVersion { get; set; }
 
       [JsonProperty(Required = Required.Always)]
       public DateTime FetchDate { get; set; } //YYYY-MM-DDTHH:mm:ssZ
@@ -152,10 +143,10 @@ public class  Response {
       public Direction D { get; set; }
 
       [JsonProperty(Required = Required.Always)]
-      public String Prompt { get; set; }
+      public required String Prompt { get; set; }
 
       [JsonProperty(Required = Required.Always)]
-      public String Answer { get; set; }
+      public required String Answer { get; set; }
 
     }
 
@@ -169,13 +160,13 @@ public class  Response {
     public int Rows { get; set; }
 
     [JsonProperty(Required = Required.Always)]
-    public Clue[] Clues { get; set; }
+    public required Clue[] Clues { get; set; }
 
     [JsonProperty(Required = Required.Always)]
-    public String Title { get; set; }
+    public required String Title { get; set; }
 
     [JsonProperty(Required = Required.Default)]
-    public String Author { get; set; }
+    public required String Author { get; set; }
 
     [JsonProperty(Required = Required.Default)]
     public DateTime ReleaseDate { get; set; }
@@ -187,13 +178,13 @@ public class  Response {
     public class Method {
 
       [JsonProperty(Required = Required.Always)]
-      public String Name { get; set; }
+      public required String Name { get; set; }
 
       [JsonProperty(Required = Required.Always)]
-      public String Description { get; set; }
+      public required String Description { get; set; }
 
       [JsonProperty(Required = Required.Always)]
-      public Argument[] Arguments { get; set; }
+      public required Argument[] Arguments { get; set; }
 
       public override string ToString()
       {
@@ -209,13 +200,13 @@ public class  Response {
     public class Argument {
 
       [JsonProperty(Required = Required.Always)]
-      public String Name { get; set; }
+      public required String Name { get; set; }
 
       [JsonProperty(Required = Required.Always)]
-      public String Description { get; set; }
+      public required String Description { get; set; }
 
       [JsonProperty(Required = Required.Always)]
-      public String[] Constraints;  //maybe can just be part of description
+      public required String[] Constraints;  //maybe can just be part of description
 
       public override string ToString()
       {
@@ -225,7 +216,7 @@ public class  Response {
     }
 
     [JsonProperty(Required = Required.Default)]
-    public Method[] Methods { get; set; }
+    public required Method[] Methods { get; set; }
 
     public override string ToString()
     {
@@ -241,13 +232,13 @@ public class  Response {
   public class InfoResponse {
 
     [JsonProperty(Required = Required.Always)]
-    public String Name { get; set; }
+    public required String Name { get; set; }
 
     [JsonProperty(Required = Required.Always)]
-    public String Description { get; set; }
+    public required String Description { get; set; }
 
     [JsonProperty(Required = Required.Always)]
-    public String Version { get; set; }
+    public required String Version { get; set; }
 
     public override string ToString()
     {
@@ -274,7 +265,7 @@ public class  Response {
     public ErrorType Type { get; set; }
 
     [JsonProperty(Required = Required.Default)]
-    public String Message { get; set; }
+    public required String Message { get; set; }
 
 
     public override string ToString()
