@@ -8,8 +8,8 @@ namespace Entity {
 
     // Static Puzzle Data
 
-    public String Type { get; set; }
-    public String Title { get; set; }
+    public required String Type { get; set; }
+    public required String Title { get; set; }
     public DateTime Published { get; set; }
     public int Rows { get; set; }
     public int Columns { get; set; }
@@ -26,7 +26,7 @@ namespace Entity {
     public int CharacterCheckCount { get; set; } = 0;
     public int PuzzleCheckCount { get; set; } = 0;
 
-    public String ToString() {
+    public override String ToString() {
 
       String result =  $"Crossword(Type={Type}, Title={Title}, Published={Published}, Rows={Rows}, Columns={Columns}";
       result+=$"\n Clues {Clues.Count()}";
@@ -56,7 +56,7 @@ namespace Entity {
 
     public int CrosswordId { get; set; }
 
-    public String ToString() {
+    public override String ToString() {
       return $"Clue(Id={Id}, X={X}, Y={Y}, I={I}, Direction={Direction.ToString()}, Prompt={Prompt}, Answer={Answer}";
     }
 
@@ -74,7 +74,7 @@ namespace Entity {
 
     public int CrosswordId { get; set; }
 
-    public String ToString() {
+    public override String ToString() {
       return $"GridChar(Id={Id}, X={X}, Y={Y}, IsBlock={IsBlock}, UserChar={UserChar ?? ' '}, AnswerChar={AnswerChar})";
     }
 
