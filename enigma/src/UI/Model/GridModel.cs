@@ -142,10 +142,10 @@ namespace UI.Model
             //Link Char Models
             foreach (GridCharModel gcm in GridCharModels)
             {
-                gcm.Up = GridCharModels.FirstOrDefault(m => m.X == gcm.X && m.Y == gcm.Y - 1, null);
-                gcm.Down = GridCharModels.FirstOrDefault(m => m.X == gcm.X && m.Y == gcm.Y + 1, null);
-                gcm.Left = GridCharModels.FirstOrDefault(m => m.X == gcm.X - 1 && m.Y == gcm.Y, null);
-                gcm.Right = GridCharModels.FirstOrDefault(m => m.X == gcm.X + 1 && m.Y == gcm.Y, null);
+              gcm.Up = GridCharModels.FirstOrDefault(m => m?.X == gcm.X && m?.Y == gcm.Y - 1, null);
+              gcm.Down = GridCharModels.FirstOrDefault(m => m?.X == gcm.X && m?.Y == gcm.Y + 1, null);
+              gcm.Left = GridCharModels.FirstOrDefault(m => m?.X == gcm.X - 1 && m?.Y == gcm.Y, null);
+              gcm.Right = GridCharModels.FirstOrDefault(m => m?.X == gcm.X + 1 && m?.Y == gcm.Y, null);
             }
 
             Selection = GridCharModels.First();

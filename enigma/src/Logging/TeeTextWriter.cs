@@ -24,14 +24,14 @@ public class TeeTextWriter : TextWriter
 
     public override Encoding Encoding => _original.Encoding;
 
-    public override void WriteLine(string value)
+    public override void WriteLine(string? value)
     {
         _original.WriteLine(value);
 
         switch (_streamType)
         {
-            case StreamType.OUT: _logger.Information(value); break;
-            case StreamType.ERR: _logger.Error(value); break;
+            case StreamType.OUT: _logger.Information(value ?? ""); break;
+            case StreamType.ERR: _logger.Error(value ?? ""); break;
         }
     }
 
@@ -45,13 +45,13 @@ public class TeeTextWriter : TextWriter
         }
     }
 
-    public override void Write(string value)
+    public override void Write(string? value)
     {
         _original.Write(value);
         switch (_streamType)
         {
-            case StreamType.OUT: _logger.Information(value); break;
-            case StreamType.ERR: _logger.Error(value); break;
+            case StreamType.OUT: _logger.Information(value ?? ""); break;
+            case StreamType.ERR: _logger.Error(value ?? ""); break;
         }
     }
 }
