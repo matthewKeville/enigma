@@ -7,7 +7,7 @@ namespace UI.View.Game
     public class StatusView : Toplevel
     {
         private EventBus _eventBus;
-        private GameModel _gameModel;
+        private GameModel? _gameModel;
         private Label _titleLabel;
         private Label _elapsedLabel;
         private Label _charCheckCountLabel;
@@ -17,6 +17,7 @@ namespace UI.View.Game
 
         public StatusView(EventBus eventBus)
         {
+
             _eventBus = eventBus;
             _eventBus.Register(this, (args) =>
             {
@@ -30,48 +31,45 @@ namespace UI.View.Game
                 }
             });
 
-            SetupViews();
+            // Setup Views
 
-        }
+            _titleLabel = new Label();
+            _titleLabel.X = 2;
+            _titleLabel.Y = 0;
+            // _titleLabel.Width = 6;
+            _titleLabel.Width = Dim.Fill();
 
-        private void SetupViews() {
+            _elapsedLabel = new Label();
+            _elapsedLabel.X = 2;
+            _elapsedLabel.Y = 2;
+            _elapsedLabel.Width = Dim.Fill();
+            // _elapsedLabel.Width = 6;
 
-          _titleLabel = new Label();
-          _titleLabel.X = 2;
-          _titleLabel.Y = 0;
-          // _titleLabel.Width = 6;
-          _titleLabel.Width = Dim.Fill();
+            _charCheckCountLabel = new Label();
+            _charCheckCountLabel.X = 2;
+            _charCheckCountLabel.Y = 4;
+            _charCheckCountLabel.Width = Dim.Fill();
+            // _charCheckCountLabel.Width = 6;
 
-          _elapsedLabel = new Label();
-          _elapsedLabel.X = 2;
-          _elapsedLabel.Y = 2;
-          _elapsedLabel.Width = Dim.Fill();
-          // _elapsedLabel.Width = 6;
+            _wordCheckCountLabel = new Label();
+            _wordCheckCountLabel.X = 2;
+            _wordCheckCountLabel.Y = 6;
+            _wordCheckCountLabel.Width = Dim.Fill();
+            // _wordCheckCountLabel.Width = 6;
 
-          _charCheckCountLabel = new Label();
-          _charCheckCountLabel.X = 2;
-          _charCheckCountLabel.Y = 4;
-          _charCheckCountLabel.Width = Dim.Fill();
-          // _charCheckCountLabel.Width = 6;
-
-          _wordCheckCountLabel = new Label();
-          _wordCheckCountLabel.X = 2;
-          _wordCheckCountLabel.Y = 6;
-          _wordCheckCountLabel.Width = Dim.Fill();
-          // _wordCheckCountLabel.Width = 6;
-
-          _puzzleCheckCountLabel = new Label();
-          _puzzleCheckCountLabel.X = 2;
-          _puzzleCheckCountLabel.Y = 8;
-          _puzzleCheckCountLabel.Width = Dim.Fill();
-          // _puzzleCheckCountLabel.Width = 6;
+            _puzzleCheckCountLabel = new Label();
+            _puzzleCheckCountLabel.X = 2;
+            _puzzleCheckCountLabel.Y = 8;
+            _puzzleCheckCountLabel.Width = Dim.Fill();
+            // _puzzleCheckCountLabel.Width = 6;
 
 
-          Add(_titleLabel);
-          Add(_elapsedLabel);
-          Add(_charCheckCountLabel);
-          Add(_wordCheckCountLabel);
-          Add(_puzzleCheckCountLabel);
+            Add(_titleLabel);
+            Add(_elapsedLabel);
+            Add(_charCheckCountLabel);
+            Add(_wordCheckCountLabel);
+            Add(_puzzleCheckCountLabel);
+
         }
 
         private void OnPuzzleLoaded(PuzzleLoadedEventArgs args)
@@ -107,9 +105,9 @@ namespace UI.View.Game
 
         private void OnCheckChange(CheckChangeEventArgs args)
         {
-          _charCheckCountLabel.Text = $"⊠   {_gameModel.CharacterCheckCount}";
-          _wordCheckCountLabel.Text = $"   {_gameModel.WordCheckCount}";
-          _puzzleCheckCountLabel.Text = $"   {_gameModel.PuzzleCheckCount}";
+          _charCheckCountLabel.Text = $"⊠   {_gameModel?.CharacterCheckCount ?? -1}";
+          _wordCheckCountLabel.Text = $"   {_gameModel?.WordCheckCount ?? -1}";
+          _puzzleCheckCountLabel.Text = $"   {_gameModel?.PuzzleCheckCount ?? -1}";
         }
 
 
