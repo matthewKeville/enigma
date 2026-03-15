@@ -3,7 +3,6 @@ namespace UI.View.Game
 
     using System.Drawing;
     using System.Text;
-    using Entity;
     using Enums;
     using Event;
     using Logging;
@@ -17,7 +16,6 @@ namespace UI.View.Game
         private DatabaseContext _dbContext;
         private EventBus _eventBus;
         private GameModel? _gameModel;
-        private Crossword? _crossword;
         private Theme _theme;
 
         private int gridOffX = 3;
@@ -179,9 +177,7 @@ namespace UI.View.Game
 
         private void Init(GameModel gameModel)
         {
-            //FIXME 
-            // Width = _crossword.Columns + (gridOffX * 2);
-            // Height = _crossword.Rows + (gridOffY * 2);
+            _gameModel = gameModel;
             Width =  _gameModel.GridModel.ColumnCount + (gridOffX * 2);
             Height = _gameModel.GridModel.RowCount + (gridOffY * 2);
             SetNeedsDisplay();
@@ -189,7 +185,6 @@ namespace UI.View.Game
 
         private void OnPuzzleLoaded(PuzzleLoadedEventArgs args)
         {
-            _gameModel = args.GameModel;
             Init(args.GameModel);
         }
 

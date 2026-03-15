@@ -46,12 +46,7 @@ namespace UI.View.Game
             });
             _theme = theme;
 
-            SetupTableView();
-        }
-
-
-        private void SetupTableView()
-        {
+            //Setup Table Views (inlined fix)
             this.ColorScheme = new ColorScheme(new Attribute(_theme.CluesBackgroundBG));
 
             TableStyle tableStyle = new TableStyle();
@@ -60,6 +55,20 @@ namespace UI.View.Game
             tableStyle.ShowHorizontalHeaderUnderline = false;
             tableStyle.ShowVerticalCellLines = false;
             tableStyle.ExpandLastColumn = true; //ignore Max/Min Columns for last
+
+            _acrossTableView = new TableView() {
+              X = 1,
+              Y = 3,
+              Width = Dim.Fill(),
+              //Not sure what this warn was, but idc
+              Height = Dim.Fill()! - 1
+            };
+            _downTableView = new TableView() {
+              X = _acrossTableView.X,
+              Y =  _acrossTableView.Y,
+              Width = _acrossTableView.Width,
+              Height = _acrossTableView.Height
+            };
 
             RowColorGetterDelegate rowColorGetter = (RowColorGetterArgs) =>
             {
@@ -75,7 +84,8 @@ namespace UI.View.Game
 
                 if (RowColorGetterArgs.RowIndex == tableView.SelectedRow)
                 {
-                    if (_gameModel.GridModel.Orientation == direction)
+                    //i guess this is fine? doesn't really matter
+                    if (_gameModel?.GridModel.Orientation == direction)
                     {
                         return new ColorScheme(new Attribute(_theme.FocusedClueFG, _theme.FocusedClueBG));
                     }
@@ -90,12 +100,6 @@ namespace UI.View.Game
                 }
             };
 
-            _acrossTableView = new TableView() {
-              X = 1,
-              Y = 3,
-              Width = Dim.Fill(),
-              Height = Dim.Fill() - 1
-            };
             _acrossTableView.FullRowSelect = true;
             _acrossTableView.MinCellWidth = 2;
             _acrossTableView.MaxCellWidth = 2;
@@ -103,12 +107,6 @@ namespace UI.View.Game
             _acrossTableView.Style.RowColorGetter = rowColorGetter;
             _acrossTableView.ColorScheme = new ColorScheme(new Attribute(_theme.InactiveClueFG, _theme.InactiveClueBG));
 
-            _downTableView = new TableView() {
-              X = _acrossTableView.X,
-              Y =  _acrossTableView.Y,
-              Width = _acrossTableView.Width,
-              Height = _acrossTableView.Height
-            };
             _downTableView.FullRowSelect = _acrossTableView.FullRowSelect;
             _downTableView.MinCellWidth = _acrossTableView.MinCellWidth;
             _downTableView.MaxCellWidth = _acrossTableView.MaxCellWidth;
@@ -122,11 +120,14 @@ namespace UI.View.Game
             _tableLabel.ColorScheme = new ColorScheme(new Attribute(_theme.CluesHeaderFG,_theme.CluesHeaderBG));
             _tableLabel.Text = "Across";
 
+            _activeTableView = _acrossTableView;
+            _inactiveTableView = _downTableView;
+
             Add(_tableLabel);
             Add(_acrossTableView);
             Add(_downTableView);
-
         }
+
 
         private void UpdateTableContent() {
           UpdateTableContent(Viewport.Size);
@@ -140,6 +141,10 @@ namespace UI.View.Game
         // the table views.
         private void UpdateTableContent(Size size)
         {
+
+            if (_gameModel == null) {
+              return;
+            }
 
             //IEnumerable<Word> words = _dbContext.Words.Where(w => w.CrosswordId == _crosswordId);
             List<GridClueModel> clues = _gameModel.GridModel.GridClueModels;
@@ -186,6 +191,11 @@ namespace UI.View.Game
 
         public void UpdateSelectedRows()
         {
+
+          //nullable bs
+          if (_gameModel == null) {
+            return;
+          }
 
             if (_acrossTableView.Table is null || _downTableView.Table is null)
             {
@@ -250,6 +260,9 @@ namespace UI.View.Game
 
         private void OnOrientationChange()
         {
+            if (_gameModel == null) {
+              return;
+            }
 
             _activeTableView = _gameModel.GridModel.Orientation == Direction.Across ? 
               _acrossTableView : _downTableView;

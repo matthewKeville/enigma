@@ -44,12 +44,8 @@ namespace UI.View.Game
             });
             _theme = theme;
 
-            SetupViews();
-
-        }
-
-        private void SetupViews()
-        {
+            //Setup Views (inline fix)
+            
             this.ColorScheme = new ColorScheme(new Attribute(_theme.CluesBackgroundBG));
 
             TableStyle tableStyle = new TableStyle();
@@ -58,6 +54,9 @@ namespace UI.View.Game
             tableStyle.ShowHorizontalHeaderUnderline = false;
             tableStyle.ShowVerticalCellLines = false;
             tableStyle.ExpandLastColumn = true;
+
+            _acrossTableView = new TableView() { };
+            _downTableView = new TableView() { };
 
             RowColorGetterDelegate rowColorGetter = (RowColorGetterArgs) =>
             {
@@ -73,7 +72,8 @@ namespace UI.View.Game
 
                 if (RowColorGetterArgs.RowIndex == tableView.SelectedRow)
                 {
-                    if (_gameModel.GridModel.Orientation == direction)
+                    //idk nullable bs
+                    if (_gameModel?.GridModel.Orientation == direction)
                     {
                         return new ColorScheme(new Attribute(_theme.FocusedClueFG, _theme.FocusedClueBG));
                     }
@@ -102,13 +102,12 @@ namespace UI.View.Game
             _downLabel.Width = Dim.Fill();
             _downLabel.ColorScheme = new ColorScheme(new Attribute(_theme.CluesHeaderFG,_theme.CluesHeaderBG));
 
-            _downTableView = new TableView() { };
             _downTableView.X = 1;
             _downTableView.Y = Pos.Bottom(_downLabel) + 1;
             _downTableView.Width = Dim.Fill();
-            _downTableView.Height = Dim.Fill() - 1;
+            // idk nullable bs
+            _downTableView.Height = Dim.Fill()! - 1;
 
-            _acrossTableView = new TableView() { };
             _acrossTableView.X = 1;
             _acrossTableView.Y = Pos.Bottom(_acrossLabel) + 1;
             _acrossTableView.Width = Dim.Fill();
@@ -143,6 +142,10 @@ namespace UI.View.Game
         //see CluesSingleView.UpdateTableContent for ref.
         private void UpdateTableContent(Size size)
         {
+
+          if (_gameModel is null) {
+            return;
+          }
 
             IEnumerable<GridClueModel> clues = _gameModel.GridModel.GridClueModels;
 
@@ -183,6 +186,10 @@ namespace UI.View.Game
 
         public void UpdateSelectedRows()
         {
+
+            if (_gameModel is null) {
+              return;
+            }
 
             if (_acrossTableView.Table is null || _downTableView.Table is null)
             {

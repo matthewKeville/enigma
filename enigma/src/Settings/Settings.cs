@@ -9,7 +9,7 @@ namespace Settings {
 
     private static ILogger _logger = Logger.For<Settings>();
 
-    public UserSettings? userSettings;
+    public UserSettings userSettings;
     public AppSettings appSettings;
 
     public Settings(AppSettings appSettings) {
