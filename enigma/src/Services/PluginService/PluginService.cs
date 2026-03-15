@@ -8,7 +8,7 @@ namespace Services.PluginService {
   public class PluginService {
 
     private static ILogger _logger = Logger.For<PluginService>();
-    private PluginSettings? pluginSettings;
+    private PluginSettings pluginSettings;
 
     public PluginService(Settings.Settings settings) {
       this.pluginSettings = settings.userSettings.pluginSettings;

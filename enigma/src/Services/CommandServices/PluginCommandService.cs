@@ -72,10 +72,12 @@ using Serilog;
                String[] installArgs = (args.Length > 4) ?  args[4..] : Array.Empty<String>();
                Response response = pluginRunnerService.RequestFetch(args[2],method,installArgs);
 
-              if ( response.Error == null ) {
+              if ( response.Error == null && response.Fetch != null) {
                 crosswordInstallerService.Install(response.Fetch);
-              } else {
+              } else if (response.Error != null) {
                 handleErrorResponse(response.Error);
+              } else {
+                Console.Error.WriteLine("critical error handling plugin response");
               }
           }
           break;

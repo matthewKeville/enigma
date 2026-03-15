@@ -27,7 +27,7 @@ namespace Models.Plugin.V1 {
     public RequestType Type { get; set; }
 
     [JsonProperty(Required = Required.Default)]
-    public FetchRequest Fetch { get; set; }
+    public FetchRequest? Fetch { get; set; }
 
     public static JSchema Generate() {
 
@@ -75,10 +75,10 @@ namespace Models.Plugin.V1 {
   public class FetchRequest {
 
     [JsonProperty(Required = Required.Always)]
-    public String Method { get; set; }
+    public required String Method { get; set; }
 
     [JsonProperty(Required = Required.Always)]
-    public String[] Args { get; set; }
+    public required String[] Args { get; set; }
 
   }
 

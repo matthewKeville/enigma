@@ -73,8 +73,7 @@ public class StartCommandService {
       }
     };
 
-    //Application.Force16Colors = true;
-    Terminal.Gui.ConfigurationManager.Themes.Theme = "Light";
+    //Terminal.Gui.ConfigurationManager.Themes.Theme = "Light";
     Terminal.Gui.ConfigurationManager.Apply();
 
     _logger.Debug($"Running Game");

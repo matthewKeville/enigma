@@ -21,7 +21,7 @@ namespace UI.View.Game
         private DatabaseContext _dbContext;
 
         private bool _isInsertMode = false;
-        private GameModel _gameModel;
+        private GameModel? _gameModel;
 
         private CluesView _cluesView;
         private GridView _gridView;
@@ -122,6 +122,11 @@ namespace UI.View.Game
 
         public void SavePuzzle(bool complete) {
 
+          if ( _gameModel is null ) {
+            _logger.Fatal("critical error saving game, game model missing");
+            Environment.Exit(1);
+          }
+
           _gameModel.GridModel.GridCharModels.ForEach( gcm => {
             GridChar gc = _dbContext.GridChars.First( 
                 gc => gc.CrosswordId == _gameModel.CrosswordId &&
@@ -154,6 +159,10 @@ namespace UI.View.Game
 
         public void ProcessUICommand(UICommand command)
         {
+
+          if ( _gameModel is null ) {
+            return;
+          }
 
           var activeOrientationStart = _gameModel.GridModel.Orientation;
           var activeCluesStart = _gameModel.GridModel.GetActiveClues();

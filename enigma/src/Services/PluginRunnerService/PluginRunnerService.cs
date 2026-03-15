@@ -48,7 +48,7 @@ namespace Services.PluginRunnerService {
     /// <exception cref="PluginResponseSerializationException"></exception>
     private Response runPlugin(String pluginName, String json) {
 
-      PluginConfig? pluginConfig = pluginSettings.Plugins.Find( p => p.As.Equals(pluginName));
+      PluginConfig? pluginConfig = pluginSettings.Plugins.Find( p => (p?.As ?? "").Equals(pluginName));
       if (pluginConfig is null) {
         throw new PluginNotFoundException($"no such plugin with alias {pluginName}");
       }
@@ -70,13 +70,17 @@ namespace Services.PluginRunnerService {
       process.WaitForExit();
 
       //try parse response
-      Response response;
+      Response? response;
       try {
         response = Response.DeserializeJson(stdout);
       }
       catch ( Exception ex) {
         throw new PluginResponseSerializationException("plugin response is not understood\n"+stdout+"\n",ex);
       } 
+
+      if (response == null) {
+        throw new PluginResponseSerializationException("deserailization returned null without error");
+      }
 
       return response!;
 

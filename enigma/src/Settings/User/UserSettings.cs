@@ -12,7 +12,7 @@ namespace Settings.User {
     private static ILogger _logger = Logger.For<UserSettings>();
 
     [JsonProperty("plugins", Required = Required.Default)]
-    public PluginSettings? pluginSettings;
+    public PluginSettings pluginSettings = new PluginSettings();
 
     [JsonProperty("keymaps", Required = Required.Default)]
     public KeymapSettings? keymapSettings;

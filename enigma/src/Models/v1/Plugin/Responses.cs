@@ -99,7 +99,7 @@ public class  Response {
 
         }
 
-      public static Response DeserializeJson(String json) {
+      public static Response? DeserializeJson(String json) {
         return JsonConvert.DeserializeObject<Response>(json);
       }
 
@@ -151,7 +151,7 @@ public class  Response {
     }
 
     [JsonProperty(Required = Required.Always)]
-    public MetaData Meta { get; set; }
+    public required MetaData Meta { get; set; }
 
     [JsonProperty(Required = Required.Always)]
     public int Columns { get; set; }

@@ -13,7 +13,7 @@ namespace UI.View.Game
         private Label _charCheckCountLabel;
         private Label _wordCheckCountLabel;
         private Label _puzzleCheckCountLabel;
-        private Timer _timer;
+        private Timer? _timer;
 
         public StatusView(EventBus eventBus)
         {
