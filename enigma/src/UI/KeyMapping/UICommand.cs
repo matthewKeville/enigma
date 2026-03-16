@@ -37,17 +37,16 @@ public enum UICommandType {
     CHECK_WORD,
     CHECK_PUZZLE,
 
+    TOGGLE_CLUES_VIEW,
+    SHOW_KEYBINDS,
+    EXIT_PUZZLE,
+
     //Insert Mode Commands
 
     ENTER_INSERT_MODE,
     INSERT_CHAR,
-    DELETE_CHAR_INS,
+    DELETE_CHAR_INS
 
-    //
-
-    TOGGLE_CLUES_VIEW,
-    SHOW_KEYBINDS,
-    EXIT_PUZZLE
 
   }
 
@@ -91,6 +90,45 @@ public enum UICommandType {
       this.Type = type;
       this.Args = args;
     }
+  }
+
+  public class UICommands {
+    public static List<UICommandType> NormalCommands { get; } = new () {
+      UICommandType.ENTER_NORMAL_MODE,
+      UICommandType.SWAP_ORIENTATION,
+
+      UICommandType.MOVE_UP,
+      UICommandType.MOVE_DOWN,
+      UICommandType.MOVE_LEFT,
+      UICommandType.MOVE_RIGHT,
+
+      UICommandType.MOVE_CLUE,
+      UICommandType.MOVE_NEXT_CLUE,
+      UICommandType.MOVE_PREV_CLUE,
+      UICommandType.MOVE_CLUE_START,
+      UICommandType.MOVE_CLUE_END,
+
+      UICommandType.FIND_CHAR,
+      UICommandType.FIND_REV_CHAR,
+
+      UICommandType.REPLACE_CHAR,
+      UICommandType.DELETE_CHAR,
+
+      UICommandType.DELETE_WORD,
+      UICommandType.DELETE_INNER_WORD,
+      UICommandType.CHANGE_WORD,
+      UICommandType.CHANGE_INNER_WORD,
+
+      UICommandType.CHECK_CHAR,
+      UICommandType.CHECK_WORD,
+      UICommandType.CHECK_PUZZLE,
+    };
+
+    public static List<UICommandType> InsertCommands { get; } = new () {
+      UICommandType.ENTER_INSERT_MODE,
+      UICommandType.INSERT_CHAR,
+      UICommandType.DELETE_CHAR_INS
+    };
   }
 
 }

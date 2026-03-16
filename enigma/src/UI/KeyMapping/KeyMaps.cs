@@ -1,3 +1,5 @@
+using Logging;
+using Serilog;
 using Settings.User.Keymap;
 using Terminal.Gui;
 using UI.KeyMapping;
@@ -120,47 +122,16 @@ namespace UI.KeyMaping {
 
         public List<KeyMap> NormalKeyMaps = new ();
         public List<KeyMap> InsertKeyMaps = new ();
+        private static ILogger _logger = Logger.For<KeyMaps>();
 
         public KeyMaps(Settings.Settings settings) {
 
           //default
           NormalKeyMaps = buildNormalKeyMaps();
           InsertKeyMaps = buildInsertKeyMaps();
+          //user override
+          addUserKeyMaps(settings.userSettings.keymapSettings);
 
-          //user maps
-          KeymapSettings keymapSettings = settings.userSettings.keymapSettings;
-
-          //TODO: hmm need some association to parametricness in the UICommand Definition here
-          //Short term fix
-          List<UICommandType> ParametricUICommandTypes = new () {
-          UICommandType.REPLACE_CHAR,
-          UICommandType.INSERT_CHAR,
-          UICommandType.FIND_CHAR,
-          UICommandType.FIND_REV_CHAR,
-          UICommandType.MOVE_CLUE
-          };
-
-          //noremaps (Fixed Only)
-          foreach ( KeymapConfig cfg in keymapSettings.keymaps.FindAll( cfg => !cfg.Override )) {
-            //TODO: hmmm need some tie to enums and keymap defintion string
-            //Short term fix
-            String defintion =$"(debug definition) {cfg.Command.ToString()}";
-
-            //Key.TryParse
-
-            //TODO: hmm need some brokerage between string sequences to C# Keystrokes
-            //Perhaps json config, or some post validation/transformation does this,
-            //but it overcrowds the config object.
-
-            //Short term fix
-
-            // NormalKeyMaps.Add(
-            //   new FixedKeyMap( new List<Key>() { Key.I },cfg.Command,defintion)
-            // );
- 
-          }
-
-          //remaps
 
         }
 
@@ -208,6 +179,53 @@ namespace UI.KeyMaping {
            //Grrr I want to do <C-]> but it's not supported by Console.ReadKey ... Key
             ParametricKeyMap.InsertCharKeyMapOfPrincipal( new List<Key>(){} )
           };
+        }
+
+        private void addUserKeyMaps(KeymapSettings keymapSettings) {
+
+          //TODO: hmm need some association to parametricness in the UICommand Definition here
+          //Short term fix
+          List<UICommandType> ParametricUICommandTypes = new () {
+            UICommandType.REPLACE_CHAR,
+            UICommandType.INSERT_CHAR,
+            UICommandType.FIND_CHAR,
+            UICommandType.FIND_REV_CHAR,
+            UICommandType.MOVE_CLUE
+          };
+
+          //noremaps
+          foreach ( KeymapConfig cfg in keymapSettings.keymaps ) {
+
+            List<KeyMap> keyMapList = UICommands.NormalCommands.Contains(cfg.Command) ? NormalKeyMaps : InsertKeyMaps;
+
+            //TODO: hmmm need some tie to enums and keymap defintion string
+            //Short term fix
+            String definition =$"(debug definition) {cfg.Command.ToString()}";
+
+            List<Key>? keys = KeySequenceParser.TryParse(cfg.Keys);
+            if (keys == null) {
+              _logger.Warning($"ignoring keymap {cfg.ToString()}, could not parse Key Sequence");
+              continue;
+            }
+
+            if (ParametricUICommandTypes.Contains(cfg.Command)) {
+              _logger.Warning("ignoring keymap, parametric command mapping not implemented");
+              continue;
+            }
+
+            if ( cfg.Override ) {
+              List<KeyMap> removed = keyMapList.FindAll( km => km.Bindings.Any( bn => ((UICommand) bn.Item2).Type == cfg.Command ));
+              foreach (KeyMap remove in removed ) {
+                keyMapList.Remove(remove);
+              }
+              _logger.Information($"overrid {removed.Count} mappings for {cfg.Command}");
+            } 
+            keyMapList.Add(new FixedKeyMap( keys,cfg.Command,definition));
+
+          }
+
+          //remaps
+          
         }
 
     }

@@ -88,16 +88,13 @@ namespace UI.View.Game
 
         public void OnStartPuzzleEvent(StartPuzzleEventArgs args) {
 
-          _logger.Information("OnStartPuzzleEvent");
+          _logger.Debug("OnStartPuzzleEvent");
 
           Crossword crossword = _dbContext.Crosswords
             .Include( x => x.GridChars )
             .Include( x => x.Clues )
             .First( x => x.Id == args.CrosswordId );
           crossword.StartDate ??= DateTime.UtcNow;
-
-          _logger.Debug("Crossword  accessed");
-          _logger.Debug(crossword.ToString());
 
           //build game model
           int crosswordId = args.CrosswordId;

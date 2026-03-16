@@ -7,7 +7,6 @@ using UI.View.Game;
 using UI.View.Game.Clues;
 using UI.KeyMaping;
 using Settings.Theme;
-using Settings;
 using Services.CrosswordService;
 using Services.PluginService;
 using Services.CommandServices;

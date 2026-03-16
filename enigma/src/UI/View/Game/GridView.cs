@@ -56,13 +56,6 @@ namespace UI.View.Game
 
             foreach (GridCharModel gcm in _gameModel.GridModel.GridCharModels)
             {
-
-                //DBG DELETE
-                if (gcm.X == 0 && gcm.Y == 0 ) {
-                  _logger.Debug("DBG CORNER");
-                  _logger.Debug("Answer char is " + gcm.AnswerChar);
-                }
-                //DBG DELETE
        
                 Rune rune;
                 Attribute attr;
