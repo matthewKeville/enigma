@@ -15,10 +15,14 @@ namespace Settings.User {
     public PluginSettings pluginSettings = new PluginSettings();
 
     [JsonProperty("keymaps", Required = Required.Default)]
-    public KeymapSettings? keymapSettings;
+    public KeymapSettings keymapSettings = new KeymapSettings();
 
     [JsonProperty("ui", Required = Required.Default)]
-    public UISettings? uiSettings;
+    public UISettings uiSettings = new UISettings();
+
+    public override String ToString() {
+      return string.Join("\n", new List<String>() { pluginSettings?.ToString()??"none", keymapSettings?.ToString()??"none", uiSettings?.ToString()??"none" });
+    }
 
     public static UserSettings ReadSettings() {
 
@@ -47,10 +51,10 @@ namespace Settings.User {
         //TBD call settings.validate
         //TBD call settings.validate
       } catch (JsonReaderException ex) {
-        _logger.Warning("unable to parse enigma.json, using default settings");
+        Console.Error.WriteLine("unable to parse enigma.json, see logs, using default settings");
         _logger.Error(ex.ToString());
       } catch (JsonSerializationException ex) {
-        _logger.Warning("unable to parse enigma.json, using default settings");
+        Console.Error.WriteLine("unable to parse enigma.json, see logs, using default settings");
         _logger.Error(ex.ToString());
       }
 

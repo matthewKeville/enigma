@@ -1,5 +1,7 @@
+using Settings.User.Keymap;
 using Terminal.Gui;
 using UI.KeyMapping;
+using static Settings.User.Keymap.KeymapSettings;
 
 namespace UI.KeyMaping {
 
@@ -119,9 +121,47 @@ namespace UI.KeyMaping {
         public List<KeyMap> NormalKeyMaps = new ();
         public List<KeyMap> InsertKeyMaps = new ();
 
-        public KeyMaps() {
+        public KeyMaps(Settings.Settings settings) {
+
+          //default
           NormalKeyMaps = buildNormalKeyMaps();
           InsertKeyMaps = buildInsertKeyMaps();
+
+          //user maps
+          KeymapSettings keymapSettings = settings.userSettings.keymapSettings;
+
+          //TODO: hmm need some association to parametricness in the UICommand Definition here
+          //Short term fix
+          List<UICommandType> ParametricUICommandTypes = new () {
+          UICommandType.REPLACE_CHAR,
+          UICommandType.INSERT_CHAR,
+          UICommandType.FIND_CHAR,
+          UICommandType.FIND_REV_CHAR,
+          UICommandType.MOVE_CLUE
+          };
+
+          //noremaps (Fixed Only)
+          foreach ( KeymapConfig cfg in keymapSettings.keymaps.FindAll( cfg => !cfg.Override )) {
+            //TODO: hmmm need some tie to enums and keymap defintion string
+            //Short term fix
+            String defintion =$"(debug definition) {cfg.Command.ToString()}";
+
+            //Key.TryParse
+
+            //TODO: hmm need some brokerage between string sequences to C# Keystrokes
+            //Perhaps json config, or some post validation/transformation does this,
+            //but it overcrowds the config object.
+
+            //Short term fix
+
+            // NormalKeyMaps.Add(
+            //   new FixedKeyMap( new List<Key>() { Key.I },cfg.Command,defintion)
+            // );
+ 
+          }
+
+          //remaps
+
         }
 
         private List<KeyMap> buildNormalKeyMaps() {

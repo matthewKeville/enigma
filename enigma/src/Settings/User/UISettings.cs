@@ -7,10 +7,8 @@ namespace Settings.User.UI {
 
     private static ILogger _logger = Logger.For<UISettings>();
 
-    private void ReadUISettings() {
-
-      _logger.Information("Reading UI Settings");
-
+    public override String ToString() {
+      return "(UISettings) = none";
     }
 
   }

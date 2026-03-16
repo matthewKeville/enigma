@@ -11,6 +11,10 @@ namespace Settings.App {
     public bool IsDev = false;
     public String DbPath = "";
 
+    public override String ToString() {
+      return $"(IsDev) ={IsDev}, (DbPath) ={DbPath}";
+    }
+
     public AppSettings(IConfiguration cm) {
 
       String? build = cm.GetValue<String>("build");

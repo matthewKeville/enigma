@@ -24,6 +24,10 @@ namespace Settings.User.Plugin {
         }
       }
 
+      public override String ToString() {
+        return $"(src) ={Src},(As) ={As??""},(Enabled) = {Enabled}";
+      }
+
     }
 
     /// <value> Absolute path to plugin directory </value>
@@ -37,6 +41,10 @@ namespace Settings.User.Plugin {
     public List<PluginConfig> Plugins { get; set; } = new();
 
     private static ILogger _logger = Logger.For<PluginSettings>();
+
+    public override String ToString() {
+      return "(plugin settings) =(" + string.Join("\n",Plugins.Select( p => p.ToString() ))+ ")";
+    }
 
     private void Validate() {
 
