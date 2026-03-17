@@ -183,16 +183,6 @@ namespace UI.KeyMaping {
 
         private void addUserKeyMaps(KeymapSettings keymapSettings) {
 
-          //TODO: hmm need some association to parametricness in the UICommand Definition here
-          //Short term fix
-          List<UICommandType> ParametricUICommandTypes = new () {
-            UICommandType.REPLACE_CHAR,
-            UICommandType.INSERT_CHAR,
-            UICommandType.FIND_CHAR,
-            UICommandType.FIND_REV_CHAR,
-            UICommandType.MOVE_CLUE
-          };
-
           //noremaps
           foreach ( KeymapConfig cfg in keymapSettings.keymaps ) {
 
@@ -208,11 +198,8 @@ namespace UI.KeyMaping {
               continue;
             }
 
-            if (ParametricUICommandTypes.Contains(cfg.Command)) {
-              _logger.Warning("ignoring keymap, parametric command mapping not implemented");
-              continue;
-            }
 
+            //remove previous maps?
             if ( cfg.Override ) {
               List<KeyMap> removed = keyMapList.FindAll( km => km.Bindings.Any( bn => ((UICommand) bn.Item2).Type == cfg.Command ));
               foreach (KeyMap remove in removed ) {
@@ -220,11 +207,37 @@ namespace UI.KeyMaping {
               }
               _logger.Information($"overrid {removed.Count} mappings for {cfg.Command}");
             } 
-            keyMapList.Add(new FixedKeyMap( keys,cfg.Command,definition));
+
+            //add binding(s)
+            if (UICommands.ParametricCommands.Contains(cfg.Command)) {
+              _logger.Warning("parametric command map found");
+              switch ( cfg.Command ) {
+                case UICommandType.FIND_CHAR:
+                  keyMapList.Add(ParametricKeyMap.FindCharKeyMapOfPrincipal( keys, false ));
+                  break;
+                case UICommandType.FIND_REV_CHAR:
+                  keyMapList.Add(ParametricKeyMap.FindCharKeyMapOfPrincipal( keys ,true ));
+                  break;
+                case UICommandType.REPLACE_CHAR:
+                  keyMapList.Add(ParametricKeyMap.ReplaceCharKeyMapOfPrincipal( keys ));
+                  break;
+                case UICommandType.MOVE_CLUE:
+                  keyMapList.Add(ParametricKeyMap.MoveWordKeyMapOfPrincipal( keys ));
+                  break;
+                case UICommandType.INSERT_CHAR:
+                  keyMapList.Add(ParametricKeyMap.InsertCharKeyMapOfPrincipal( keys ));
+                  break;
+                default:
+                  _logger.Warning($"unhandled UICommndType {cfg.Command}, skipping key mapping");
+                  break;
+
+              }
+              continue;
+            } else {
+              keyMapList.Add(new FixedKeyMap( keys,cfg.Command,definition));
+            }
 
           }
-
-          //remaps
           
         }
 

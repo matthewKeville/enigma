@@ -129,6 +129,14 @@ public enum UICommandType {
       UICommandType.INSERT_CHAR,
       UICommandType.DELETE_CHAR_INS
     };
+
+    public static List<UICommandType> ParametricCommands { get; } = new () {
+      UICommandType.REPLACE_CHAR,
+      UICommandType.INSERT_CHAR,
+      UICommandType.FIND_CHAR,
+      UICommandType.FIND_REV_CHAR,
+      UICommandType.MOVE_CLUE
+    };
   }
 
 }
