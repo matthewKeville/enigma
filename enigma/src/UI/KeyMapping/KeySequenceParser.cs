@@ -70,10 +70,38 @@ namespace UI.KeyMaping {
       return null;
     }
 
+    // first pass at implementation, only support one modifier
+    // <C-?> <S-?> <A-?>
     public static Key? TryParseModifiedKey(String keystring) {
-      _logger.Warning("TryParseModifiedKey Not implmented");
-      return null;
+      // || <M-?> || = 5
+      if (keystring.Count() < 5 || keystring[0] != '<' || keystring[2] !='-'|| keystring[keystring.Length-1] != '>' ) {
+        return null;
+      }
+
+      String innerKeystring = keystring[3..(keystring.Length-1)];
+      Key? key = TryParseNormalKey(innerKeystring);
+      key??= TryParseSpecialKey($"<{innerKeystring}>");
+      if ( key == null ) {
+        _logger.Warning($"failed to parse modified key, keystring = {keystring}, innerKeystring = {innerKeystring} ");
+        _logger.Warning($"inner string did not map to normal or special key");
+        return null;
+      }
+
+      switch ( keystring[1] ) {
+        case 'C':
+          return key.WithCtrl;
+        case 'S':
+          return key.WithShift;
+        case 'A':
+          return key.WithAlt;
+        default:
+          _logger.Warning($"failed to parse modified key, keystring = {keystring}");
+          _logger.Warning($"modified prefix not supported, mpx = {keystring[1]}");
+          return null;
+      }
+
     }
+
 
     public static List<Key>? TryParse(List<String> keysequence) {
       List<Key> keys = new ();
