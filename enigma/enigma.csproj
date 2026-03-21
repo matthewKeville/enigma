@@ -1,5 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <PropertyGroup>
+    <!-- ... usage -p:IsPortableRelease=false -->
+    <IsPortableRelease>false</IsPortableRelease>
+    <!-- linux-x64, win-x64 ... usage -r <value> -->
+    <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+  </PropertyGroup>
+
   <!-- build props -->
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -27,24 +34,56 @@
     <PackageReference Include="Tomlyn" Version="0.17.0" />
   </ItemGroup>
 
+
   <!-- global usings -->
   <ItemGroup>
     <Using Include="System.Diagnostics" />
   </ItemGroup>
 
-  <!-- dev / release app settings -->
-  <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
+  <!-- release -->
+  <PropertyGroup Condition="'$(IsPortableRelease)' == 'true'" >
+    <PublishDir>$(SolutionDir)publish/$(RuntimeIdentifier)-portable</PublishDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(IsPortableRelease)' == 'false'" >
+    <PublishDir>$(SolutionDir)publish/$(RuntimeIdentifier)</PublishDir>
+  </PropertyGroup>
+
+  <!-- release -->
+  <PropertyGroup>
+    <Configuration>Release</Configuration>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <!-- EF Core relies on reflection -->
+    <PublishTrimmed>false</PublishTrimmed>
+    <!-- final executable, includes sql, dotnet runtime unpacks it to temporary file -->
+    <!-- disabled for now, cleaner, but gives overhead for every program run -->
+  <IncludeNativeLibrariesForSelfExtract>false</IncludeNativeLibrariesForSelfExtract>
+    <DebugType>None</DebugType>
+  </PropertyGroup>
+
     <!-- used when invoked by dotnet run (Debug build in intermediate language) -->
+  <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
     <Content Include="appsettings-local.json" TargetPath="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
     <!-- used when dotnet pubslish -->
+  <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
     <Content Include="appsettings-release.json" TargetPath="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+
+  <ItemGroup Condition="'$(IsPortableRelease)' == 'true' and '$(RuntimeIdentifier)' == 'linux-x64'">
+    <Content Include="install/install.sh">
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IsPortableRelease)' == 'true' and '$(RuntimeIdentifier)' == 'windows-x64'">
+    <!-- TODO -->
+  </ItemGroup>
+
 
 </Project>

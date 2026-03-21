@@ -4,3 +4,4 @@ logs/
 enigma.db
 enigma.json
 plugins/
+publish/
