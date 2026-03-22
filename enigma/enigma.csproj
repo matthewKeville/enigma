@@ -42,10 +42,10 @@
 
   <!-- release -->
   <PropertyGroup Condition="'$(IsPortableRelease)' == 'true'" >
-    <PublishDir>$(SolutionDir)publish/$(RuntimeIdentifier)-portable</PublishDir>
+    <PublishDir>$(SolutionDir)release/$(RuntimeIdentifier)-portable</PublishDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(IsPortableRelease)' == 'false'" >
-    <PublishDir>$(SolutionDir)publish/$(RuntimeIdentifier)</PublishDir>
+    <PublishDir>$(SolutionDir)release/$(RuntimeIdentifier)</PublishDir>
   </PropertyGroup>
 
   <!-- release -->
@@ -75,15 +75,25 @@
     </Content>
   </ItemGroup>
 
-  <ItemGroup Condition="'$(IsPortableRelease)' == 'true' and '$(RuntimeIdentifier)' == 'linux-x64'">
-    <Content Include="install/install.sh">
+  <!-- installer releases -->
+  <ItemGroup Condition="'$(IsPortableRelease)' == 'false' and '$(RuntimeIdentifier)' == 'linux-x64'">
+  <!-- todo -->
+  <!--
+  <Content Include="publish/installers/install.sh">
       <CopyToPublishDirectory>Always</CopyToPublishDirectory>
     </Content>
+  -->
   </ItemGroup>
 
-  <ItemGroup Condition="'$(IsPortableRelease)' == 'true' and '$(RuntimeIdentifier)' == 'windows-x64'">
-    <!-- TODO -->
+  <ItemGroup Condition="'$(IsPortableRelease)' == 'false' and '$(RuntimeIdentifier)' == 'windows-x64'">
+  <!-- todo -->
+  <!--
+  <Content Include="publish/installers/install.ps1">
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+    </Content>
+  -->
   </ItemGroup>
+
 
 
 </Project>
